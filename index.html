@@ -336,7 +336,7 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
     <div class="field-label">刪除</div>
     <div class="set-group"><div class="set-row"><div style="flex:1;"><div class="k">刪紀錄前先詢問</div><div class="sub">關掉後,長按日誌會直接刪除</div></div><div class="sw" id="swAskDel" onclick="toggleAskDel()"></div></div></div>
     <div class="field-label">關於</div>
-    <div class="set-group"><div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.7</div></div></div>
+    <div class="set-group"><div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.8</div></div></div>
     <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
   </div>
 </div>
@@ -366,19 +366,31 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
 
 <script>
 "use strict";
-const VERSION="1.7";
+const VERSION="1.8";
 const KEY="friendship-meter-v1";
 const CATEGORIES=["摯友","同事","同學","家人","合作夥伴"];
-const TIERS=[
-  {min:500,title:"過命交情",color:"#ff4d6d",hot:true},
-  {min:100,title:"超級摯友",color:"#fb7a28"},
-  {min:60, title:"要好朋友",color:"#e6c233"},
-  {min:30, title:"普通朋友",color:"#35c978"},
-  {min:0,  title:"點頭之交",color:"#22b8c4"},
-  {min:-99,title:"關係緊張",color:"#4c7df0"},
-  {min:-Infinity,title:"斷交邊緣",color:"#6c5ce0"},
-];
-function tierOf(s){ for(const t of TIERS) if(s>=t.min) return t; return TIERS[TIERS.length-1]; }
+/* 好感度 → 連續色譜:紅(高)→ 黃(中)→ 藍(低),每個分數都有自己的顏色 */
+function _mix(a,b,t){return [a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,a[2]+(b[2]-a[2])*t];}
+function _hex(c){return "#"+c.map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,"0")).join("");}
+const _RED=[233,42,52],_YEL=[244,196,0],_BLU=[47,111,224],_NAVY=[28,36,96];
+function colorForScore(s){
+  if(s>=50) return _hex(_mix(_YEL,_RED,Math.min(1,(s-50)/50)));   /* 50→100+  黃→純紅 */
+  if(s>=0)  return _hex(_mix(_BLU,_YEL,s/50));                     /* 0→50     藍→黃   */
+  return _hex(_mix(_BLU,_NAVY,Math.min(1,(-s)/50)));               /* 0→-50    藍→深藍 */
+}
+/* 每 5 分一個「⋯⋯的朋友」等級名詞 */
+const _CORE=["冰點的朋友","關係很淡的朋友","幾乎不聯絡的朋友","只剩表面的朋友","漸行漸遠的朋友","快變陌生人","不太熟的朋友","點頭之交","偶爾聊聊的朋友","有點淡的朋友","普通的朋友","還算熟的朋友","處得不錯的朋友","很聊得來的朋友","常黏在一起的朋友","超麻吉的朋友","死黨等級的朋友","掏心掏肺的朋友","無話不談的朋友","滾燙的朋友","命中註定的朋友"];
+const _TOP={105:"過命的朋友",110:"生死之交",115:"血濃於水的朋友",120:"一輩子的朋友",125:"靈魂共振的朋友"};
+const _NEG={"-5":"有嫌隙的朋友","-10":"有心結的朋友","-15":"處不來的朋友","-20":"互看不順眼","-25":"關係緊繃","-30":"撕破臉邊緣"};
+function nameForScore(s){
+  if(s>=130) return "命定的靈魂伴侶";
+  const b=Math.floor(s/5)*5;
+  if(b>=105) return _TOP[b];
+  if(b>=0&&b<=100) return _CORE[b/5];
+  if(b>=-30) return _NEG[String(b)];
+  return "形同陌路";
+}
+function tierOf(s){ return {title:nameForScore(s), color:colorForScore(s), hot:s>=100}; }
 function defaultSettings(){ return {theme:"system",notifyCooldown:false,notifyDaily:false,chartUnit:"day",askBeforeDeleteLog:true,layout:"list",_lastDaily:null}; }
 function load(){ try{ const r=localStorage.getItem(KEY); if(!r) return {v:1,friends:[],settings:defaultSettings()};
     const d=JSON.parse(r); if(!d.friends) d.friends=[]; d.settings=Object.assign(defaultSettings(),d.settings||{});
