@@ -7,6 +7,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="餘溫">
 <meta name="theme-color" content="#17130f">
+<link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-180.png">
 <title>餘溫 · 好感度</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -40,7 +42,12 @@ input,select,textarea{font-family:inherit;font-size:16px;}
 [data-press].pressed{transform:scale(.955);filter:brightness(1.06);}
 
 .topbar{position:sticky;top:0;z-index:20;background:linear-gradient(var(--canvas) 72%,transparent);padding:calc(env(safe-area-inset-top) + 18px) 22px 14px;display:flex;align-items:flex-start;justify-content:space-between;}
-.brand{display:flex;align-items:baseline;gap:10px;}
+.brand{display:flex;align-items:center;gap:9px;}
+.logo{width:26px;height:26px;flex:0 0 auto;}
+@keyframes emberPulse{0%,100%{filter:drop-shadow(0 0 3px rgba(255,150,60,.55));}50%{filter:drop-shadow(0 0 7px rgba(255,150,60,.9));}}
+.logo{animation:emberPulse 3.4s ease-in-out infinite;}
+@media (prefers-reduced-motion: reduce){.logo{animation:none;}}
+.brand .wm{display:flex;align-items:baseline;gap:9px;}
 .brand h1{margin:0;font-family:var(--disp);font-weight:700;font-size:25px;letter-spacing:-0.02em;color:var(--ink);}
 .brand .en{font-family:var(--mono);font-size:11px;letter-spacing:0.22em;color:var(--ink-3);text-transform:uppercase;padding-bottom:2px;}
 .count{margin-top:3px;font-family:var(--mono);font-size:12px;color:var(--ink-3);letter-spacing:0.03em;}
@@ -80,6 +87,12 @@ html[data-theme="light"] .reminder{border-color:#e9c98a;background:#fdf3df;}
 .a-del{background:var(--danger);}
 .a-restore{background:#264a3a;} .a-restore svg{stroke:#9fe7c4;}
 .swipe-content{position:relative;touch-action:pan-y;will-change:transform;background:var(--canvas);}
+.swipe-actions button{transition:opacity .18s ease;}
+.swipe-actions .a-del svg{transition:transform .2s var(--spring);}
+.swipe-wrap.will-delete{background:var(--danger);}
+.swipe-wrap.will-delete .a-pin,.swipe-wrap.will-delete .a-more,.swipe-wrap.will-delete .a-restore{opacity:0;}
+.swipe-wrap.will-delete .a-del{background:transparent;}
+.swipe-wrap.will-delete .a-del svg{transform:scale(1.25);}
 
 .card{--c:#888;display:flex;align-items:center;gap:15px;border:1px solid var(--hair);
   background:radial-gradient(140% 120% at 100% 50%,color-mix(in srgb,var(--c) 18%,transparent),transparent 62%),var(--surface);
@@ -225,7 +238,13 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
 
 <div id="homeView" class="view">
   <div class="topbar">
-    <div><div class="brand"><h1>餘溫</h1><span class="en">ember</span></div><div class="count" id="countLine">0 段關係</div></div>
+    <div><div class="brand">
+      <svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><defs>
+        <radialGradient id="ember" cx="50%" cy="46%" r="60%"><stop offset="0%" stop-color="#fff8dc"/><stop offset="42%" stop-color="#ffc650"/><stop offset="75%" stop-color="#ff7020"/><stop offset="100%" stop-color="#8c2e0a"/></radialGradient>
+        <radialGradient id="emberGlow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ff7828" stop-opacity="0.5"/><stop offset="100%" stop-color="#ff7828" stop-opacity="0"/></radialGradient>
+      </defs><circle cx="16" cy="16" r="15" fill="url(#emberGlow)"/><circle cx="16" cy="15.4" r="9.4" fill="url(#ember)"/><ellipse cx="12.6" cy="12" rx="2.6" ry="1.8" fill="#fff7e6" opacity="0.5"/></svg>
+      <span class="wm"><h1>餘溫</h1><span class="en">ember</span></span>
+    </div><div class="count" id="countLine">0 段關係</div></div>
     <button class="gear" data-press onclick="openSettings()" aria-label="設定"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg></button>
   </div>
   <div class="searchwrap"><input class="search" id="searchInput" placeholder="搜尋姓名或標籤" autocomplete="off"></div>
@@ -309,7 +328,7 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
     <div class="field-label">刪除</div>
     <div class="set-group"><div class="set-row"><div style="flex:1;"><div class="k">刪紀錄前先詢問</div><div class="sub">關掉後,左滑點垃圾桶會直接刪除</div></div><div class="sw" id="swAskDel" onclick="toggleAskDel()"></div></div></div>
     <div class="field-label">關於</div>
-    <div class="set-group"><div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.2</div></div></div>
+    <div class="set-group"><div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.3</div></div></div>
     <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
   </div>
 </div>
@@ -341,7 +360,7 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
 
 <script>
 "use strict";
-const VERSION="1.2";
+const VERSION="1.3";
 const KEY="friendship-meter-v1";
 const CATEGORIES=["摯友","同事","同學","家人","合作夥伴"];   /* 密友 → 摯友 */
 const TIERS=[
@@ -455,22 +474,28 @@ function bindSwipe(){
     if(content._sw) return; content._sw=true;
     const wrap=content.parentElement, actions=wrap.querySelector(".swipe-actions");
     const type=content.dataset.swtype, fid=content.dataset.fid, lid=content.dataset.lid;
-    let sx=0,sy=0,dx=0,decided=null,active=false,revealW=64;
-    content.addEventListener("pointerdown",e=>{ sx=e.clientX;sy=e.clientY;dx=0;decided=null;active=true;
-      revealW=actions?actions.offsetWidth:64; content.style.transition="none"; closeAllSwipes(content); });
+    let sx=0,sy=0,tx=0,decided=null,active=false,revealW=64,commitW=150,willDel=false,lastX=0,lastT=0,vx=0;
+    content.addEventListener("pointerdown",e=>{ sx=e.clientX;sy=e.clientY;lastX=e.clientX;lastT=e.timeStamp;vx=0;tx=0;decided=null;active=true;willDel=false;
+      revealW=actions?actions.offsetWidth:64; commitW=Math.max(150, wrap.getBoundingClientRect().width*0.5);
+      content.style.transition="none"; wrap.classList.remove("will-delete"); closeAllSwipes(content); });
     content.addEventListener("pointermove",e=>{ if(!active)return;
       const mx=e.clientX-sx,my=e.clientY-sy;
-      if(decided===null){ if(Math.abs(mx)>8||Math.abs(my)>8) decided=Math.abs(mx)>Math.abs(my)?"h":"v"; }
+      if(decided===null){ if(Math.abs(mx)>7||Math.abs(my)>7) decided=Math.abs(mx)>Math.abs(my)?"h":"v"; }
       if(decided!=="h")return; e.preventDefault();
-      const base=content._open?-revealW:0; dx=Math.min(0,base+mx); content.style.transform=`translateX(${dx}px)`;
+      const dt=e.timeStamp-lastT; if(dt>0) vx=(e.clientX-lastX)/dt; lastX=e.clientX; lastT=e.timeStamp;
+      const base=content._open?-revealW:0; let raw=base+mx;
+      if(raw>0) raw*=0.3;                                  /* 往右回彈阻尼 */
+      if(raw<-revealW){ const extra=-raw-revealW; raw=-(revealW+extra*0.4); } /* 越界阻尼 */
+      tx=raw; content.style.transform=`translateX(${tx}px)`;
+      const nd=(-tx)>=commitW; if(nd!==willDel){ willDel=nd; wrap.classList.toggle("will-delete",willDel); if(willDel) haptic(); }
     },{passive:false});
-    const end=()=>{ if(!active)return; active=false; content.style.transition="transform .28s var(--spring)";
-      const w=wrap.getBoundingClientRect().width, hard=-Math.max(160,w*0.55);
-      if(dx<=hard){ content.style.transform=`translateX(-${w}px)`;
-        setTimeout(()=>{ if(type==="card") doDeleteFriend(fid); else doDeleteLog(content.dataset.pfid,lid); },170); return; }
-      if(dx<=-revealW*0.5){ content._open=true; openSwipe=content; content.style.transform=`translateX(-${revealW}px)`; }
-      else{ content._open=false; content.style.transform="translateX(0)";
-        if(decided===null){ if(type==="card") openDetailFromCard(fid); } }
+    const end=()=>{ if(!active)return; active=false; content.style.transition="transform .3s var(--spring)";
+      const w=wrap.getBoundingClientRect().width;
+      if(willDel||(-tx)>=commitW){ content.style.transition="transform .22s ease-in"; content.style.transform=`translateX(-${w}px)`;
+        setTimeout(()=>{ if(type==="card") doDeleteFriend(fid); else doDeleteLog(content.dataset.pfid,lid); },200); return; }
+      if((-tx)>=revealW*0.4 || vx<-0.5){ content._open=true; openSwipe=content; content.style.transform=`translateX(-${revealW}px)`; }
+      else{ content._open=false; wrap.classList.remove("will-delete"); content.style.transform="translateX(0)";
+        if(decided===null && type==="card") openDetailFromCard(fid); }
     };
     content.addEventListener("pointerup",end); content.addEventListener("pointercancel",end);
   });
