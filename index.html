@@ -174,6 +174,20 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
 .quick.minus:active{border-color:var(--cool);box-shadow:0 0 24px -6px var(--cool);}
 .quick.zero:active{border-color:var(--ink-2);}
 
+/* 溫度計微調 */
+.thermo-area{display:flex;justify-content:center;padding:16px 0 8px;}
+.thermo-bezel{width:120px;padding:7px;border-radius:58px;background:linear-gradient(150deg,#f0f1f3,#b7babf 32%,#dcdee1 52%,#a9acb1 78%,#e9eaec);box-shadow:0 8px 20px rgba(0,0,0,.4),inset 0 1px 2px rgba(255,255,255,.8),inset 0 -2px 4px rgba(0,0,0,.2);}
+.thermo-face{position:relative;height:384px;border-radius:52px;background:linear-gradient(#fdfdf9,#f3f2ea);box-shadow:inset 0 2px 6px rgba(0,0,0,.14);overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none;}
+.thermo-tube{position:absolute;left:50%;transform:translateX(-50%);top:26px;bottom:48px;width:15px;border-radius:8px;background:linear-gradient(90deg,#dedbd0,#f2f0e8,#dedbd0);box-shadow:inset 0 0 3px rgba(0,0,0,.3);pointer-events:none;}
+.thermo-fill{position:absolute;left:1px;right:1px;bottom:0;border-radius:0 0 7px 7px;background:linear-gradient(90deg,#c81810,#ff5a4a,#c81810);}
+.thermo-tip{position:absolute;left:50%;width:21px;height:21px;border-radius:50%;transform:translateX(-50%);background:radial-gradient(circle at 38% 32%,#ff7d6d,#d21b12);box-shadow:0 1px 3px rgba(0,0,0,.35);}
+.thermo-bulb{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);width:34px;height:34px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#ff6a5a,#bc130b);box-shadow:0 2px 5px rgba(0,0,0,.35);pointer-events:none;}
+.thermo-ticks{position:absolute;left:calc(50% + 9px);width:9px;top:26px;bottom:48px;pointer-events:none;}
+.thermo-tick{position:absolute;left:0;height:1.5px;transform:translateY(-50%);}
+.thermo-nums{position:absolute;left:calc(50% + 22px);right:10px;top:26px;bottom:48px;pointer-events:none;}
+.thermo-num{position:absolute;left:0;transform:translateY(-50%);font-family:var(--mono);font-size:8.5px;color:#5a5142;transition:font-size .12s var(--spring),color .12s;}
+.thermo-num.on{font-size:19px;font-weight:700;color:#d21b12;}
+
 .set-group{border:1px solid var(--hair);border-radius:15px;background:var(--surface);overflow:hidden;margin-top:10px;}
 .set-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 15px;border-bottom:1px solid var(--hair-soft);}
 .set-row:last-child{border-bottom:none;}
@@ -290,12 +304,18 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
     <div class="hint">先寫好備註,再點上面的按鈕,就會一起記下來。</div>
   </div>
   <div id="customPane" style="display:none;">
-    <div class="field-label">好感度變化</div>
-    <div class="numrow"><div class="signseg"><button class="pos on" id="cSignPos" onclick="setSign('delta',1)">＋</button><button class="neg" id="cSignNeg" onclick="setSign('delta',-1)">－</button></div><input class="field" id="cDelta" inputmode="numeric" pattern="[0-9]*" placeholder="例如 30"></div>
-    <div class="hint">純數字鍵盤;負數按左邊的 －</div>
+    <div class="field-label">好感度變化 · 拖曳中間的水銀</div>
+    <div class="thermo-area">
+      <div class="thermo-bezel"><div class="thermo-face" id="thermoFace">
+        <div class="thermo-tube"><div class="thermo-fill" id="thermoFill"></div><div class="thermo-tip" id="thermoTip"></div></div>
+        <div class="thermo-bulb"></div>
+        <div class="thermo-ticks" id="thermoTicks"></div>
+        <div class="thermo-nums" id="thermoNums"></div>
+      </div></div>
+    </div>
     <div class="field-label">原因 / 小故事(可留白)</div>
     <textarea class="field" id="cNote" placeholder="今天發生了什麼?"></textarea>
-    <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">取消</button><button class="btn primary" data-press onclick="customScore()">記錄</button></div>
+    <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">取消</button><button class="btn primary" data-press id="customSave" onclick="customScore()">記錄</button></div>
   </div>
 </div>
 
@@ -336,7 +356,7 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
     <div class="field-label">刪除</div>
     <div class="set-group"><div class="set-row"><div style="flex:1;"><div class="k">刪紀錄前先詢問</div><div class="sub">關掉後,長按日誌會直接刪除</div></div><div class="sw" id="swAskDel" onclick="toggleAskDel()"></div></div></div>
     <div class="field-label">關於</div>
-    <div class="set-group"><div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.8</div></div></div>
+    <div class="set-group"><div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.9</div></div></div>
     <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
   </div>
 </div>
@@ -366,7 +386,7 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
 
 <script>
 "use strict";
-const VERSION="1.8";
+const VERSION="1.9";
 const KEY="friendship-meter-v1";
 const CATEGORIES=["摯友","同事","同學","家人","合作夥伴"];
 /* 好感度 → 連續色譜:紅(高)→ 黃(中)→ 藍(低),每個分數都有自己的顏色 */
@@ -546,7 +566,7 @@ function rerender(){ if(currentDetailId){ const f=DB.friends.find(x=>x.id===curr
 let chosenCat="",editingId=null,initSign=1,deltaSign=1,leSign=1,editingLogFid=null,editingLogId=null;
 function renderCatChips(){ $("catChips").innerHTML=CATEGORIES.map(c=>`<button class="chip ${c===chosenCat?'on':''}" data-press onclick="pickCat('${c}')">${c}</button>`).join(""); bindPress(); }
 function pickCat(c){ chosenCat=(chosenCat===c?"":c); renderCatChips(); }
-function setSign(which,s){ if(which==="init"){ initSign=s; $("fSignPos").classList.toggle("on",s>0); $("fSignNeg").classList.toggle("on",s<0);} else if(which==="log"){ leSign=s; $("leSignPos").classList.toggle("on",s>0); $("leSignNeg").classList.toggle("on",s<0);} else { deltaSign=s; $("cSignPos").classList.toggle("on",s>0); $("cSignNeg").classList.toggle("on",s<0);} haptic(); }
+function setSign(which,s){ if(which==="init"){ initSign=s; $("fSignPos").classList.toggle("on",s>0); $("fSignNeg").classList.toggle("on",s<0);} else if(which==="log"){ leSign=s; $("leSignPos").classList.toggle("on",s>0); $("leSignNeg").classList.toggle("on",s<0);} haptic(); }
 function openAddFriend(){ editingId=null;chosenCat="";initSign=1; $("addTitle").textContent="新增好友"; $("addSave").textContent="建立"; $("fName").value="";$("fScore").value="50";$("fCool").value="14"; setSign("init",1); renderCatChips(); openSheet("addSheet"); setTimeout(()=>$("fName").focus(),320); }
 function openEditFriend(id){ const f=DB.friends.find(x=>x.id===id); if(!f)return; editingId=id;chosenCat=f.category||""; $("addTitle").textContent="編輯好友"; $("addSave").textContent="儲存"; $("fName").value=f.name;$("fScore").value=String(Math.abs(f.initial));$("fCool").value=String(f.cooldownDays); setSign("init",f.initial<0?-1:1); renderCatChips(); openSheet("addSheet"); }
 function saveFriend(){ const name=$("fName").value.trim(); if(!name){toast("先填個名字");return;}
@@ -557,11 +577,36 @@ function saveFriend(){ const name=$("fName").value.trim(); if(!name){toast("先�
 
 /* ============ 打分 ============ */
 let scoringId=null;
-function openScore(id){ scoringId=id; const f=DB.friends.find(x=>x.id===id); $("scoreTitle").textContent=`${f.name} · 今日結算`; switchMode("quick"); $("cDelta").value="";$("cNote").value="";$("qNote").value=""; setSign("delta",1); openSheet("scoreSheet"); }
-function switchMode(m){ document.querySelectorAll("#modeSeg button").forEach(b=>b.classList.toggle("on",b.dataset.mode===m)); $("quickPane").style.display=m==="quick"?"block":"none"; $("customPane").style.display=m==="custom"?"block":"none"; }
+function openScore(id){ scoringId=id; const f=DB.friends.find(x=>x.id===id); $("scoreTitle").textContent=`${f.name} · 今日結算`; switchMode("quick"); $("cNote").value="";$("qNote").value=""; thermoValue=0; openSheet("scoreSheet"); }
+function switchMode(m){ document.querySelectorAll("#modeSeg button").forEach(b=>b.classList.toggle("on",b.dataset.mode===m)); $("quickPane").style.display=m==="quick"?"block":"none"; $("customPane").style.display=m==="custom"?"block":"none"; if(m==="custom"){ bindThermo(); setThermo(thermoValue); } }
 function addLog(id,delta,note){ const f=DB.friends.find(x=>x.id===id); f.logs.push({id:uid(),ts:Date.now(),delta,note:(note||"").trim()}); save(DB); }
 function quickScore(delta){ haptic(); addLog(scoringId,delta,$("qNote").value); closeSheet(); afterScore(scoringId); }
-function customScore(){ const abs=parseInt($("cDelta").value,10); if(!Number.isFinite(abs)){toast("填一個數值");return;} haptic(); addLog(scoringId,abs*deltaSign,$("cNote").value); closeSheet(); afterScore(scoringId); }
+function customScore(){ haptic(); addLog(scoringId,thermoValue,$("cNote").value); closeSheet(); afterScore(scoringId); }
+
+/* 溫度計:0 在中央,上 +1~+20、下 −1~−20;拖曳中間水銀,當前度數放大 */
+let thermoValue=0;
+function buildThermo(){ const nums=$("thermoNums"),ticks=$("thermoTicks"); if(!nums||nums._b)return; nums._b=true;
+  let nh="",th="";
+  for(let v=20;v>=-20;v--){ const top=(1-(v+20)/40)*100;
+    const major=(v%5===0);
+    th+=`<div class="thermo-tick" style="top:${top}%;width:${major?9:5}px;background:${major?'#3a352c':'#9a917f'}"></div>`;
+    nh+=`<div class="thermo-num" data-v="${v}" style="top:${top}%;font-weight:${major?600:400}">${v>0?'+'+v:v}</div>`;
+  }
+  ticks.innerHTML=th; nums.innerHTML=nh;
+}
+function setThermo(v){ v=Math.max(-20,Math.min(20,Math.round(v))); thermoValue=v; const f=(v+20)/40;
+  const fill=$("thermoFill"),tip=$("thermoTip"); if(fill) fill.style.height=(f*100)+"%"; if(tip) tip.style.bottom="calc("+(f*100)+"% - 10.5px)";
+  document.querySelectorAll("#thermoNums .thermo-num").forEach(el=>el.classList.toggle("on",+el.dataset.v===v));
+  const b=$("customSave"); if(b) b.textContent="記錄 "+(v>0?'+'+v:v);
+}
+function bindThermo(){ buildThermo(); const face=$("thermoFace"); if(!face||face._t)return; face._t=true;
+  let active=false;
+  const upd=cy=>{ const r=face.getBoundingClientRect(); const top=r.top+26,bot=r.bottom-48;
+    const f=Math.max(0,Math.min(1,(bot-cy)/(bot-top))); const v=Math.round(f*40-20); if(v!==thermoValue) haptic(); setThermo(v); };
+  face.addEventListener("pointerdown",e=>{ active=true; try{face.setPointerCapture(e.pointerId);}catch(_){} upd(e.clientY); e.preventDefault(); });
+  face.addEventListener("pointermove",e=>{ if(active){ upd(e.clientY); e.preventDefault(); } });
+  const end=()=>{active=false;}; face.addEventListener("pointerup",end); face.addEventListener("pointercancel",end);
+}
 function afterScore(id){ if($("detailView").style.display!=="none"&&currentDetailId===id){ renderDetail(id,true); } else { renderHome(false); const c=document.querySelector(`.friend[data-fid="${id}"]`); if(c){c.classList.add("pulse");setTimeout(()=>c.classList.remove("pulse"),700);} } toast("已記錄"); }
 
 /* ============ 詳情 + 折線圖 ============ */
