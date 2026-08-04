@@ -33,7 +33,8 @@ html[data-theme="light"]{
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{margin:0;padding:0;height:100%;overflow:hidden;overscroll-behavior:none;background:var(--canvas);}
-body{color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.45;-webkit-font-smoothing:antialiased;}
+body{color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.45;-webkit-font-smoothing:antialiased;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;}
+input,textarea{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default;}
 body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(120% 80% at 50% -10%,var(--amb1),transparent 60%),radial-gradient(90% 60% at 100% 110%,var(--amb2),transparent 60%);}
 button{font-family:inherit;cursor:pointer;color:inherit;border:none;background:none;}
 input,select,textarea{font-family:inherit;font-size:16px;}
@@ -95,7 +96,9 @@ html[data-theme="light"] .reminder{border-color:#e9c98a;background:#fdf3df;}
 .list{padding:8px 22px 4px;}
 .list .friend{display:flex;align-items:center;gap:15px;border-radius:19px;padding:16px 17px;margin-bottom:12px;}
 .list .info{flex:1;min-width:0;padding-left:5px;}
-.list .name{font-size:17px;font-weight:600;letter-spacing:-0.01em;display:flex;align-items:center;gap:6px;}
+.list .name{font-size:17px;font-weight:600;letter-spacing:-0.01em;display:flex;align-items:center;gap:6px;overflow:hidden;}
+.list .name span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.friend.pressing{transform:scale(1.03);transition:transform .2s var(--spring);z-index:2;}
 .list .name .pin{width:13px;height:13px;}
 .list .meta{display:flex;gap:7px;align-items:center;margin-top:5px;flex-wrap:wrap;}
 .list .score-wrap{text-align:right;}
@@ -333,7 +336,7 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
     <div class="field-label">刪除</div>
     <div class="set-group"><div class="set-row"><div style="flex:1;"><div class="k">刪紀錄前先詢問</div><div class="sub">關掉後,長按日誌會直接刪除</div></div><div class="sw" id="swAskDel" onclick="toggleAskDel()"></div></div></div>
     <div class="field-label">關於</div>
-    <div class="set-group"><div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.6</div></div></div>
+    <div class="set-group"><div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.7</div></div></div>
     <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
   </div>
 </div>
@@ -363,7 +366,7 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
 
 <script>
 "use strict";
-const VERSION="1.6";
+const VERSION="1.7";
 const KEY="friendship-meter-v1";
 const CATEGORIES=["摯友","同事","同學","家人","合作夥伴"];
 const TIERS=[
@@ -439,7 +442,7 @@ function listCardHTML(f,animate,i){
   const showScore=ended?0:sc, tcol=ended?"var(--ink-3)":t.color, ttitle=ended?"已經不是好友了":t.title;
   return `<div class="friend ${animate?'anim':''}" data-fid="${f.id}" style="--c:${tcol};animation-delay:${(i||0)*0.04}s">
     <div class="flame"></div>
-    <div class="info"><div class="name">${pin}${escapeHtml(f.name)}</div><div class="meta">${cat}${dormant}${endedTag}<span class="tier-title" style="color:${tcol}">${ttitle}</span>${cool}</div></div>
+    <div class="info"><div class="name">${pin}<span>${escapeHtml(f.name)}</span></div><div class="meta">${cat}${dormant}${endedTag}<span class="tier-title" style="color:${tcol}">${ttitle}</span>${cool}</div></div>
     <div class="score-wrap"><div class="score ${t.hot&&!ended?'hot':''}">${showScore}</div><div class="score-cap">好感度</div></div>
   </div>`;
 }
@@ -498,7 +501,7 @@ function bindLongPress(el, onTap, onLong){
 }
 function bindFriendGestures(){
   document.querySelectorAll(".friend[data-fid]").forEach(el=>{ const fid=el.dataset.fid;
-    bindLongPress(el, ()=>showDetail(fid), ()=>openContext(fid)); });
+    bindLongPress(el, ()=>showDetail(fid), ()=>{ el.classList.add("pressing"); setTimeout(()=>el.classList.remove("pressing"),280); openContext(fid); }); });
 }
 
 /* 長按選單 */
@@ -506,7 +509,9 @@ function openContext(id){
   const f=DB.friends.find(x=>x.id===id); if(!f) return;
   $("ctxTitle").textContent=f.name;
   const ended=f.status==="ended";
-  let items=`<div class="menu-item" data-press onclick="togglePin('${id}')"><div class="mi-k">${f.pinned?"取消釘選":"釘選到最上面"}</div></div>
+  let items="";
+  if(!ended) items+=`<div class="menu-item" data-press onclick="closeSheet();openScore('${id}')"><div class="mi-k">今日結算</div><div class="mi-sub">直接幫這位打分</div></div>`;
+  items+=`<div class="menu-item" data-press onclick="togglePin('${id}')"><div class="mi-k">${f.pinned?"取消釘選":"釘選到最上面"}</div></div>
     <div class="menu-item" data-press onclick="closeSheet();openEditFriend('${id}')"><div class="mi-k">編輯資料</div><div class="mi-sub">改名字、標籤、初始值(不動紀錄)</div></div>`;
   if(!ended){
     if(f.status!=="dormant") items+=`<div class="menu-item" data-press onclick="setDormant('${id}')"><div class="mi-k">不熟了</div><div class="mi-sub">分數停在原地,不再提醒紀錄</div></div>`;
@@ -678,10 +683,27 @@ function bindPress(){ document.querySelectorAll("[data-press]").forEach(el=>{ if
   const on=()=>el.classList.add("pressed"),off=()=>el.classList.remove("pressed");
   el.addEventListener("pointerdown",on);el.addEventListener("pointerup",off);el.addEventListener("pointerleave",off);el.addEventListener("pointercancel",off); }); }
 
+/* 從面板頂端往下滑即可關閉(不用捲到底找按鈕) */
+function bindSheetDrag(){ document.querySelectorAll(".sheet").forEach(sheet=>{ if(sheet._sd)return; sheet._sd=true;
+  let sy=0,dy=0,drag=false;
+  sheet.addEventListener("pointerdown",e=>{ if(sheet.scrollTop>3)return; const top=sheet.getBoundingClientRect().top;
+    if(e.clientY-top>74)return; if(e.target.closest("button,input,textarea,.seg,.pillseg,.chips,.signseg,.menu-item"))return;
+    sy=e.clientY;dy=0;drag=true; sheet.style.transition="none"; });
+  sheet.addEventListener("pointermove",e=>{ if(!drag)return; dy=Math.max(0,e.clientY-sy); if(dy>0)e.preventDefault(); sheet.style.transform=`translateY(${dy}px)`; },{passive:false});
+  const end=()=>{ if(!drag)return; drag=false; sheet.style.transition="transform .32s var(--ease)";
+    if(dy>90){ sheet.style.transform=""; closeSheet(); } else { sheet.style.transform="translateY(0)"; } };
+  sheet.addEventListener("pointerup",end); sheet.addEventListener("pointercancel",end);
+}); }
+
+/* 點畫面任何非輸入處 → 收起鍵盤(純數字鍵盤沒有完成鍵) */
+document.addEventListener("pointerdown",e=>{ const a=document.activeElement;
+  if(a&&(a.tagName==="INPUT"||a.tagName==="TEXTAREA")&&!e.target.closest("input,textarea")) a.blur();
+},true);
+
 /* 自動更新:註冊 service worker(讓主畫面版每次都抓最新) */
 if("serviceWorker" in navigator){ navigator.serviceWorker.register("sw.js").catch(()=>{}); }
 
-applyTheme(); renderHome(true); bindPress(); runReminders();
+applyTheme(); renderHome(true); bindPress(); bindSheetDrag(); runReminders();
 </script>
 </body>
 </html>
