@@ -356,7 +356,7 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
     <div class="field-label">刪除</div>
     <div class="set-group"><div class="set-row"><div style="flex:1;"><div class="k">刪紀錄前先詢問</div><div class="sub">關掉後,長按日誌會直接刪除</div></div><div class="sw" id="swAskDel" onclick="toggleAskDel()"></div></div></div>
     <div class="field-label">關於</div>
-    <div class="set-group"><div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.9</div></div></div>
+    <div class="set-group"><div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">2.0</div></div></div>
     <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
   </div>
 </div>
@@ -386,7 +386,7 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
 
 <script>
 "use strict";
-const VERSION="1.9";
+const VERSION="2.0";
 const KEY="friendship-meter-v1";
 const CATEGORIES=["摯友","同事","同學","家人","合作夥伴"];
 /* 好感度 → 連續色譜:紅(高)→ 黃(中)→ 藍(低),每個分數都有自己的顏色 */
@@ -503,7 +503,7 @@ function renderHome(animate){
   const box=$("friendList");
   if(DB.friends.length===0){ box.className=""; box.innerHTML=`<div class="empty-state"><div class="em"></div><div class="big">還沒有任何關係</div><div class="small">點下方「新增好友」,開始記錄溫度</div></div>`; return; }
   const rng = grid ? homeRange(active.length?active:DB.friends) : [];
-  let html=`<div class="${cls}">`+active.map((f,i)=>cardFn(f,animate,i,rng[0],rng[1])).join("")+`</div>`;
+  let html=active.length?`<div class="${cls}">`+active.map((f,i)=>cardFn(f,animate,i,rng[0],rng[1])).join("")+`</div>`:"";
   if(active.length===0&&ended.length===0) html=`<div class="empty-state"><div class="small">找不到符合「${escapeHtml(searchQ)}」的人</div></div>`;
   if(ended.length){ html+=`<div class="insights"><div class="eyebrow ended">已經不是好友了</div></div><div class="${cls}">`+ended.map((f,i)=>cardFn(f,false,i,rng[0],rng[1])).join("")+`</div>`; }
   box.className=""; box.innerHTML=html;
@@ -558,7 +558,7 @@ function openContext(id){
 function togglePin(id){ const f=DB.friends.find(x=>x.id===id); f.pinned=!f.pinned; save(DB); haptic(); closeSheet(); renderHome(false); toast(f.pinned?"已釘選":"已取消釘選"); }
 function setDormant(id){ const f=DB.friends.find(x=>x.id===id); f.status="dormant"; save(DB); haptic(); closeSheet(); rerender(); toast("已設為不熟了"); }
 function restoreNormal(id){ const f=DB.friends.find(x=>x.id===id); f.status="normal"; save(DB); haptic(); closeSheet(); rerender(); toast("已恢復提醒"); }
-function endFriend(id){ const f=DB.friends.find(x=>x.id===id); const sc=currentScore(f); if(sc!==0) f.logs.push({id:uid(),ts:Date.now(),delta:-sc,note:"結束好友關係"}); f.status="ended"; f.pinned=false; save(DB); haptic(); closeSheet(); rerender(); toast("已結束好友關係"); }
+function endFriend(id){ const f=DB.friends.find(x=>x.id===id); f.status="ended"; f.pinned=false; save(DB); haptic(); closeSheet(); rerender(); toast("已結束好友關係"); }
 function restoreFriend(id){ const f=DB.friends.find(x=>x.id===id); f.status="normal"; save(DB); haptic(); closeSheet(); rerender(); toast("已恢復好友"); }
 function rerender(){ if(currentDetailId){ const f=DB.friends.find(x=>x.id===currentDetailId); if(!f||f.status==="ended") showHome(); else renderDetail(currentDetailId,false); } else renderHome(false); }
 
@@ -577,7 +577,7 @@ function saveFriend(){ const name=$("fName").value.trim(); if(!name){toast("先�
 
 /* ============ 打分 ============ */
 let scoringId=null;
-function openScore(id){ scoringId=id; const f=DB.friends.find(x=>x.id===id); $("scoreTitle").textContent=`${f.name} · 今日結算`; switchMode("quick"); $("cNote").value="";$("qNote").value=""; thermoValue=0; openSheet("scoreSheet"); }
+function openScore(id){ const f=DB.friends.find(x=>x.id===id); if(!f||f.status==="ended")return; scoringId=id; $("scoreTitle").textContent=`${f.name} · 今日結算`; switchMode("quick"); $("cNote").value="";$("qNote").value=""; thermoValue=0; openSheet("scoreSheet"); }
 function switchMode(m){ document.querySelectorAll("#modeSeg button").forEach(b=>b.classList.toggle("on",b.dataset.mode===m)); $("quickPane").style.display=m==="quick"?"block":"none"; $("customPane").style.display=m==="custom"?"block":"none"; if(m==="custom"){ bindThermo(); setThermo(thermoValue); } }
 function addLog(id,delta,note){ const f=DB.friends.find(x=>x.id===id); f.logs.push({id:uid(),ts:Date.now(),delta,note:(note||"").trim()}); save(DB); }
 function quickScore(delta){ haptic(); addLog(scoringId,delta,$("qNote").value); closeSheet(); afterScore(scoringId); }
@@ -618,7 +618,9 @@ function seriesInSpan(f){ const all=seriesOf(f); if(spanDays===0) return all; co
 
 function renderDetail(id,animateScore){
   const f=DB.friends.find(x=>x.id===id); if(!f){showHome();return;}
+  const ended=f.status==="ended";
   const sc=currentScore(f),t=tierOf(sc);
+  const dScore=ended?0:sc, dColor=ended?"var(--ink-3)":t.color, dTitle=ended?"已經不是好友了":t.title;
   const cool=isCooling(f)?` · ${daysSince(lastActivityTs(f))} 天沒聯絡`:"";
   const spanBtns=[[7,"7 天"],[30,"30 天"],[365,"1 年"],[0,"全部"]].map(([d,l])=>`<button class="${spanDays===d?'on':''}" onclick="setSpan(${d})">${l}</button>`).join("");
   const logsHtml=[...f.logs].sort((a,b)=>b.ts-a.ts).map(l=>{
@@ -626,18 +628,18 @@ function renderDetail(id,animateScore){
     const upto=f.logs.filter(x=>x.ts<=l.ts).reduce((s,x)=>s+x.delta,f.initial);
     return `<div class="log-item" data-lid="${l.id}"><div class="log-delta ${cls}">${sign}${l.delta}</div><div class="log-body"><div class="log-date">${fmtDate(l.ts)}</div><div class="log-note ${l.note?'':'none'}">${l.note?escapeHtml(l.note):"（無備註）"}</div><div class="log-after">→ ${upto}</div></div></div>`;
   }).join("")||`<div class="empty-state" style="padding:30px 0"><div class="small">還沒有紀錄,點「今日結算」開始</div></div>`;
-  const statusNote=f.status==="dormant"?`<div class="d-sub" style="color:var(--warm)">已設為「不熟了」,不再提醒紀錄</div>`:"";
+  const statusNote=f.status==="dormant"?`<div class="d-sub" style="color:var(--warm)">已設為「不熟了」,不再提醒紀錄</div>`:(ended?`<div class="d-sub" style="color:var(--ink-3)">已結束的好友,分數以 0 呈現;可長按卡片恢復</div>`:"");
   $("detailBody").innerHTML=`
-    <div class="detail-head" style="--c:${t.color}"><div><div class="d-name">${escapeHtml(f.name)}</div><div class="d-tier" style="color:${t.color}">${t.title}${f.category?" · "+escapeHtml(f.category):""}</div><div class="d-sub">冷卻設定 ${f.cooldownDays} 天${cool}</div>${statusNote}</div><div class="d-score" id="dScore" style="color:${t.color}">${sc}</div></div>
+    <div class="detail-head" style="--c:${dColor}"><div><div class="d-name">${escapeHtml(f.name)}</div><div class="d-tier" style="color:${dColor}">${dTitle}${f.category?" · "+escapeHtml(f.category):""}</div><div class="d-sub">冷卻設定 ${f.cooldownDays} 天${cool}</div>${statusNote}</div><div class="d-score" id="dScore" style="color:${dColor}">${dScore}</div></div>
     <div class="seg" style="margin-top:14px">${spanBtns}</div>
     <div class="chart-wrap">${chartSVG(f)}</div>
-    <div style="margin-top:14px;"><button class="btn primary" data-press style="width:100%" onclick="openScore('${f.id}')">今日結算</button></div>
+    ${ended?"":`<div style="margin-top:14px;"><button class="btn primary" data-press style="width:100%" onclick="openScore('${f.id}')">今日結算</button></div>`}
     <div class="section-t">時間軸日誌 · 長按可刪</div>
     ${logsHtml}
     <div style="text-align:center;margin:26px 0 10px"><button class="linkbtn del-friend" data-press onclick="askDeleteFriend('${f.id}')">刪除這位好友與所有紀錄</button></div>`;
   bindPress(); igniteChart();
   document.querySelectorAll("#detailBody .log-item").forEach(el=>{ const lid=el.dataset.lid; bindLongPress(el, null, ()=>openLogContext(f.id,lid)); });
-  if(animateScore) rollNumber($("dScore"),Math.round(sc*0.4),sc,550);
+  if(animateScore) rollNumber($("dScore"),Math.round(dScore*0.4),dScore,550);
 }
 function setSpan(d){ spanDays=d; renderDetail(currentDetailId,false); }
 
