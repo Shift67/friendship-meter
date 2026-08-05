@@ -207,6 +207,15 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
 .menu-item .mi-k.danger{color:var(--danger);}
 .menu-item .mi-sub{font-size:11.5px;color:var(--ink-3);}
 
+.cl-entry{padding:14px 2px;border-bottom:1px solid var(--hair-soft);}
+.cl-entry:last-child{border-bottom:none;}
+.cl-head{display:flex;align-items:baseline;gap:10px;}
+.cl-v{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--gold);}
+.cl-date{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);letter-spacing:0.02em;}
+.cl-items{margin:8px 0 0;padding-left:18px;}
+.cl-items li{font-size:13.5px;color:var(--ink-2);line-height:1.55;margin-bottom:5px;}
+.cl-items li:last-child{margin-bottom:0;}
+
 .dtop{display:flex;align-items:center;justify-content:space-between;}
 .back{font-family:var(--mono);font-size:13px;color:var(--ink-2);letter-spacing:0.04em;padding:4px 0;}
 .edit-link{font-family:var(--mono);font-size:12.5px;color:var(--gold);padding:4px 0;letter-spacing:0.03em;}
@@ -354,9 +363,20 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
     <div class="field-label">刪除</div>
     <div class="set-group"><div class="set-row"><div style="flex:1;"><div class="k">刪紀錄前先詢問</div><div class="sub">關掉後,長按日誌會直接刪除</div></div><div class="sw" id="swAskDel" onclick="toggleAskDel()"></div></div></div>
     <div class="field-label">關於</div>
-    <div class="set-group"><div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.10</div></div></div>
+    <div class="set-group">
+      <div class="set-row" data-press onclick="openChangelog()"><div class="k">更新紀錄</div><div class="set-val">查看 ›</div></div>
+      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.11</div></div>
+    </div>
     <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
   </div>
+</div>
+
+<div class="sheet" id="changelogSheet">
+  <div class="grabber"></div>
+  <h2>更新紀錄</h2>
+  <div class="hint" style="margin:2px 2px 0;">每一代改了什麼,最新在最上面。</div>
+  <div id="changelogBody" style="margin-top:6px;"></div>
+  <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
 </div>
 
 <div class="sheet" id="dataSheet">
@@ -384,8 +404,28 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
 
 <script>
 "use strict";
-const VERSION="1.10";
+const VERSION="1.11";
 const KEY="friendship-meter-v1";
+/* 更新紀錄:每次改版就在最前面加一筆(v 由大到小,設定頁「更新紀錄」會照這個順序顯示) */
+const CHANGELOG=[
+  {v:"1.11",date:"2026-08-05",items:[
+    "設定裡新增「更新紀錄」,可以看每一代改了什麼",
+  ]},
+  {v:"1.10",date:"2026-08-05",items:[
+    "修好「已結束好友」:結束不再把分數洗成 0,「恢復好友」會還原成結束前的分數;詳情頁也一致顯示為已結束並隱藏今日結算",
+    "修好折線圖被壓平:改成每一筆紀錄一個點,首頁迷你圖各自用自己的刻度,波動看得清楚",
+    "移除設定裡的「折線圖時間單位」,它是把圖壓平的原因",
+  ]},
+  {v:"1.9",date:"2026-08-04",items:["微調打分改用金屬溫度計拖曳條"]},
+  {v:"1.8",date:"2026-08-04",items:["好感度改用紅→黃→藍連續色譜,每 5 分一個朋友等級稱號"]},
+  {v:"1.7",date:"2026-08-04",items:["面板可從頂端下滑關閉、長按不再選到文字、點空白收鍵盤、選單顯示分數、長名字截斷"]},
+  {v:"1.6",date:"2026-08-04",items:["格狀迷你圖共用刻度、日誌長按選單與編輯、穩定性強化"]},
+  {v:"1.5",date:"2026-08-04",items:["新增格狀版面、長按選單、service worker 自動更新"]},
+  {v:"1.4",date:"2026-08-04",items:["底部安全區域填色、實心分頁列"]},
+  {v:"1.3",date:"2026-08-04",items:["加入 logo、原生滑動返回、app 圖示"]},
+  {v:"1.2",date:"2026-08-04",items:["滑動操作、好友狀態、折線圖等距"]},
+  {v:"1.1",date:"2026-08-04",items:["初期版本:基本的好友記錄與打分"]},
+];
 const CATEGORIES=["摯友","同事","同學","家人","合作夥伴"];
 /* 好感度 → 連續色譜:紅(高)→ 黃(中)→ 藍(低),每個分數都有自己的顏色 */
 function _mix(a,b,t){return [a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,a[2]+(b[2]-a[2])*t];}
@@ -688,6 +728,8 @@ function saveLogEdit(){ const abs=parseInt($("leDelta").value,10); if(!Number.is
 
 /* ============ 設定 ============ */
 function openSettings(){ syncSettingsUI(); openSheet("settingsSheet"); }
+function renderChangelog(){ $("changelogBody").innerHTML=CHANGELOG.map(c=>`<div class="cl-entry"><div class="cl-head"><span class="cl-v">v${c.v}</span><span class="cl-date">${c.date}</span></div><ul class="cl-items">${c.items.map(it=>`<li>${escapeHtml(it)}</li>`).join("")}</ul></div>`).join(""); }
+function openChangelog(){ renderChangelog(); closeSheet(); openSheet("changelogSheet"); }
 function syncSettingsUI(){ $("verText").textContent=VERSION;
   document.querySelectorAll("#themeSeg button").forEach(b=>b.classList.toggle("on",b.dataset.themeOpt===DB.settings.theme));
   document.querySelectorAll("#layoutSeg button").forEach(b=>b.classList.toggle("on",b.dataset.layout===DB.settings.layout));
