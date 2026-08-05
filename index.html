@@ -134,9 +134,14 @@ html[data-theme="light"] .reminder{border-color:#e9c98a;background:#fdf3df;}
 .scrim{position:fixed;inset:0;z-index:40;background:rgba(8,5,2,.55);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .28s var(--ease);}
 html[data-theme="light"] .scrim{background:rgba(60,40,20,.28);}
 .scrim.on{opacity:1;pointer-events:auto;}
-.sheet{position:fixed;left:0;right:0;bottom:0;z-index:50;background:var(--canvas-2);border-top:1px solid var(--hair);border-radius:26px 26px 0 0;transform:translateY(102%);transition:transform .42s var(--ease);max-height:93vh;overflow-y:auto;overscroll-behavior:contain;padding:10px 22px calc(26px + env(safe-area-inset-bottom));box-shadow:0 -20px 60px rgba(0,0,0,.5);}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:50;background:var(--canvas-2);border-top:1px solid var(--hair);border-radius:26px 26px 0 0;transform:translateY(102%);transition:transform .42s var(--ease);max-height:93vh;overflow-y:auto;overscroll-behavior:contain;padding:0 22px calc(26px + env(safe-area-inset-bottom));box-shadow:0 -20px 60px rgba(0,0,0,.5);}
 .sheet.on{transform:translateY(0);}
-.grabber{width:40px;height:5px;border-radius:3px;background:var(--hair);margin:8px auto 18px;}
+.grabber{display:none;}  /* 由 .sheet-hd 內的把手取代 */
+.sheet-hd{position:sticky;top:0;z-index:6;background:var(--canvas-2);margin:0 -22px 12px;padding:11px 22px 11px;display:flex;align-items:center;justify-content:center;}
+.sheet-hd::after{content:"";position:absolute;left:0;right:0;top:100%;height:14px;background:linear-gradient(var(--canvas-2),transparent);pointer-events:none;}
+.sheet-hd .grab2{width:40px;height:5px;border-radius:3px;background:var(--hair);}
+.sheet-x{position:absolute;right:14px;top:7px;width:33px;height:33px;border-radius:50%;background:var(--surface-hi);border:1px solid var(--hair);color:var(--ink-2);font-family:var(--sans);font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center;transition:transform .15s var(--spring),background .2s;}
+.sheet-x:active{background:var(--hair);transform:scale(.9);}
 .sheet h2{font-family:var(--disp);font-size:22px;margin:0 0 4px;font-weight:700;letter-spacing:-0.02em;}
 .sheet.on .stagger>*{animation:sIn .5s var(--ease) both;}
 @keyframes sIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
@@ -276,7 +281,7 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
 </div>
 
 <div id="detailView" class="view" style="display:none;">
-  <div class="topbar" style="display:block;"><div class="dtop"><button class="back" data-press onclick="showHome()">‹ 返回</button><button class="edit-link" data-press id="editLink">編輯</button></div></div>
+  <div class="topbar" style="display:block;"><div class="dtop"><button class="back" data-press onclick="haptic();showHome()">‹ 返回</button><button class="edit-link" data-press id="editLink">編輯</button></div></div>
   <div style="padding:2px 22px 0;" id="detailBody"></div>
 </div>
 
@@ -365,7 +370,7 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
     <div class="field-label">關於</div>
     <div class="set-group">
       <div class="set-row" data-press onclick="openChangelog()"><div class="k">更新紀錄</div><div class="set-val">查看 ›</div></div>
-      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.11</div></div>
+      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.12</div></div>
     </div>
     <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
   </div>
@@ -404,10 +409,14 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
 
 <script>
 "use strict";
-const VERSION="1.11";
+const VERSION="1.12";
 const KEY="friendship-meter-v1";
 /* 更新紀錄:每次改版就在最前面加一筆(v 由大到小,設定頁「更新紀錄」會照這個順序顯示) */
 const CHANGELOG=[
+  {v:"1.12",date:"2026-08-05",items:[
+    "每個面板頂端新增固定的關閉鈕(✕),不用再捲到最底才能退出",
+    "更多觸覺回饋:切換類別、時間範圍、點好友卡片、返回、關閉都會有回饋",
+  ]},
   {v:"1.11",date:"2026-08-05",items:[
     "設定裡新增「更新紀錄」,可以看每一代改了什麼",
   ]},
@@ -566,7 +575,7 @@ function bindLongPress(el, onTap, onLong){
 }
 function bindFriendGestures(){
   document.querySelectorAll(".friend[data-fid]").forEach(el=>{ const fid=el.dataset.fid;
-    bindLongPress(el, ()=>showDetail(fid), ()=>{ el.classList.add("pressing"); setTimeout(()=>el.classList.remove("pressing"),280); openContext(fid); }); });
+    bindLongPress(el, ()=>{ haptic(); showDetail(fid); }, ()=>{ el.classList.add("pressing"); setTimeout(()=>el.classList.remove("pressing"),280); openContext(fid); }); });
 }
 
 /* 長按選單 */
@@ -598,7 +607,7 @@ function rerender(){ if(currentDetailId){ const f=DB.friends.find(x=>x.id===curr
 /* ============ 新增 / 編輯 ============ */
 let chosenCat="",editingId=null,initSign=1,deltaSign=1,leSign=1,editingLogFid=null,editingLogId=null;
 function renderCatChips(){ $("catChips").innerHTML=CATEGORIES.map(c=>`<button class="chip ${c===chosenCat?'on':''}" data-press onclick="pickCat('${c}')">${c}</button>`).join(""); bindPress(); }
-function pickCat(c){ chosenCat=(chosenCat===c?"":c); renderCatChips(); }
+function pickCat(c){ chosenCat=(chosenCat===c?"":c); renderCatChips(); haptic(); }
 function setSign(which,s){ if(which==="init"){ initSign=s; $("fSignPos").classList.toggle("on",s>0); $("fSignNeg").classList.toggle("on",s<0);} else if(which==="log"){ leSign=s; $("leSignPos").classList.toggle("on",s>0); $("leSignNeg").classList.toggle("on",s<0);} haptic(); }
 function openAddFriend(){ editingId=null;chosenCat="";initSign=1; $("addTitle").textContent="新增好友"; $("addSave").textContent="建立"; $("fName").value="";$("fScore").value="50";$("fCool").value="14"; setSign("init",1); renderCatChips(); openSheet("addSheet"); setTimeout(()=>$("fName").focus(),320); }
 function openEditFriend(id){ const f=DB.friends.find(x=>x.id===id); if(!f)return; editingId=id;chosenCat=f.category||""; $("addTitle").textContent="編輯好友"; $("addSave").textContent="儲存"; $("fName").value=f.name;$("fScore").value=String(Math.abs(f.initial));$("fCool").value=String(f.cooldownDays); setSign("init",f.initial<0?-1:1); renderCatChips(); openSheet("addSheet"); }
@@ -674,7 +683,7 @@ function renderDetail(id,animateScore){
   document.querySelectorAll("#detailBody .log-item").forEach(el=>{ const lid=el.dataset.lid; bindLongPress(el, null, ()=>openLogContext(f.id,lid)); });
   if(animateScore) rollNumber($("dScore"),Math.round(dScore*0.4),dScore,550);
 }
-function setSpan(d){ spanDays=d; renderDetail(currentDetailId,false); }
+function setSpan(d){ spanDays=d; haptic(); renderDetail(currentDetailId,false); }
 
 function chartSVG(f){
   let data=seriesInSpan(f);
@@ -775,6 +784,15 @@ function bindPress(){ document.querySelectorAll("[data-press]").forEach(el=>{ if
   const on=()=>el.classList.add("pressed"),off=()=>el.classList.remove("pressed");
   el.addEventListener("pointerdown",on);el.addEventListener("pointerup",off);el.addEventListener("pointerleave",off);el.addEventListener("pointercancel",off); }); }
 
+/* 每個面板頂端塞一條固定的把手列 + 右上角關閉鈕(捲動時不會消失) */
+function addSheetHeaders(){ document.querySelectorAll(".sheet").forEach(s=>{ if(s._hd)return; s._hd=true;
+  const hd=document.createElement("div"); hd.className="sheet-hd";
+  const g=document.createElement("span"); g.className="grab2";
+  const x=document.createElement("button"); x.type="button"; x.className="sheet-x"; x.setAttribute("aria-label","關閉"); x.textContent="✕";
+  x.addEventListener("click",()=>{ haptic(); closeSheet(); });
+  hd.appendChild(g); hd.appendChild(x); s.insertBefore(hd,s.firstChild);
+}); }
+
 /* 從面板頂端往下滑即可關閉(不用捲到底找按鈕) */
 function bindSheetDrag(){ document.querySelectorAll(".sheet").forEach(sheet=>{ if(sheet._sd)return; sheet._sd=true;
   let sy=0,dy=0,drag=false;
@@ -795,7 +813,7 @@ document.addEventListener("pointerdown",e=>{ const a=document.activeElement;
 /* 自動更新:註冊 service worker(讓主畫面版每次都抓最新) */
 if("serviceWorker" in navigator){ navigator.serviceWorker.register("sw.js").catch(()=>{}); }
 
-applyTheme(); renderHome(true); bindPress(); bindSheetDrag(); runReminders();
+applyTheme(); renderHome(true); addSheetHeaders(); bindPress(); bindSheetDrag(); runReminders();
 </script>
 </body>
 </html>
