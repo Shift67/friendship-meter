@@ -284,7 +284,7 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
       </defs><circle cx="16" cy="16" r="15" fill="url(#emberGlow)"/><circle cx="16" cy="15.4" r="9.4" fill="url(#ember)"/><ellipse cx="12.6" cy="12" rx="2.6" ry="1.8" fill="#fff7e6" opacity="0.5"/></svg>
       <span class="wm"><h1>餘溫</h1><span class="en">ember</span></span>
     </div><div class="count" id="countLine">0 段關係</div></div>
-    <button class="gear" data-press onclick="openSettings()" aria-label="設定"><svg viewBox="0 0 24 24"><line x1="4" y1="8.5" x2="20" y2="8.5"/><line x1="4" y1="15.5" x2="20" y2="15.5"/><circle cx="10" cy="8.5" r="2.5" fill="var(--surface)"/><circle cx="15" cy="15.5" r="2.5" fill="var(--surface)"/></svg></button>
+    <button class="gear" data-press onclick="openSettings()" aria-label="設定"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
   </div>
   <div class="searchwrap"><input class="search" id="searchInput" placeholder="搜尋姓名或標籤" autocomplete="off"></div>
   <div id="reminderBar" class="reminder" style="display:none;"><div class="r-txt" id="reminderTxt"></div><button class="r-x" onclick="dismissReminder()">✕</button></div>
@@ -382,7 +382,7 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
     <div class="field-label">關於</div>
     <div class="set-group">
       <div class="set-row" data-press onclick="openChangelog()"><div class="k">更新紀錄</div><div class="set-val">查看 ›</div></div>
-      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.15</div></div>
+      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.16</div></div>
     </div>
     <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
   </div>
@@ -421,10 +421,13 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
 
 <script>
 "use strict";
-const VERSION="1.15";
+const VERSION="1.16";
 const KEY="friendship-meter-v1";
 /* 更新紀錄:每次改版就在最前面加一筆(v 由大到小,設定頁「更新紀錄」會照這個順序顯示) */
 const CHANGELOG=[
+  {v:"1.16",date:"2026-08-05",items:[
+    "設定圖示換成乾淨的齒輪",
+  ]},
   {v:"1.15",date:"2026-08-05",items:[
     "好友頁改成從右側滑入的整頁,往右滑就能返回",
     "長按好友卡片時卡片會即時縮放發光,按住當下就看得到反應",
