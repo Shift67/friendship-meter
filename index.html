@@ -351,8 +351,6 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
       <div class="set-row"><div style="flex:1;"><div class="k">每日結算提醒</div><div class="sub">每天第一次打開 app 時,提醒你今天還沒結算</div></div><div class="sw" id="swDaily" onclick="toggleNotify('daily')"></div></div>
     </div>
     <div class="hint" style="margin:8px 2px 0;">網頁 app 在關閉時無法主動推播,以上提醒在你打開 app 當下顯示。</div>
-    <div class="field-label">折線圖</div>
-    <div class="set-group"><div class="set-row"><div style="flex:1;"><div class="k">時間單位</div><div class="sub">同一單位內的多筆會合併成一點。橫軸一律等距,不受點擊頻率影響</div></div><div class="pillseg" id="chartUnitSeg"><button data-unit="minute" onclick="setChartUnit('minute')">分</button><button data-unit="hour" onclick="setChartUnit('hour')">時</button><button data-unit="day" onclick="setChartUnit('day')">天</button></div></div></div>
     <div class="field-label">刪除</div>
     <div class="set-group"><div class="set-row"><div style="flex:1;"><div class="k">刪紀錄前先詢問</div><div class="sub">關掉後,長按日誌會直接刪除</div></div><div class="sw" id="swAskDel" onclick="toggleAskDel()"></div></div></div>
     <div class="field-label">關於</div>
@@ -411,7 +409,7 @@ function nameForScore(s){
   return "形同陌路";
 }
 function tierOf(s){ return {title:nameForScore(s), color:colorForScore(s), hot:s>=100}; }
-function defaultSettings(){ return {theme:"system",notifyCooldown:false,notifyDaily:false,chartUnit:"day",askBeforeDeleteLog:true,layout:"list",_lastDaily:null}; }
+function defaultSettings(){ return {theme:"system",notifyCooldown:false,notifyDaily:false,askBeforeDeleteLog:true,layout:"list",_lastDaily:null}; }
 function load(){ try{ const r=localStorage.getItem(KEY); if(!r) return {v:1,friends:[],settings:defaultSettings()};
     const d=JSON.parse(r); if(!d.friends) d.friends=[]; d.settings=Object.assign(defaultSettings(),d.settings||{});
     d.friends.forEach(f=>{ if(!f.status) f.status="normal"; if(f.pinned===undefined) f.pinned=false; if(f.category==="密友") f.category="摯友"; }); return d;
@@ -439,18 +437,15 @@ function applyTheme(){ const r=resolvedTheme(); document.documentElement.setAttr
 mql.addEventListener("change",()=>{ if(DB.settings.theme==="system") applyTheme(); });
 function setTheme(t){ DB.settings.theme=t; save(DB); applyTheme(); syncSettingsUI(); haptic(); }
 
-/* 序列與桶化(圖表共用) */
+/* 序列(圖表共用):每一筆紀錄一個點,X 軸筆數等距 */
 function seriesOf(f){ const pts=[{ts:f.createdAt,value:f.initial}]; let run=f.initial; [...f.logs].sort((a,b)=>a.ts-b.ts).forEach(l=>{run+=l.delta;pts.push({ts:l.ts,value:run});}); return pts; }
-function floorTs(ts,u){ const d=new Date(ts); if(u==="minute")d.setSeconds(0,0); else if(u==="hour")d.setMinutes(0,0,0); else d.setHours(0,0,0,0); return d.getTime(); }
-function bucketSeries(pts,u){ const m=new Map(); pts.forEach(p=>m.set(floorTs(p.ts,u),p.value)); return [...m.entries()].sort((a,b)=>a[0]-b[0]).map(([ts,value])=>({ts,value})); }
 
 /* 迷你折線圖(格狀用),等距、無標籤 */
-function miniChartSVG(f,gMin,gMax){
-  let data=bucketSeries(seriesOf(f),DB.settings.chartUnit); if(data.length<2) data=seriesOf(f);
+function miniChartSVG(f){
+  let data=seriesOf(f);
   if(data.length<2) data=[{value:f.initial},{value:currentScore(f)}];
-  const vals=data.map(p=>p.value); let vMin,vMax;
-  if(gMin!==undefined&&gMax!==undefined&&gMax>gMin){ vMin=gMin; vMax=gMax; }          /* 共用刻度:跨卡片可比高低 */
-  else { vMin=Math.min(...vals); vMax=Math.max(...vals); if(vMin===vMax){vMin-=3;vMax+=3;} const pd=(vMax-vMin)*0.2; vMin-=pd; vMax+=pd; }
+  const vals=data.map(p=>p.value); let vMin=Math.min(...vals),vMax=Math.max(...vals);
+  if(vMin===vMax){vMin-=3;vMax+=3;} const pd=(vMax-vMin)*0.2; vMin-=pd; vMax+=pd;   /* 每張卡片各自的刻度,凸顯自己的波動 */
   const W=100,H=40,n=data.length, x=i=>(n===1?0:(i/(n-1))*W), y=v=>2+(vMax-v)/(vMax-vMin)*(H-4);
   const line=data.map((p,i)=>`${i?'L':'M'}${x(i).toFixed(1)} ${y(p.value).toFixed(1)}`).join(" ");
   const area=`${line} L${W} ${H} L0 ${H} Z`;
@@ -478,7 +473,7 @@ function listCardHTML(f,animate,i){
     <div class="score-wrap"><div class="score ${t.hot&&!ended?'hot':''}">${showScore}</div><div class="score-cap">好感度</div></div>
   </div>`;
 }
-function gridCellHTML(f,animate,i,gMin,gMax){
+function gridCellHTML(f,animate,i){
   const sc=currentScore(f),t=tierOf(sc),ended=f.status==="ended";
   const cool=isCooling(f)?`<span class="cool">${daysSince(lastActivityTs(f))}天</span>`:"";
   const cat=f.category?`<span class="tag ${ended?'mute':''}">${escapeHtml(f.category)}</span>`:"";
@@ -488,11 +483,10 @@ function gridCellHTML(f,animate,i,gMin,gMax){
     <div class="flame"></div>
     <div class="name">${pin}<span>${escapeHtml(f.name)}</span></div>
     <div class="gmeta"><span class="tier-title" style="color:${tcol}">${ttitle}</span>${cat}${cool}</div>
-    <div class="gmini">${miniChartSVG(f,gMin,gMax)}</div>
+    <div class="gmini">${miniChartSVG(f)}</div>
     <div class="gbottom"><div class="score">${showScore}</div><div class="score-cap">好感度</div></div>
   </div>`;
 }
-function homeRange(friends){ let lo=Infinity,hi=-Infinity; friends.forEach(f=>seriesOf(f).forEach(p=>{if(p.value<lo)lo=p.value;if(p.value>hi)hi=p.value;})); if(!isFinite(lo)){lo=0;hi=100;} if(lo===hi){lo-=5;hi+=5;} const pd=(hi-lo)*0.12; return [lo-pd,hi+pd]; }
 function renderHome(animate){
   $("countLine").textContent=`${DB.friends.filter(f=>f.status!=="ended").length} 段關係`;
   renderInsights();
@@ -502,10 +496,9 @@ function renderHome(animate){
   const grid=DB.settings.layout==="grid", cardFn=grid?gridCellHTML:listCardHTML, cls=grid?"grid":"list";
   const box=$("friendList");
   if(DB.friends.length===0){ box.className=""; box.innerHTML=`<div class="empty-state"><div class="em"></div><div class="big">還沒有任何關係</div><div class="small">點下方「新增好友」,開始記錄溫度</div></div>`; return; }
-  const rng = grid ? homeRange(active.length?active:DB.friends) : [];
-  let html=active.length?`<div class="${cls}">`+active.map((f,i)=>cardFn(f,animate,i,rng[0],rng[1])).join("")+`</div>`:"";
+  let html=active.length?`<div class="${cls}">`+active.map((f,i)=>cardFn(f,animate,i)).join("")+`</div>`:"";
   if(active.length===0&&ended.length===0) html=`<div class="empty-state"><div class="small">找不到符合「${escapeHtml(searchQ)}」的人</div></div>`;
-  if(ended.length){ html+=`<div class="insights"><div class="eyebrow ended">已經不是好友了</div></div><div class="${cls}">`+ended.map((f,i)=>cardFn(f,false,i,rng[0],rng[1])).join("")+`</div>`; }
+  if(ended.length){ html+=`<div class="insights"><div class="eyebrow ended">已經不是好友了</div></div><div class="${cls}">`+ended.map((f,i)=>cardFn(f,false,i)).join("")+`</div>`; }
   box.className=""; box.innerHTML=html;
   bindPress(); bindFriendGestures();
 }
@@ -644,7 +637,7 @@ function renderDetail(id,animateScore){
 function setSpan(d){ spanDays=d; renderDetail(currentDetailId,false); }
 
 function chartSVG(f){
-  let data=bucketSeries(seriesInSpan(f),DB.settings.chartUnit); if(data.length<2) data=seriesInSpan(f);
+  let data=seriesInSpan(f);
   if(data.length<2) data=[{value:f.initial},{value:currentScore(f)}];
   const vals=data.map(p=>p.value); let vMin=Math.min(...vals),vMax=Math.max(...vals);
   if(vMin===vMax){vMin-=5;vMax+=5;} const pd=(vMax-vMin)*0.18; vMin-=pd; vMax+=pd;
@@ -698,13 +691,11 @@ function openSettings(){ syncSettingsUI(); openSheet("settingsSheet"); }
 function syncSettingsUI(){ $("verText").textContent=VERSION;
   document.querySelectorAll("#themeSeg button").forEach(b=>b.classList.toggle("on",b.dataset.themeOpt===DB.settings.theme));
   document.querySelectorAll("#layoutSeg button").forEach(b=>b.classList.toggle("on",b.dataset.layout===DB.settings.layout));
-  document.querySelectorAll("#chartUnitSeg button").forEach(b=>b.classList.toggle("on",b.dataset.unit===DB.settings.chartUnit));
   $("swCooldown").classList.toggle("on",!!DB.settings.notifyCooldown);
   $("swDaily").classList.toggle("on",!!DB.settings.notifyDaily);
   $("swAskDel").classList.toggle("on",DB.settings.askBeforeDeleteLog!==false);
 }
 function setLayout(l){ DB.settings.layout=l; save(DB); syncSettingsUI(); haptic(); renderHome(true); }
-function setChartUnit(u){ DB.settings.chartUnit=u; save(DB); syncSettingsUI(); haptic(); if(currentDetailId) renderDetail(currentDetailId,false); else renderHome(false); }
 function toggleNotify(kind){ const key=kind==="cooldown"?"notifyCooldown":"notifyDaily"; const next=!DB.settings[key];
   if(next&&"Notification"in window&&Notification.permission==="default"){ try{Notification.requestPermission();}catch(e){} }
   DB.settings[key]=next; save(DB); syncSettingsUI(); haptic(); }
