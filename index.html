@@ -136,6 +136,10 @@ html[data-theme="light"] .scrim{background:rgba(60,40,20,.28);}
 .scrim.on{opacity:1;pointer-events:auto;}
 .sheet{position:fixed;left:0;right:0;bottom:0;z-index:50;background:var(--canvas-2);border-top:1px solid var(--hair);border-radius:26px 26px 0 0;transform:translateY(102%);transition:transform .42s var(--ease);max-height:calc(100dvh - env(safe-area-inset-top) - 16px);overflow-y:auto;overscroll-behavior:contain;padding:0 22px calc(26px + env(safe-area-inset-bottom));box-shadow:0 -20px 60px rgba(0,0,0,.5);}
 .sheet.on{transform:translateY(0);}
+.sheet.drawer{left:0;right:0;top:0;bottom:0;width:100%;height:100dvh;max-height:none;border-radius:0;border-top:none;transform:translateX(100%);}
+.sheet.drawer.on{transform:translateX(0);}
+.sheet.drawer .sheet-hd{padding-top:calc(env(safe-area-inset-top) + 11px);}
+.sheet.drawer .sheet-x{top:calc(env(safe-area-inset-top) + 9px);}
 .grabber{display:none;}  /* 由 .sheet-hd 內的把手取代 */
 .sheet-hd{position:sticky;top:0;z-index:6;background:var(--canvas-2);margin:0 -22px 12px;padding:11px 22px 11px;display:flex;align-items:center;justify-content:center;}
 .sheet-hd::after{content:"";position:absolute;left:0;right:0;top:100%;height:14px;background:linear-gradient(var(--canvas-2),transparent);pointer-events:none;}
@@ -350,7 +354,7 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
   <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">取消</button></div>
 </div>
 
-<div class="sheet" id="settingsSheet">
+<div class="sheet drawer" id="settingsSheet">
   <div class="grabber"></div>
   <div class="stagger">
     <h2>設定</h2>
@@ -370,7 +374,7 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
     <div class="field-label">關於</div>
     <div class="set-group">
       <div class="set-row" data-press onclick="openChangelog()"><div class="k">更新紀錄</div><div class="set-val">查看 ›</div></div>
-      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.13</div></div>
+      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.14</div></div>
     </div>
     <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
   </div>
@@ -409,10 +413,15 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
 
 <script>
 "use strict";
-const VERSION="1.13";
+const VERSION="1.14";
 const KEY="friendship-meter-v1";
 /* 更新紀錄:每次改版就在最前面加一筆(v 由大到小,設定頁「更新紀錄」會照這個順序顯示) */
 const CHANGELOG=[
+  {v:"1.14",date:"2026-08-05",items:[
+    "設定改成從右側滑入的整頁抽屜:往左滑打開(從右邊進來)、往右滑或往下滑關閉,方向跟著手指走",
+    "退出設定四種都行:✕、往右滑、往下滑、最底的關閉鈕",
+    "修正上一版往右滑會卡住、退不出設定的問題",
+  ]},
   {v:"1.13",date:"2026-08-05",items:[
     "關閉鈕(✕)下移,不再跟瀏海/電池衝突",
     "手勢:面板往右滑就能關;首頁往左滑打開設定(右上角按鈕仍可用)",
@@ -803,17 +812,21 @@ function addSheetHeaders(){ document.querySelectorAll(".sheet").forEach(s=>{ if(
   hd.appendChild(g); hd.appendChild(x); s.insertBefore(hd,s.firstChild);
 }); }
 
-/* 面板往右滑即可關閉(不用捲到底找按鈕) */
+/* 面板往右滑或(捲到頂時)往下滑都能關閉;離場方向跟著手勢走 */
 function bindSheetDrag(){ document.querySelectorAll(".sheet").forEach(sheet=>{ if(sheet._sd)return; sheet._sd=true;
-  let sx=0,sy=0,dx=0,active=false,decided=false,horiz=false;
+  let sx=0,sy=0,dx=0,dy=0,active=false,decided=false,dir="";
   sheet.addEventListener("pointerdown",e=>{ if(e.target.closest("input,textarea,.thermo-face,.seg,.pillseg,.signseg"))return;
-    sx=e.clientX;sy=e.clientY;dx=0;active=true;decided=false;horiz=false; });
+    sx=e.clientX;sy=e.clientY;dx=0;dy=0;active=true;decided=false;dir=""; });
   sheet.addEventListener("pointermove",e=>{ if(!active)return; const mx=e.clientX-sx,my=e.clientY-sy;
-    if(!decided){ if(Math.abs(mx)<8&&Math.abs(my)<8)return; decided=true; horiz=(mx>0&&Math.abs(mx)>Math.abs(my));
-      if(!horiz){ active=false; return; } sheet.style.transition="none"; try{sheet.setPointerCapture(e.pointerId);}catch(_){} }
-    dx=Math.max(0,e.clientX-sx); e.preventDefault(); sheet.style.transform=`translateX(${dx}px)`; },{passive:false});
-  const end=()=>{ if(!active||!horiz){ active=false; return; } active=false; sheet.style.transition="transform .3s var(--ease)";
-    if(dx>80){ sheet.style.transform="translateX(115%)"; closeSheet(); } else { sheet.style.transform="translateX(0)"; }
+    if(!decided){ if(Math.abs(mx)<8&&Math.abs(my)<8)return; decided=true;
+      if(Math.abs(mx)>Math.abs(my)){ if(mx>0)dir="x"; } else if(my>0&&sheet.scrollTop<=0){ dir="y"; }
+      if(!dir){ active=false; return; } sheet.style.transition="none"; try{sheet.setPointerCapture(e.pointerId);}catch(_){} }
+    if(dir==="x"){ dx=Math.max(0,e.clientX-sx); sheet.style.transform=`translateX(${dx}px)`; }
+    else { dy=Math.max(0,e.clientY-sy); sheet.style.transform=`translateY(${dy}px)`; }
+    e.preventDefault(); },{passive:false});
+  const end=()=>{ if(!active||!dir){ active=false; return; } active=false; sheet.style.transition="transform .3s var(--ease)";
+    const go=(dir==="x"?dx>75:dy>90);
+    if(go){ sheet.style.transform=(dir==="x"?"translateX(115%)":"translateY(112%)"); closeSheet(); } else { sheet.style.transform=(dir==="x"?"translateX(0)":"translateY(0)"); }
     setTimeout(()=>{ sheet.style.transform=""; sheet.style.transition=""; },320); };
   sheet.addEventListener("pointerup",end); sheet.addEventListener("pointercancel",end);
 }); }
