@@ -134,13 +134,13 @@ html[data-theme="light"] .reminder{border-color:#e9c98a;background:#fdf3df;}
 .scrim{position:fixed;inset:0;z-index:40;background:rgba(8,5,2,.55);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .28s var(--ease);}
 html[data-theme="light"] .scrim{background:rgba(60,40,20,.28);}
 .scrim.on{opacity:1;pointer-events:auto;}
-.sheet{position:fixed;left:0;right:0;bottom:0;z-index:50;background:var(--canvas-2);border-top:1px solid var(--hair);border-radius:26px 26px 0 0;transform:translateY(102%);transition:transform .42s var(--ease);max-height:93vh;overflow-y:auto;overscroll-behavior:contain;padding:0 22px calc(26px + env(safe-area-inset-bottom));box-shadow:0 -20px 60px rgba(0,0,0,.5);}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:50;background:var(--canvas-2);border-top:1px solid var(--hair);border-radius:26px 26px 0 0;transform:translateY(102%);transition:transform .42s var(--ease);max-height:calc(100dvh - env(safe-area-inset-top) - 16px);overflow-y:auto;overscroll-behavior:contain;padding:0 22px calc(26px + env(safe-area-inset-bottom));box-shadow:0 -20px 60px rgba(0,0,0,.5);}
 .sheet.on{transform:translateY(0);}
 .grabber{display:none;}  /* 由 .sheet-hd 內的把手取代 */
 .sheet-hd{position:sticky;top:0;z-index:6;background:var(--canvas-2);margin:0 -22px 12px;padding:11px 22px 11px;display:flex;align-items:center;justify-content:center;}
 .sheet-hd::after{content:"";position:absolute;left:0;right:0;top:100%;height:14px;background:linear-gradient(var(--canvas-2),transparent);pointer-events:none;}
 .sheet-hd .grab2{width:40px;height:5px;border-radius:3px;background:var(--hair);}
-.sheet-x{position:absolute;right:14px;top:7px;width:33px;height:33px;border-radius:50%;background:var(--surface-hi);border:1px solid var(--hair);color:var(--ink-2);font-family:var(--sans);font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center;transition:transform .15s var(--spring),background .2s;}
+.sheet-x{position:absolute;right:13px;top:9px;width:33px;height:33px;border-radius:50%;background:var(--surface-hi);border:1px solid var(--hair);color:var(--ink-2);font-family:var(--sans);font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center;transition:transform .15s var(--spring),background .2s;}
 .sheet-x:active{background:var(--hair);transform:scale(.9);}
 .sheet h2{font-family:var(--disp);font-size:22px;margin:0 0 4px;font-weight:700;letter-spacing:-0.02em;}
 .sheet.on .stagger>*{animation:sIn .5s var(--ease) both;}
@@ -272,7 +272,7 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
       </defs><circle cx="16" cy="16" r="15" fill="url(#emberGlow)"/><circle cx="16" cy="15.4" r="9.4" fill="url(#ember)"/><ellipse cx="12.6" cy="12" rx="2.6" ry="1.8" fill="#fff7e6" opacity="0.5"/></svg>
       <span class="wm"><h1>餘溫</h1><span class="en">ember</span></span>
     </div><div class="count" id="countLine">0 段關係</div></div>
-    <button class="gear" data-press onclick="openSettings()" aria-label="設定"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg></button>
+    <button class="gear" data-press onclick="openSettings()" aria-label="設定"><svg viewBox="0 0 24 24"><line x1="4" y1="8.5" x2="20" y2="8.5"/><line x1="4" y1="15.5" x2="20" y2="15.5"/><circle cx="10" cy="8.5" r="2.5" fill="var(--surface)"/><circle cx="15" cy="15.5" r="2.5" fill="var(--surface)"/></svg></button>
   </div>
   <div class="searchwrap"><input class="search" id="searchInput" placeholder="搜尋姓名或標籤" autocomplete="off"></div>
   <div id="reminderBar" class="reminder" style="display:none;"><div class="r-txt" id="reminderTxt"></div><button class="r-x" onclick="dismissReminder()">✕</button></div>
@@ -370,7 +370,7 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
     <div class="field-label">關於</div>
     <div class="set-group">
       <div class="set-row" data-press onclick="openChangelog()"><div class="k">更新紀錄</div><div class="set-val">查看 ›</div></div>
-      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.12</div></div>
+      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.13</div></div>
     </div>
     <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
   </div>
@@ -409,10 +409,16 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
 
 <script>
 "use strict";
-const VERSION="1.12";
+const VERSION="1.13";
 const KEY="friendship-meter-v1";
 /* 更新紀錄:每次改版就在最前面加一筆(v 由大到小,設定頁「更新紀錄」會照這個順序顯示) */
 const CHANGELOG=[
+  {v:"1.13",date:"2026-08-05",items:[
+    "關閉鈕(✕)下移,不再跟瀏海/電池衝突",
+    "手勢:面板往右滑就能關;首頁往左滑打開設定(右上角按鈕仍可用)",
+    "設定按鈕換成新的圖示",
+    "觸覺回饋鋪滿:每個按鈕、開關、選單、溫度計、返回都會震(iOS 需 17.4+、系統觸覺開啟、非低耗電模式才感覺得到)",
+  ]},
   {v:"1.12",date:"2026-08-05",items:[
     "每個面板頂端新增固定的關閉鈕(✕),不用再捲到最底才能退出",
     "更多觸覺回饋:切換類別、時間範圍、點好友卡片、返回、關閉都會有回饋",
@@ -474,7 +480,11 @@ const daysSince=ts=>Math.floor((Date.now()-ts)/86400000);
 function isCooling(f){ if(f.status!=="normal") return false; return daysSince(lastActivityTs(f))>f.cooldownDays; }
 function fmtDate(ts){const d=new Date(ts),p=n=>String(n).padStart(2,"0");return `${d.getFullYear()}/${p(d.getMonth()+1)}/${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-function haptic(){ if(navigator.vibrate) navigator.vibrate(14); try{$("hapticSwitch").checked=!$("hapticSwitch").checked;}catch(e){} }
+let _hapT=0;
+function haptic(){ const n=Date.now(); if(n-_hapT<35) return; _hapT=n;   /* 去抖:35ms 內只震一次,避免同一次點擊被重複觸發 */
+  try{ if(navigator.vibrate) navigator.vibrate(12); }catch(e){}
+  try{ const s=$("hapticSwitch"); if(s) s.checked=!s.checked; }catch(e){}   /* iOS 靠切換隱藏 switch 觸發系統觸覺(需 iOS 17.4+、系統觸覺開啟、非低耗電模式) */
+}
 let toastTimer; function toast(m){const t=$("toast");t.textContent=m;t.classList.add("on");clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove("on"),1700);}
 function rollNumber(el,from,to,ms){ if(from===to){el.textContent=to;return;} const st=performance.now();
   (function step(now){const p=Math.min(1,(now-st)/ms),e=1-Math.pow(1-p,3);el.textContent=Math.round(from+(to-from)*e);if(p<1)requestAnimationFrame(step);else el.textContent=to;})(performance.now()); }
@@ -793,17 +803,33 @@ function addSheetHeaders(){ document.querySelectorAll(".sheet").forEach(s=>{ if(
   hd.appendChild(g); hd.appendChild(x); s.insertBefore(hd,s.firstChild);
 }); }
 
-/* 從面板頂端往下滑即可關閉(不用捲到底找按鈕) */
+/* 面板往右滑即可關閉(不用捲到底找按鈕) */
 function bindSheetDrag(){ document.querySelectorAll(".sheet").forEach(sheet=>{ if(sheet._sd)return; sheet._sd=true;
-  let sy=0,dy=0,drag=false;
-  sheet.addEventListener("pointerdown",e=>{ if(sheet.scrollTop>3)return; const top=sheet.getBoundingClientRect().top;
-    if(e.clientY-top>74)return; if(e.target.closest("button,input,textarea,.seg,.pillseg,.chips,.signseg,.menu-item"))return;
-    sy=e.clientY;dy=0;drag=true; sheet.style.transition="none"; });
-  sheet.addEventListener("pointermove",e=>{ if(!drag)return; dy=Math.max(0,e.clientY-sy); if(dy>0)e.preventDefault(); sheet.style.transform=`translateY(${dy}px)`; },{passive:false});
-  const end=()=>{ if(!drag)return; drag=false; sheet.style.transition="transform .32s var(--ease)";
-    if(dy>90){ sheet.style.transform=""; closeSheet(); } else { sheet.style.transform="translateY(0)"; } };
+  let sx=0,sy=0,dx=0,active=false,decided=false,horiz=false;
+  sheet.addEventListener("pointerdown",e=>{ if(e.target.closest("input,textarea,.thermo-face,.seg,.pillseg,.signseg"))return;
+    sx=e.clientX;sy=e.clientY;dx=0;active=true;decided=false;horiz=false; });
+  sheet.addEventListener("pointermove",e=>{ if(!active)return; const mx=e.clientX-sx,my=e.clientY-sy;
+    if(!decided){ if(Math.abs(mx)<8&&Math.abs(my)<8)return; decided=true; horiz=(mx>0&&Math.abs(mx)>Math.abs(my));
+      if(!horiz){ active=false; return; } sheet.style.transition="none"; try{sheet.setPointerCapture(e.pointerId);}catch(_){} }
+    dx=Math.max(0,e.clientX-sx); e.preventDefault(); sheet.style.transform=`translateX(${dx}px)`; },{passive:false});
+  const end=()=>{ if(!active||!horiz){ active=false; return; } active=false; sheet.style.transition="transform .3s var(--ease)";
+    if(dx>80){ sheet.style.transform="translateX(115%)"; closeSheet(); } else { sheet.style.transform="translateX(0)"; }
+    setTimeout(()=>{ sheet.style.transform=""; sheet.style.transition=""; },320); };
   sheet.addEventListener("pointerup",end); sheet.addEventListener("pointercancel",end);
 }); }
+
+/* 首頁往左滑 → 打開設定(也可以點右上角設定鈕) */
+function bindHomeSwipe(){ const hv=$("homeView"); if(!hv||hv._hs)return; hv._hs=true;
+  let sx=0,sy=0,on=false;
+  hv.addEventListener("pointerdown",e=>{ if(openedSheet||currentDetailId||e.target.closest("input,textarea")){on=false;return;} sx=e.clientX;sy=e.clientY;on=true; });
+  hv.addEventListener("pointermove",e=>{ if(!on)return; const mx=e.clientX-sx,my=e.clientY-sy;
+    if(Math.abs(my)>40){ on=false; return; }
+    if(mx<-55&&Math.abs(mx)>Math.abs(my)*1.4){ on=false; openSettings(); } });
+  const off=()=>{on=false;}; hv.addEventListener("pointerup",off); hv.addEventListener("pointercancel",off);
+}
+
+/* 觸覺回饋:任何按鈕、開關、選單項被點到都震一下(去抖會併掉與各處既有 haptic 的重複) */
+document.addEventListener("click",e=>{ if(e.target.closest("button,[data-press],.sw,.c-check")) haptic(); },true);
 
 /* 點畫面任何非輸入處 → 收起鍵盤(純數字鍵盤沒有完成鍵) */
 document.addEventListener("pointerdown",e=>{ const a=document.activeElement;
@@ -813,7 +839,7 @@ document.addEventListener("pointerdown",e=>{ const a=document.activeElement;
 /* 自動更新:註冊 service worker(讓主畫面版每次都抓最新) */
 if("serviceWorker" in navigator){ navigator.serviceWorker.register("sw.js").catch(()=>{}); }
 
-applyTheme(); renderHome(true); addSheetHeaders(); bindPress(); bindSheetDrag(); runReminders();
+applyTheme(); renderHome(true); addSheetHeaders(); bindPress(); bindSheetDrag(); bindHomeSwipe(); runReminders();
 </script>
 </body>
 </html>
