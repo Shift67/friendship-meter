@@ -178,6 +178,8 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
 .chip{border:1px solid var(--hair);background:var(--surface);color:var(--ink-2);padding:9px 15px;border-radius:22px;font-size:14px;transition:transform .18s var(--spring),background .2s,color .2s;}
 .chip.on{background:var(--gold);color:#231604;border-color:var(--gold);font-weight:600;}
 .chip-add{color:var(--ink-3);font-weight:700;}
+.presets{margin-bottom:10px;}
+.presets .chip{padding:7px 12px;font-size:13px;}
 .cat-input{border:1px dashed var(--gold);background:var(--surface);color:var(--ink);border-radius:22px;padding:9px 14px;font-size:14px;width:118px;outline:none;}
 .cat-del{width:26px;height:26px;border-radius:50%;background:var(--surface-hi);border:1px solid var(--hair);color:var(--ink-3);font-size:12px;flex:0 0 auto;}
 .cat-add-inp{flex:1;padding:9px 12px !important;}
@@ -357,6 +359,7 @@ body.selecting .list .friend:not(.ended)::after{top:50%;left:16px;right:auto;tra
       <button class="quick minus" data-press onclick="quickScore(-5)"><div class="q-val">−5</div><div class="q-cap">降溫</div></button>
     </div>
     <div class="field-label">原因 / 小故事(可留白)</div>
+    <div class="chips presets" id="qPresets"></div>
     <textarea class="field" id="qNote" placeholder="今天為什麼加分或扣分?不寫也行"></textarea>
     <div class="hint">先寫好備註,再點上面的按鈕,就會一起記下來。</div>
   </div>
@@ -371,6 +374,7 @@ body.selecting .list .friend:not(.ended)::after{top:50%;left:16px;right:auto;tra
       </div></div>
     </div>
     <div class="field-label">原因 / 小故事(可留白)</div>
+    <div class="chips presets" id="cPresets"></div>
     <textarea class="field" id="cNote" placeholder="今天發生了什麼?"></textarea>
     <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">取消</button><button class="btn primary" data-press id="customSave" onclick="customScore()">記錄</button></div>
   </div>
@@ -411,12 +415,17 @@ body.selecting .list .friend:not(.ended)::after{top:50%;left:16px;right:auto;tra
       <div class="set-row tap" onclick="toggleNotify('daily')"><div style="flex:1;"><div class="k">每日結算提醒</div><div class="sub">每天第一次打開 app 時,提醒你今天還沒結算</div></div><div class="sw" id="swDaily"></div></div>
     </div>
     <div class="hint" style="margin:8px 2px 0;">網頁 app 在關閉時無法主動推播,以上提醒在你打開 app 當下顯示。</div>
+    <div class="field-label">餘燼</div>
+    <div class="set-group">
+      <div class="set-row tap" onclick="toggleEmberDecay()"><div style="flex:1;"><div class="k">自然降溫</div><div class="sub">超過冷卻天數還沒互動,好感度會每天慢慢降(沒顧的餘燼會涼)。關掉就恢復,不會動到你的紀錄</div></div><div class="sw" id="swDecay"></div></div>
+      <div class="set-row" id="decayRateRow"><div style="flex:1;"><div class="k">降溫速度</div><div class="sub">過冷卻後每天大約降多少</div></div><div class="pillseg" id="decayRateSeg"><button data-rate="0.5" onclick="setDecayRate(0.5)">慢</button><button data-rate="1" onclick="setDecayRate(1)">中</button><button data-rate="2" onclick="setDecayRate(2)">快</button></div></div>
+    </div>
     <div class="field-label">刪除</div>
     <div class="set-group"><div class="set-row tap" onclick="toggleAskDel()"><div style="flex:1;"><div class="k">刪紀錄前先詢問</div><div class="sub">關掉後,長按日誌會直接刪除</div></div><div class="sw" id="swAskDel"></div></div></div>
     <div class="field-label">關於</div>
     <div class="set-group">
       <div class="set-row" data-press onclick="openChangelog()"><div class="k">更新紀錄</div><div class="set-val">查看 ›</div></div>
-      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.20</div></div>
+      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.21</div></div>
     </div>
     <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
   </div>
@@ -455,10 +464,14 @@ body.selecting .list .friend:not(.ended)::after{top:50%;left:16px;right:auto;tra
 
 <script>
 "use strict";
-const VERSION="1.20";
+const VERSION="1.21";
 const KEY="friendship-meter-v1";
 /* 更新紀錄:每次改版就在最前面加一筆(v 由大到小,設定頁「更新紀錄」會照這個順序顯示) */
 const CHANGELOG=[
+  {v:"1.21",date:"2026-08-06",items:[
+    "第一波新功能。打分時多了「常用原因」標籤(一起吃飯、吵架、久沒聯絡…),點一下就帶進備註,再點拿掉",
+    "設定新增「餘燼自然降溫」(預設關):打開後,超過冷卻天數還沒互動,好感度會每天慢慢降,可選慢/中/快;關掉就恢復,不會動到你的紀錄",
+  ]},
   {v:"1.20",date:"2026-08-06",items:[
     "打開或切回 app 時會自動偵測新版並重載,以後更新不用再手動關掉重開",
   ]},
@@ -524,6 +537,7 @@ const CHANGELOG=[
   {v:"1.1",date:"2026-08-04",items:["初期版本:基本的好友記錄與打分"]},
 ];
 const DEFAULT_CATEGORIES=["摯友","同事","同學","家人","合作夥伴"];
+const PRESETS=["一起吃飯","出去玩","聊很久","幫了忙","報喜","關心我","吵架","冷戰","久沒聯絡","誤會"];
 /* 好感度 → 連續色譜:紅(高)→ 黃(中)→ 藍(低),每個分數都有自己的顏色 */
 function _mix(a,b,t){return [a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,a[2]+(b[2]-a[2])*t];}
 function _hex(c){return "#"+c.map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,"0")).join("");}
@@ -546,7 +560,7 @@ function nameForScore(s){
   return "形同陌路";
 }
 function tierOf(s){ return {title:nameForScore(s), color:colorForScore(s), hot:s>=100}; }
-function defaultSettings(){ return {theme:"system",notifyCooldown:false,notifyDaily:false,askBeforeDeleteLog:true,layout:"list",categories:[...DEFAULT_CATEGORIES],_lastDaily:null}; }
+function defaultSettings(){ return {theme:"system",notifyCooldown:false,notifyDaily:false,askBeforeDeleteLog:true,layout:"list",categories:[...DEFAULT_CATEGORIES],emberDecay:false,emberDecayRate:1,_lastDaily:null}; }
 function load(){ try{ const r=localStorage.getItem(KEY); if(!r) return {v:1,friends:[],settings:defaultSettings()};
     const d=JSON.parse(r); if(!d.friends) d.friends=[]; d.settings=Object.assign(defaultSettings(),d.settings||{});
     if(!Array.isArray(d.settings.categories)||!d.settings.categories.length) d.settings.categories=[...DEFAULT_CATEGORIES];
@@ -557,7 +571,13 @@ let DB=load();
 
 const $=id=>document.getElementById(id);
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
-const currentScore=f=>f.initial+f.logs.reduce((s,l)=>s+l.delta,0);
+const rawScore=f=>f.initial+f.logs.reduce((s,l)=>s+l.delta,0);
+const currentScore=f=>rawScore(f)-decayOf(f);
+/* 餘燼自然降溫:超過冷卻天數還沒互動,分數每天慢慢降(可在設定開關、選速度)。非破壞:只是即時算出來的減項,關掉就沒了,最多降到 0 */
+function decayOf(f){ if(!DB.settings.emberDecay||f.status!=="normal")return 0;
+  const over=daysSince(lastActivityTs(f))-f.cooldownDays; if(over<=0)return 0;
+  const raw=rawScore(f); if(raw<=0)return 0;
+  return Math.min(Math.floor(over*(DB.settings.emberDecayRate||1)),raw); }
 const lastActivityTs=f=>f.logs.length?Math.max(...f.logs.map(l=>l.ts)):f.createdAt;
 const daysSince=ts=>Math.floor((Date.now()-ts)/86400000);
 function isCooling(f){ if(f.status!=="normal") return false; return daysSince(lastActivityTs(f))>f.cooldownDays; }
@@ -580,7 +600,7 @@ mql.addEventListener("change",()=>{ if(DB.settings.theme==="system") applyTheme(
 function setTheme(t){ DB.settings.theme=t; save(DB); applyTheme(); syncSettingsUI(); haptic(); }
 
 /* 序列(圖表共用):每一筆紀錄一個點,X 軸筆數等距 */
-function seriesOf(f){ const pts=[{ts:f.createdAt,value:f.initial}]; let run=f.initial; [...f.logs].sort((a,b)=>a.ts-b.ts).forEach(l=>{run+=l.delta;pts.push({ts:l.ts,value:run});}); return pts; }
+function seriesOf(f){ const pts=[{ts:f.createdAt,value:f.initial}]; let run=f.initial; [...f.logs].sort((a,b)=>a.ts-b.ts).forEach(l=>{run+=l.delta;pts.push({ts:l.ts,value:run});}); const d=decayOf(f); if(d>0)pts.push({ts:Date.now(),value:run-d}); return pts; }
 
 /* 迷你折線圖(格狀用),等距、無標籤 */
 function miniChartSVG(f){
@@ -686,7 +706,7 @@ function updateSelectBar(){ const tb=$("homeTabbar"); if(selectMode){ const n=se
     tb.innerHTML=`<button class="btn small" data-press onclick="exitSelectMode()">取消</button><button class="btn primary" data-press ${n?'':'disabled'} onclick="openBatchScore()">批次打分${n?` · ${n}`:''}</button>`;
   } else { tb.innerHTML=`<button class="btn small" data-press onclick="openData()">資料</button><button class="btn primary" data-press onclick="openAddFriend()">＋ 新增好友</button>`; }
   bindPress(); }
-function openBatchScore(){ if(!selectedIds.size)return; batchIds=[...selectedIds]; $("scoreTitle").textContent=`批次打分 · ${batchIds.length} 人`; $("cNote").value="";$("qNote").value=""; thermoValue=0; openSheet("scoreSheet"); switchMode("custom"); }
+function openBatchScore(){ if(!selectedIds.size)return; batchIds=[...selectedIds]; $("scoreTitle").textContent=`批次打分 · ${batchIds.length} 人`; $("cNote").value="";$("qNote").value=""; renderPresets("q");renderPresets("c"); thermoValue=0; openSheet("scoreSheet"); switchMode("custom"); }
 
 /* 長按選單 */
 function openContext(id){
@@ -748,7 +768,14 @@ function saveFriend(){ const name=$("fName").value.trim(); if(!name){toast("先�
 
 /* ============ 打分 ============ */
 let scoringId=null;
-function openScore(id){ const f=DB.friends.find(x=>x.id===id); if(!f||f.status==="ended")return; batchIds=null; scoringId=id; $("scoreTitle").textContent=`${f.name} · 今日結算`; $("cNote").value="";$("qNote").value=""; thermoValue=0; openSheet("scoreSheet"); switchMode("custom"); }
+function openScore(id){ const f=DB.friends.find(x=>x.id===id); if(!f||f.status==="ended")return; batchIds=null; scoringId=id; $("scoreTitle").textContent=`${f.name} · 今日結算`; $("cNote").value="";$("qNote").value=""; renderPresets("q");renderPresets("c"); thermoValue=0; openSheet("scoreSheet"); switchMode("custom"); }
+/* 常用原因範本:點一下把標籤加進備註,再點一下拿掉 */
+function noteEl(which){ return which==="q"?$("qNote"):$("cNote"); }
+function renderPresets(which){ const box=$(which==="q"?"qPresets":"cPresets"); if(!box)return; const tags=noteEl(which).value.split("、").map(s=>s.trim());
+  box.innerHTML=PRESETS.map(t=>`<button class="chip ${tags.indexOf(t)>=0?'on':''}" data-press data-preset="${escapeHtml(t)}">${escapeHtml(t)}</button>`).join("");
+  box.querySelectorAll("[data-preset]").forEach(b=>b.onclick=()=>togglePreset(which,b.dataset.preset)); bindPress(); }
+function togglePreset(which,tag){ const el=noteEl(which); const tags=el.value.split("、").map(s=>s.trim()).filter(Boolean); const i=tags.indexOf(tag);
+  if(i>=0)tags.splice(i,1); else tags.push(tag); el.value=tags.join("、"); haptic(); renderPresets(which); }
 function segMove(c){ if(!c)return; const on=c.querySelector("button.on"); if(!on)return; let ind=c.querySelector(":scope > .seg-ind");
   if(!ind){ ind=document.createElement("div"); ind.className="seg-ind"; ind.style.transition="none"; c.insertBefore(ind,c.firstChild); ind.style.left=on.offsetLeft+"px"; ind.style.width=on.offsetWidth+"px"; void ind.offsetWidth; ind.style.transition=""; return; }
   ind.style.left=on.offsetLeft+"px"; ind.style.width=on.offsetWidth+"px"; }
@@ -823,8 +850,9 @@ function renderDetail(id,animateScore){
     return `<div class="log-item" data-lid="${l.id}"><div class="log-delta ${cls}">${sign}${l.delta}</div><div class="log-body"><div class="log-date">${fmtDate(l.ts)}</div><div class="log-note ${l.note?'':'none'}">${l.note?escapeHtml(l.note):"（無備註）"}</div><div class="log-after">→ ${upto}</div></div></div>`;
   }).join("")||`<div class="empty-state" style="padding:30px 0"><div class="small">還沒有紀錄,點「今日結算」開始</div></div>`;
   const statusNote=f.status==="dormant"?`<div class="d-sub" style="color:var(--warm)">已設為「不熟了」,不再提醒紀錄</div>`:(ended?`<div class="d-sub" style="color:var(--ink-3)">已結束的好友,分數以 0 呈現;可長按卡片恢復</div>`:"");
+  const dec=(!ended)?decayOf(f):0; const decayNote=dec>0?`<div class="d-sub" style="color:var(--cool)">餘燼降溫中,已涼 −${dec}(過冷卻 ${daysSince(lastActivityTs(f))-f.cooldownDays} 天)</div>`:"";
   $("detailBody").innerHTML=`
-    <div class="detail-head" style="--c:${dColor}"><div><div class="d-name">${escapeHtml(f.name)}</div><div class="d-tier" style="color:${dColor}">${dTitle}${f.category?" · "+escapeHtml(f.category):""}</div><div class="d-sub">冷卻設定 ${f.cooldownDays} 天${cool}</div>${statusNote}</div><div class="d-score" id="dScore" style="color:${dColor}">${dScore}</div></div>
+    <div class="detail-head" style="--c:${dColor}"><div><div class="d-name">${escapeHtml(f.name)}</div><div class="d-tier" style="color:${dColor}">${dTitle}${f.category?" · "+escapeHtml(f.category):""}</div><div class="d-sub">冷卻設定 ${f.cooldownDays} 天${cool}</div>${statusNote}${decayNote}</div><div class="d-score" id="dScore" style="color:${dColor}">${dScore}</div></div>
     <div class="seg" style="margin-top:14px">${spanBtns}</div>
     <div class="chart-wrap">${chartSVG(f)}</div>
     ${ended?"":`<div style="margin-top:14px;"><button class="btn primary" data-press style="width:100%" onclick="openScore('${f.id}')">今日結算</button></div>`}
@@ -901,7 +929,13 @@ function syncSettingsUI(){ $("verText").textContent=VERSION;
   $("swCooldown").classList.toggle("on",!!DB.settings.notifyCooldown);
   $("swDaily").classList.toggle("on",!!DB.settings.notifyDaily);
   $("swAskDel").classList.toggle("on",DB.settings.askBeforeDeleteLog!==false);
+  $("swDecay").classList.toggle("on",!!DB.settings.emberDecay);
+  $("decayRateRow").style.display=DB.settings.emberDecay?"flex":"none";
+  document.querySelectorAll("#decayRateSeg button").forEach(b=>b.classList.toggle("on",+b.dataset.rate===(DB.settings.emberDecayRate||1)));
+  segMove($("decayRateSeg"));
 }
+function toggleEmberDecay(){ DB.settings.emberDecay=!DB.settings.emberDecay; save(DB); syncSettingsUI(); haptic(); if(currentDetailId)renderDetail(currentDetailId,false); else renderHome(false); }
+function setDecayRate(r){ DB.settings.emberDecayRate=r; save(DB); syncSettingsUI(); haptic(); if(currentDetailId)renderDetail(currentDetailId,false); else renderHome(false); }
 function setLayout(l){ DB.settings.layout=l; save(DB); syncSettingsUI(); haptic(); renderHome(true); }
 function toggleNotify(kind){ const key=kind==="cooldown"?"notifyCooldown":"notifyDaily"; const next=!DB.settings[key];
   if(next&&"Notification"in window&&Notification.permission==="default"){ try{Notification.requestPermission();}catch(e){} }
