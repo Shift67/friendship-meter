@@ -416,7 +416,7 @@ body.selecting .list .friend:not(.ended)::after{top:50%;left:16px;right:auto;tra
     <div class="field-label">關於</div>
     <div class="set-group">
       <div class="set-row" data-press onclick="openChangelog()"><div class="k">更新紀錄</div><div class="set-val">查看 ›</div></div>
-      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.19</div></div>
+      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.20</div></div>
     </div>
     <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
   </div>
@@ -455,10 +455,13 @@ body.selecting .list .friend:not(.ended)::after{top:50%;left:16px;right:auto;tra
 
 <script>
 "use strict";
-const VERSION="1.19";
+const VERSION="1.20";
 const KEY="friendship-meter-v1";
 /* 更新紀錄:每次改版就在最前面加一筆(v 由大到小,設定頁「更新紀錄」會照這個順序顯示) */
 const CHANGELOG=[
+  {v:"1.20",date:"2026-08-06",items:[
+    "打開或切回 app 時會自動偵測新版並重載,以後更新不用再手動關掉重開",
+  ]},
   {v:"1.19",date:"2026-08-06",items:[
     "關係類別可以自訂:設定裡能新增/刪除,新增好友時也能直接加(刪除只是拿掉選項,好友身上的標籤不變)",
     "多選批次打分:右上角「多選」進入,點選多位好友,一次記同一筆分數改動",
@@ -998,6 +1001,14 @@ document.addEventListener("pointerdown",e=>{ const a=document.activeElement;
 
 /* 自動更新:註冊 service worker(讓主畫面版每次都抓最新) */
 if("serviceWorker" in navigator){ navigator.serviceWorker.register("sw.js").catch(()=>{}); }
+/* 打開或切回 app 時,偵測線上是否有新版本,有就自動重載
+   (解決 iOS 主畫面 app 從記憶體回復、看不到更新的老問題) */
+let _upChk=0;
+async function checkForUpdate(){ const now=Date.now(); if(now-_upChk<4000)return; _upChk=now;
+  try{ const r=await fetch("index.html?_="+now,{cache:"no-store"}); if(!r.ok)return; const t=await r.text();
+    const m=t.match(/const VERSION="([^"]+)"/); if(m&&m[1]!==VERSION) location.reload(); }catch(e){} }
+document.addEventListener("visibilitychange",()=>{ if(!document.hidden) checkForUpdate(); });
+window.addEventListener("focus",checkForUpdate);
 
 applyTheme(); renderHome(true); addSheetHeaders(); syncSettingsUI(); bindPress(); bindSheetDrag(); bindHomeSwipe(); bindDetailSwipe(); segMoveAll(); runReminders();
 </script>
