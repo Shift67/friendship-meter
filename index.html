@@ -38,7 +38,8 @@ input,textarea{-webkit-user-select:text;user-select:text;-webkit-touch-callout:d
 body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(120% 80% at 50% -10%,var(--amb1),transparent 60%),radial-gradient(90% 60% at 100% 110%,var(--amb2),transparent 60%);}
 button{font-family:inherit;cursor:pointer;color:inherit;border:none;background:none;}
 input,select,textarea{font-family:inherit;font-size:16px;}
-.view{height:100dvh;overflow-y:auto;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;padding-bottom:calc(104px + env(safe-area-inset-bottom));}
+.view{height:100dvh;overflow-y:auto;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;padding-bottom:calc(104px + env(safe-area-inset-bottom));touch-action:pan-y;}
+#homeView{transition:transform .34s var(--ease);}
 #detailView{position:fixed;inset:0;z-index:32;background:var(--canvas);transform:translateX(100%);transition:transform .34s var(--ease);box-shadow:-16px 0 50px rgba(0,0,0,.4);}
 #detailView.on{transform:translateX(0);}
 .log-item.holding{background:color-mix(in srgb,var(--danger) 12%,transparent);}
@@ -190,9 +191,9 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
 .quick.zero:active{border-color:var(--ink-2);}
 
 /* 溫度計微調 */
-.thermo-area{display:flex;justify-content:center;padding:16px 0 8px;}
+.thermo-area{display:flex;justify-content:center;padding:6px 0 2px;}
 .thermo-bezel{width:120px;padding:7px;border-radius:58px;background:linear-gradient(150deg,#f0f1f3,#b7babf 32%,#dcdee1 52%,#a9acb1 78%,#e9eaec);box-shadow:0 8px 20px rgba(0,0,0,.4),inset 0 1px 2px rgba(255,255,255,.8),inset 0 -2px 4px rgba(0,0,0,.2);}
-.thermo-face{position:relative;height:384px;border-radius:52px;background:linear-gradient(#fdfdf9,#f3f2ea);box-shadow:inset 0 2px 6px rgba(0,0,0,.14);overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none;}
+.thermo-face{position:relative;height:clamp(260px,40vh,384px);border-radius:52px;background:linear-gradient(#fdfdf9,#f3f2ea);box-shadow:inset 0 2px 6px rgba(0,0,0,.14);overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none;}
 .thermo-tube{position:absolute;left:50%;transform:translateX(-50%);top:26px;bottom:48px;width:15px;border-radius:8px;background:linear-gradient(90deg,#dedbd0,#f2f0e8,#dedbd0);box-shadow:inset 0 0 3px rgba(0,0,0,.3);pointer-events:none;}
 .thermo-fill{position:absolute;left:1px;right:1px;bottom:0;border-radius:0 0 7px 7px;background:linear-gradient(90deg,#c81810,#ff5a4a,#c81810);}
 .thermo-tip{position:absolute;left:50%;width:21px;height:21px;border-radius:50%;transform:translateX(-50%);background:radial-gradient(circle at 38% 32%,#ff7d6d,#d21b12);box-shadow:0 1px 3px rgba(0,0,0,.35);}
@@ -211,7 +212,22 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
 .set-val{font-family:var(--mono);font-size:12px;color:var(--ink-3);}
 .pillseg{display:flex;border:1px solid var(--hair);border-radius:10px;overflow:hidden;flex:0 0 auto;}
 .pillseg button{padding:7px 11px;font-size:12px;color:var(--ink-2);}
-.pillseg button.on{background:var(--gold);color:#231604;font-weight:600;}
+.pillseg button.on{color:#231604;font-weight:600;}
+/* 分段控制:滑動指示塊(高亮方塊會滑到你點的那一格) */
+.seg,.pillseg{position:relative;}
+.seg-ind{position:absolute;z-index:0;pointer-events:none;transition:left .3s var(--spring),width .3s var(--spring);}
+.seg>.seg-ind{top:3px;bottom:3px;border-radius:10px;background:var(--surface-hi);box-shadow:0 1px 5px rgba(0,0,0,.22);}
+.pillseg>.seg-ind{top:3px;bottom:3px;border-radius:8px;background:var(--gold);}
+.seg button,.pillseg button{position:relative;z-index:1;background:transparent;}
+.seg button.on,.pillseg button.on{background:transparent;}
+/* 打分面板:記錄鈕固定在底部,不用捲到底 */
+#customPane .sheet-actions{position:sticky;bottom:0;margin:14px -22px 0;padding:12px 22px calc(8px + env(safe-area-inset-bottom));background:linear-gradient(transparent,var(--canvas-2) 32%);}
+/* 快速/微調 切換的淡入 */
+@keyframes paneIn{from{opacity:0;transform:translateY(7px);}to{opacity:1;transform:none;}}
+.pane-in{animation:paneIn .26s var(--ease) both;}
+/* 設定整排可點 */
+.set-row.tap{cursor:pointer;transition:background .18s ease;}
+.set-row.tap:active{background:var(--surface-hi);}
 .sw{width:50px;height:30px;border-radius:16px;background:var(--hair);position:relative;transition:background .25s;flex:0 0 auto;}
 .sw::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:transform .25s var(--spring);box-shadow:0 1px 3px rgba(0,0,0,.3);}
 .sw.on{background:var(--warm);} .sw.on::after{transform:translateX(20px);}
@@ -373,16 +389,16 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
     </div>
     <div class="field-label">提醒</div>
     <div class="set-group">
-      <div class="set-row"><div style="flex:1;"><div class="k">冷卻提醒</div><div class="sub">打開 app 時,提醒你哪些好友已超過各自的冷卻天數沒紀錄</div></div><div class="sw" id="swCooldown" onclick="toggleNotify('cooldown')"></div></div>
-      <div class="set-row"><div style="flex:1;"><div class="k">每日結算提醒</div><div class="sub">每天第一次打開 app 時,提醒你今天還沒結算</div></div><div class="sw" id="swDaily" onclick="toggleNotify('daily')"></div></div>
+      <div class="set-row tap" onclick="toggleNotify('cooldown')"><div style="flex:1;"><div class="k">冷卻提醒</div><div class="sub">打開 app 時,提醒你哪些好友已超過各自的冷卻天數沒紀錄</div></div><div class="sw" id="swCooldown"></div></div>
+      <div class="set-row tap" onclick="toggleNotify('daily')"><div style="flex:1;"><div class="k">每日結算提醒</div><div class="sub">每天第一次打開 app 時,提醒你今天還沒結算</div></div><div class="sw" id="swDaily"></div></div>
     </div>
     <div class="hint" style="margin:8px 2px 0;">網頁 app 在關閉時無法主動推播,以上提醒在你打開 app 當下顯示。</div>
     <div class="field-label">刪除</div>
-    <div class="set-group"><div class="set-row"><div style="flex:1;"><div class="k">刪紀錄前先詢問</div><div class="sub">關掉後,長按日誌會直接刪除</div></div><div class="sw" id="swAskDel" onclick="toggleAskDel()"></div></div></div>
+    <div class="set-group"><div class="set-row tap" onclick="toggleAskDel()"><div style="flex:1;"><div class="k">刪紀錄前先詢問</div><div class="sub">關掉後,長按日誌會直接刪除</div></div><div class="sw" id="swAskDel"></div></div></div>
     <div class="field-label">關於</div>
     <div class="set-group">
       <div class="set-row" data-press onclick="openChangelog()"><div class="k">更新紀錄</div><div class="set-val">查看 ›</div></div>
-      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.16</div></div>
+      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.17</div></div>
     </div>
     <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
   </div>
@@ -421,10 +437,19 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
 
 <script>
 "use strict";
-const VERSION="1.16";
+const VERSION="1.17";
 const KEY="friendship-meter-v1";
 /* 更新紀錄:每次改版就在最前面加一筆(v 由大到小,設定頁「更新紀錄」會照這個順序顯示) */
 const CHANGELOG=[
+  {v:"1.17",date:"2026-08-05",items:[
+    "設定改成跟手開關:往左滑抽屜跟著手指走,滑一半露一半,放開才決定開或關,背後遮罩同步變化",
+    "左右滑與上下滑分得更清楚,較不會誤觸成上下捲動",
+    "打分直接打開溫度計,並重新排版:記錄鈕固定在下方,不用再往下捲",
+    "分段選擇(主題/版面/時間範圍、快速微調)改成高亮方塊滑過去",
+    "設定裡的開關整排都可以點,不用只點那顆小球",
+    "好友頁往右滑返回時,背後首頁有輕微視差",
+    "「很聊得來的朋友」等級改成「很要好的朋友」(關係好不一定代表很聊得來)",
+  ]},
   {v:"1.16",date:"2026-08-05",items:[
     "設定圖示換成乾淨的齒輪",
   ]},
@@ -478,7 +503,7 @@ function colorForScore(s){
   return _hex(_mix(_BLU,_NAVY,Math.min(1,(-s)/50)));               /* 0→-50    藍→深藍 */
 }
 /* 每 5 分一個「⋯⋯的朋友」等級名詞 */
-const _CORE=["冰點的朋友","關係很淡的朋友","幾乎不聯絡的朋友","只剩表面的朋友","漸行漸遠的朋友","快變陌生人","不太熟的朋友","點頭之交","偶爾聊聊的朋友","有點淡的朋友","普通的朋友","還算熟的朋友","處得不錯的朋友","很聊得來的朋友","常黏在一起的朋友","超麻吉的朋友","死黨等級的朋友","掏心掏肺的朋友","無話不談的朋友","滾燙的朋友","命中註定的朋友"];
+const _CORE=["冰點的朋友","關係很淡的朋友","幾乎不聯絡的朋友","只剩表面的朋友","漸行漸遠的朋友","快變陌生人","不太熟的朋友","點頭之交","偶爾聊聊的朋友","有點淡的朋友","普通的朋友","還算熟的朋友","處得不錯的朋友","很要好的朋友","常黏在一起的朋友","超麻吉的朋友","死黨等級的朋友","掏心掏肺的朋友","無話不談的朋友","滾燙的朋友","命中註定的朋友"];
 const _TOP={105:"過命的朋友",110:"生死之交",115:"血濃於水的朋友",120:"一輩子的朋友",125:"靈魂共振的朋友"};
 const _NEG={"-5":"有嫌隙的朋友","-10":"有心結的朋友","-15":"處不來的朋友","-20":"互看不順眼","-25":"關係緊繃","-30":"撕破臉邊緣"};
 function nameForScore(s){
@@ -657,8 +682,15 @@ function saveFriend(){ const name=$("fName").value.trim(); if(!name){toast("先�
 
 /* ============ 打分 ============ */
 let scoringId=null;
-function openScore(id){ const f=DB.friends.find(x=>x.id===id); if(!f||f.status==="ended")return; scoringId=id; $("scoreTitle").textContent=`${f.name} · 今日結算`; switchMode("quick"); $("cNote").value="";$("qNote").value=""; thermoValue=0; openSheet("scoreSheet"); }
-function switchMode(m){ document.querySelectorAll("#modeSeg button").forEach(b=>b.classList.toggle("on",b.dataset.mode===m)); $("quickPane").style.display=m==="quick"?"block":"none"; $("customPane").style.display=m==="custom"?"block":"none"; if(m==="custom"){ bindThermo(); setThermo(thermoValue); } }
+function openScore(id){ const f=DB.friends.find(x=>x.id===id); if(!f||f.status==="ended")return; scoringId=id; $("scoreTitle").textContent=`${f.name} · 今日結算`; $("cNote").value="";$("qNote").value=""; thermoValue=0; openSheet("scoreSheet"); switchMode("custom"); }
+function segMove(c){ if(!c)return; const on=c.querySelector("button.on"); if(!on)return; let ind=c.querySelector(":scope > .seg-ind");
+  if(!ind){ ind=document.createElement("div"); ind.className="seg-ind"; ind.style.transition="none"; c.insertBefore(ind,c.firstChild); ind.style.left=on.offsetLeft+"px"; ind.style.width=on.offsetWidth+"px"; void ind.offsetWidth; ind.style.transition=""; return; }
+  ind.style.left=on.offsetLeft+"px"; ind.style.width=on.offsetWidth+"px"; }
+function segMoveAll(){ document.querySelectorAll(".seg,.pillseg").forEach(segMove); }
+function switchMode(m){ document.querySelectorAll("#modeSeg button").forEach(b=>b.classList.toggle("on",b.dataset.mode===m)); segMove($("modeSeg"));
+  const q=$("quickPane"),c=$("customPane"); q.style.display=m==="quick"?"block":"none"; c.style.display=m==="custom"?"block":"none";
+  const pane=m==="quick"?q:c; pane.classList.remove("pane-in"); void pane.offsetWidth; pane.classList.add("pane-in");
+  if(m==="custom"){ bindThermo(); setThermo(thermoValue); } }
 function addLog(id,delta,note){ const f=DB.friends.find(x=>x.id===id); f.logs.push({id:uid(),ts:Date.now(),delta,note:(note||"").trim()}); save(DB); }
 function quickScore(delta){ haptic(); addLog(scoringId,delta,$("qNote").value); const id=scoringId; closeSheet(); afterScore(id,delta); }
 function customScore(){ const delta=thermoValue; haptic(); addLog(scoringId,delta,$("cNote").value); const id=scoringId; closeSheet(); afterScore(id,delta); }
@@ -692,18 +724,18 @@ function afterScore(id,delta){ if($("detailView").style.display!=="none"&&curren
 
 /* ============ 詳情 + 折線圖 ============ */
 let currentDetailId=null,spanDays=30;
-function showDetail(id){ currentDetailId=id;spanDays=30; const dv=$("detailView"); dv.style.transition="";dv.style.transform=""; dv.style.display="block"; dv.scrollTop=0; $("editLink").onclick=()=>openEditFriend(id); renderDetail(id,true); void dv.offsetWidth; dv.classList.add("on"); }
-function showHome(){ const dv=$("detailView"); currentDetailId=null; dv.style.transition="";dv.style.transform=""; dv.classList.remove("on"); setTimeout(()=>{ if(!currentDetailId) dv.style.display="none"; },340); renderHome(false); }
-function bindDetailSwipe(){ const dv=$("detailView"); if(dv._ds)return; dv._ds=true;
-  let sx=0,sy=0,dx=0,active=false,decided=false,horiz=false;
-  dv.addEventListener("pointerdown",e=>{ if(openedSheet||e.target.closest("input,textarea,.seg")){active=false;return;} sx=e.clientX;sy=e.clientY;dx=0;active=true;decided=false;horiz=false; });
+function showDetail(id){ currentDetailId=id;spanDays=30; const dv=$("detailView"),hv=$("homeView"); dv.style.transition="";dv.style.transform=""; dv.style.display="block"; dv.scrollTop=0; $("editLink").onclick=()=>openEditFriend(id); renderDetail(id,true); void dv.offsetWidth; dv.classList.add("on"); hv.style.transition="";hv.style.transform="translateX(-22%)"; }
+function showHome(){ const dv=$("detailView"),hv=$("homeView"); currentDetailId=null; dv.style.transition="";dv.style.transform=""; dv.classList.remove("on"); hv.style.transition="";hv.style.transform=""; setTimeout(()=>{ if(!currentDetailId) dv.style.display="none"; },340); renderHome(false); }
+function bindDetailSwipe(){ const dv=$("detailView"); if(dv._ds)return; dv._ds=true; const hv=$("homeView");
+  let sx=0,sy=0,dx=0,active=false,decided=false,horiz=false,W=1;
+  dv.addEventListener("pointerdown",e=>{ if(openedSheet||e.target.closest("input,textarea,.seg")){active=false;return;} sx=e.clientX;sy=e.clientY;dx=0;active=true;decided=false;horiz=false;W=dv.offsetWidth||window.innerWidth; });
   dv.addEventListener("pointermove",e=>{ if(!active)return; const mx=e.clientX-sx,my=e.clientY-sy;
     if(!decided){ if(Math.abs(mx)<10&&Math.abs(my)<10)return; decided=true; horiz=(mx>0&&Math.abs(mx)>Math.abs(my)*1.3);
-      if(!horiz){active=false;return;} dv.style.transition="none"; try{dv.setPointerCapture(e.pointerId);}catch(_){} }
-    dx=Math.max(0,e.clientX-sx); e.preventDefault(); dv.style.transform=`translateX(${dx}px)`; },{passive:false});
-  const end=()=>{ if(!active||!horiz){active=false;return;} active=false; dv.style.transition="transform .3s var(--ease)";
-    if(dx>70){ dv.style.transform="translateX(100%)"; currentDetailId=null; renderHome(false); setTimeout(()=>{ dv.style.display="none"; dv.style.transform="";dv.style.transition=""; dv.classList.remove("on"); },300); }
-    else { dv.style.transform="translateX(0)"; setTimeout(()=>{ dv.style.transform="";dv.style.transition=""; },300); } };
+      if(!horiz){active=false;return;} dv.style.transition="none"; hv.style.transition="none"; try{dv.setPointerCapture(e.pointerId);}catch(_){} }
+    dx=Math.max(0,e.clientX-sx); dv.style.transform=`translateX(${dx}px)`; hv.style.transform=`translateX(${(-22*(1-dx/W)).toFixed(2)}%)`; e.preventDefault(); },{passive:false});
+  const end=()=>{ if(!active||!horiz){active=false;return;} active=false; dv.style.transition="transform .3s var(--ease)"; hv.style.transition="transform .3s var(--ease)";
+    if(dx>70){ dv.style.transform="translateX(100%)"; hv.style.transform=""; currentDetailId=null; renderHome(false); setTimeout(()=>{ dv.style.display="none"; dv.style.transform="";dv.style.transition=""; dv.classList.remove("on"); hv.style.transition="";hv.style.transform=""; },300); }
+    else { dv.style.transform="translateX(0)"; hv.style.transform="translateX(-22%)"; setTimeout(()=>{ dv.style.transform="";dv.style.transition=""; hv.style.transition=""; },300); } };
   dv.addEventListener("pointerup",end); dv.addEventListener("pointercancel",end);
 }
 function seriesInSpan(f){ const all=seriesOf(f); if(spanDays===0) return all; const since=Date.now()-spanDays*86400000; const inR=all.filter(p=>p.ts>=since);
@@ -730,7 +762,7 @@ function renderDetail(id,animateScore){
     <div class="section-t">時間軸日誌 · 長按可刪</div>
     ${logsHtml}
     <div style="text-align:center;margin:26px 0 10px"><button class="linkbtn del-friend" data-press onclick="askDeleteFriend('${f.id}')">刪除這位好友與所有紀錄</button></div>`;
-  bindPress(); igniteChart();
+  bindPress(); igniteChart(); segMove($("detailBody").querySelector(".seg"));
   document.querySelectorAll("#detailBody .log-item").forEach(el=>{ const lid=el.dataset.lid; bindLongPress(el, null, ()=>openLogContext(f.id,lid)); });
   if(animateScore) rollNumber($("dScore"),Math.round(dScore*0.4),dScore,550);
 }
@@ -796,6 +828,7 @@ function openChangelog(){ renderChangelog(); closeSheet(); openSheet("changelogS
 function syncSettingsUI(){ $("verText").textContent=VERSION;
   document.querySelectorAll("#themeSeg button").forEach(b=>b.classList.toggle("on",b.dataset.themeOpt===DB.settings.theme));
   document.querySelectorAll("#layoutSeg button").forEach(b=>b.classList.toggle("on",b.dataset.layout===DB.settings.layout));
+  segMove($("themeSeg")); segMove($("layoutSeg"));
   $("swCooldown").classList.toggle("on",!!DB.settings.notifyCooldown);
   $("swDaily").classList.toggle("on",!!DB.settings.notifyDaily);
   $("swAskDel").classList.toggle("on",DB.settings.askBeforeDeleteLog!==false);
@@ -833,7 +866,7 @@ function importJSON(e){ const file=e.target.files[0]; if(!file)return; const r=n
 /* ============ sheet + 按壓 ============ */
 let openedSheet=null;
 function openSheet(id){ openedSheet=id; $("scrim").classList.add("on"); $(id).classList.add("on"); }
-function closeSheet(){ $("scrim").classList.remove("on"); if(openedSheet){ $(openedSheet).classList.remove("on"); openedSheet=null; } }
+function closeSheet(){ const sc=$("scrim"); sc.classList.remove("on"); sc.style.transition=""; sc.style.opacity=""; if(openedSheet){ $(openedSheet).classList.remove("on"); openedSheet=null; } }
 function bindPress(){ document.querySelectorAll("[data-press]").forEach(el=>{ if(el._pb)return; el._pb=true;
   const on=()=>el.classList.add("pressed"),off=()=>el.classList.remove("pressed");
   el.addEventListener("pointerdown",on);el.addEventListener("pointerup",off);el.addEventListener("pointerleave",off);el.addEventListener("pointercancel",off); }); }
@@ -847,33 +880,43 @@ function addSheetHeaders(){ document.querySelectorAll(".sheet").forEach(s=>{ if(
   hd.appendChild(g); hd.appendChild(x); s.insertBefore(hd,s.firstChild);
 }); }
 
-/* 面板往右滑或(捲到頂時)往下滑都能關閉;離場方向跟著手勢走 */
-function bindSheetDrag(){ document.querySelectorAll(".sheet").forEach(sheet=>{ if(sheet._sd)return; sheet._sd=true;
+/* 面板往右滑或(捲到頂時)往下滑都能關閉;離場方向跟著手勢走,背後遮罩同步變化 */
+function bindSheetDrag(){ const sc=$("scrim"); document.querySelectorAll(".sheet").forEach(sheet=>{ if(sheet._sd)return; sheet._sd=true;
   let sx=0,sy=0,dx=0,dy=0,active=false,decided=false,dir="";
   sheet.addEventListener("pointerdown",e=>{ if(e.target.closest("input,textarea,.thermo-face,.seg,.pillseg,.signseg"))return;
     sx=e.clientX;sy=e.clientY;dx=0;dy=0;active=true;decided=false;dir=""; });
   sheet.addEventListener("pointermove",e=>{ if(!active)return; const mx=e.clientX-sx,my=e.clientY-sy;
     if(!decided){ if(Math.abs(mx)<8&&Math.abs(my)<8)return; decided=true;
       if(Math.abs(mx)>Math.abs(my)){ if(mx>0)dir="x"; } else if(my>0&&sheet.scrollTop<=0){ dir="y"; }
-      if(!dir){ active=false; return; } sheet.style.transition="none"; try{sheet.setPointerCapture(e.pointerId);}catch(_){} }
-    if(dir==="x"){ dx=Math.max(0,e.clientX-sx); sheet.style.transform=`translateX(${dx}px)`; }
-    else { dy=Math.max(0,e.clientY-sy); sheet.style.transform=`translateY(${dy}px)`; }
-    e.preventDefault(); },{passive:false});
-  const end=()=>{ if(!active||!dir){ active=false; return; } active=false; sheet.style.transition="transform .3s var(--ease)";
+      if(!dir){ active=false; return; } sheet.style.transition="none"; sc.style.transition="none"; try{sheet.setPointerCapture(e.pointerId);}catch(_){} }
+    let prog;
+    if(dir==="x"){ dx=Math.max(0,e.clientX-sx); sheet.style.transform=`translateX(${dx}px)`; prog=Math.min(1,dx/(sheet.offsetWidth||320)); }
+    else { dy=Math.max(0,e.clientY-sy); sheet.style.transform=`translateY(${dy}px)`; prog=Math.min(1,dy/(sheet.offsetHeight||480)); }
+    sc.style.opacity=(1-prog).toFixed(3); e.preventDefault(); },{passive:false});
+  const end=()=>{ if(!active||!dir){ active=false; return; } active=false; sheet.style.transition="transform .3s var(--ease)"; sc.style.transition="opacity .3s var(--ease)";
     const go=(dir==="x"?dx>75:dy>90);
-    if(go){ sheet.style.transform=(dir==="x"?"translateX(115%)":"translateY(112%)"); closeSheet(); } else { sheet.style.transform=(dir==="x"?"translateX(0)":"translateY(0)"); }
-    setTimeout(()=>{ sheet.style.transform=""; sheet.style.transition=""; },320); };
+    if(go){ sheet.style.transform=(dir==="x"?"translateX(115%)":"translateY(112%)"); sc.style.opacity="0"; sheet.classList.remove("on"); openedSheet=null;
+      setTimeout(()=>{ sc.classList.remove("on"); sheet.style.transform="";sheet.style.transition=""; sc.style.opacity="";sc.style.transition=""; },300); }
+    else { sheet.style.transform=(dir==="x"?"translateX(0)":"translateY(0)"); sc.style.opacity="1";
+      setTimeout(()=>{ sheet.style.transform="";sheet.style.transition=""; sc.style.opacity="";sc.style.transition=""; },300); } };
   sheet.addEventListener("pointerup",end); sheet.addEventListener("pointercancel",end);
 }); }
 
-/* 首頁往左滑 → 打開設定(也可以點右上角設定鈕) */
+/* 首頁往左滑 → 打開設定;抽屜跟著手指走(滑一半露一半),放開再決定開/關 */
 function bindHomeSwipe(){ const hv=$("homeView"); if(!hv||hv._hs)return; hv._hs=true;
-  let sx=0,sy=0,on=false;
-  hv.addEventListener("pointerdown",e=>{ if(openedSheet||currentDetailId||e.target.closest("input,textarea")){on=false;return;} sx=e.clientX;sy=e.clientY;on=true; });
-  hv.addEventListener("pointermove",e=>{ if(!on)return; const mx=e.clientX-sx,my=e.clientY-sy;
-    if(Math.abs(my)>40){ on=false; return; }
-    if(mx<-55&&Math.abs(mx)>Math.abs(my)*1.4){ on=false; openSettings(); } });
-  const off=()=>{on=false;}; hv.addEventListener("pointerup",off); hv.addEventListener("pointercancel",off);
+  const d=$("settingsSheet"), sc=$("scrim");
+  let sx=0,sy=0,active=false,decided=false,horiz=false,W=1,p=0;
+  hv.addEventListener("pointerdown",e=>{ if(openedSheet||currentDetailId||e.target.closest("input,textarea")){active=false;return;} sx=e.clientX;sy=e.clientY;active=true;decided=false;horiz=false;p=0;W=window.innerWidth; });
+  hv.addEventListener("pointermove",e=>{ if(!active)return; const mx=e.clientX-sx,my=e.clientY-sy;
+    if(!decided){ if(Math.abs(mx)<10&&Math.abs(my)<10)return; decided=true; horiz=(mx<0&&Math.abs(mx)>Math.abs(my)*1.3);
+      if(!horiz){ active=false; return; }
+      syncSettingsUI(); openedSheet="settingsSheet"; d.style.transition="none"; sc.style.transition="none"; sc.classList.add("on"); try{hv.setPointerCapture(e.pointerId);}catch(_){} }
+    p=Math.max(0,Math.min(1,(-mx)/(W*0.7))); d.style.transform=`translateX(${(1-p)*100}%)`; sc.style.opacity=p.toFixed(3); e.preventDefault(); },{passive:false});
+  const end=()=>{ if(!active||!horiz){ active=false; return; } active=false; d.style.transition="transform .3s var(--ease)"; sc.style.transition="opacity .3s var(--ease)";
+    if(p>0.3){ d.style.transform=""; d.classList.add("on"); sc.style.opacity=""; sc.classList.add("on"); haptic(); }
+    else { d.style.transform="translateX(100%)"; sc.style.opacity="0"; d.classList.remove("on"); sc.classList.remove("on"); openedSheet=null; }
+    setTimeout(()=>{ d.style.transition="";d.style.transform=""; sc.style.transition="";sc.style.opacity=""; },320); };
+  hv.addEventListener("pointerup",end); hv.addEventListener("pointercancel",end);
 }
 
 /* 觸覺回饋:任何按鈕、開關、選單項被點到都震一下(去抖會併掉與各處既有 haptic 的重複) */
@@ -887,7 +930,7 @@ document.addEventListener("pointerdown",e=>{ const a=document.activeElement;
 /* 自動更新:註冊 service worker(讓主畫面版每次都抓最新) */
 if("serviceWorker" in navigator){ navigator.serviceWorker.register("sw.js").catch(()=>{}); }
 
-applyTheme(); renderHome(true); addSheetHeaders(); bindPress(); bindSheetDrag(); bindHomeSwipe(); bindDetailSwipe(); runReminders();
+applyTheme(); renderHome(true); addSheetHeaders(); bindPress(); bindSheetDrag(); bindHomeSwipe(); bindDetailSwipe(); segMoveAll(); runReminders();
 </script>
 </body>
 </html>
