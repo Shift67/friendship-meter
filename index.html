@@ -56,6 +56,7 @@ input,select,textarea{font-family:inherit;font-size:16px;}
 .count{margin-top:3px;font-family:var(--mono);font-size:12px;color:var(--ink-3);letter-spacing:0.03em;}
 .gear{width:40px;height:40px;border-radius:50%;border:1px solid var(--hair);background:var(--surface);display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
 .gear svg{width:19px;height:19px;stroke:var(--ink-2);fill:none;stroke-width:1.6;}
+.topbtns{display:flex;gap:9px;flex:0 0 auto;}
 
 .searchwrap{padding:2px 22px;}
 .search{width:100%;border:1px solid var(--hair);background:var(--canvas-2);border-radius:13px;padding:12px 14px;color:var(--ink);outline:none;transition:border-color .2s,background .2s;}
@@ -176,6 +177,19 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
 .chips{display:flex;gap:8px;flex-wrap:wrap;}
 .chip{border:1px solid var(--hair);background:var(--surface);color:var(--ink-2);padding:9px 15px;border-radius:22px;font-size:14px;transition:transform .18s var(--spring),background .2s,color .2s;}
 .chip.on{background:var(--gold);color:#231604;border-color:var(--gold);font-weight:600;}
+.chip-add{color:var(--ink-3);font-weight:700;}
+.cat-input{border:1px dashed var(--gold);background:var(--surface);color:var(--ink);border-radius:22px;padding:9px 14px;font-size:14px;width:118px;outline:none;}
+.cat-del{width:26px;height:26px;border-radius:50%;background:var(--surface-hi);border:1px solid var(--hair);color:var(--ink-3);font-size:12px;flex:0 0 auto;}
+.cat-add-inp{flex:1;padding:9px 12px !important;}
+.btn:disabled{opacity:.45;pointer-events:none;}
+body.selecting .friend{cursor:pointer;}
+body.selecting .friend:not(.ended)::after{content:"";position:absolute;top:9px;right:9px;width:22px;height:22px;border-radius:50%;border:2px solid var(--ink-3);background-color:rgba(10,7,4,.45);background-size:13px;background-position:center;background-repeat:no-repeat;z-index:6;transition:background-color .15s,border-color .15s;}
+body.selecting .friend.selected::after{border-color:var(--gold);background-color:var(--gold);background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23231604" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>');}
+body.selecting .friend.selected{box-shadow:inset 0 0 0 2px var(--gold);}
+body.selecting .friend.ended{opacity:.3;pointer-events:none;}
+/* 清單版面:核取圈移到左側置中,避免壓到右邊的分數 */
+body.selecting .list .friend{padding-left:48px;}
+body.selecting .list .friend:not(.ended)::after{top:50%;left:16px;right:auto;transform:translateY(-50%);}
 .hint{font-family:var(--mono);font-size:11px;color:var(--ink-3);margin-top:8px;letter-spacing:0.01em;line-height:1.5;}
 .sheet-actions{display:flex;gap:11px;margin-top:26px;}
 
@@ -301,7 +315,7 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
       </defs><circle cx="16" cy="16" r="15" fill="url(#emberGlow)"/><circle cx="16" cy="15.4" r="9.4" fill="url(#ember)"/><ellipse cx="12.6" cy="12" rx="2.6" ry="1.8" fill="#fff7e6" opacity="0.5"/></svg>
       <span class="wm"><h1>餘溫</h1><span class="en">ember</span></span>
     </div><div class="count" id="countLine">0 段關係</div></div>
-    <button class="gear" data-press onclick="openSettings()" aria-label="設定"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+    <div class="topbtns"><button class="gear" data-press onclick="toggleSelectMode()" aria-label="多選"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M3.5 6l1.2 1.2L6.6 4.7"/><path d="M3.5 12l1.2 1.2L6.6 10.7"/><path d="M3.5 18l1.2 1.2L6.6 16.7"/></svg></button><button class="gear" data-press onclick="openSettings()" aria-label="設定"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></div>
   </div>
   <div class="searchwrap"><input class="search" id="searchInput" placeholder="搜尋姓名或標籤" autocomplete="off"></div>
   <div id="reminderBar" class="reminder" style="display:none;"><div class="r-txt" id="reminderTxt"></div><button class="r-x" onclick="dismissReminder()">✕</button></div>
@@ -388,6 +402,9 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
       <div class="set-row"><div class="k">主題</div><div class="pillseg" id="themeSeg"><button data-theme-opt="light" onclick="setTheme('light')">淺色</button><button data-theme-opt="dark" onclick="setTheme('dark')">深色</button><button data-theme-opt="system" onclick="setTheme('system')">跟隨系統</button></div></div>
       <div class="set-row"><div style="flex:1;"><div class="k">好友卡片版面</div><div class="sub">長方形清單,或正方形格狀(格狀每格含迷你折線圖)</div></div><div class="pillseg" id="layoutSeg"><button data-layout="list" onclick="setLayout('list')">長方</button><button data-layout="grid" onclick="setLayout('grid')">正方</button></div></div>
     </div>
+    <div class="field-label">關係類別</div>
+    <div class="set-group" id="catManage"></div>
+    <div class="hint" style="margin:8px 2px 0;">刪除類別只是拿掉選項,已經標記的好友不受影響。</div>
     <div class="field-label">提醒</div>
     <div class="set-group">
       <div class="set-row tap" onclick="toggleNotify('cooldown')"><div style="flex:1;"><div class="k">冷卻提醒</div><div class="sub">打開 app 時,提醒你哪些好友已超過各自的冷卻天數沒紀錄</div></div><div class="sw" id="swCooldown"></div></div>
@@ -399,7 +416,7 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
     <div class="field-label">關於</div>
     <div class="set-group">
       <div class="set-row" data-press onclick="openChangelog()"><div class="k">更新紀錄</div><div class="set-val">查看 ›</div></div>
-      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.18</div></div>
+      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.19</div></div>
     </div>
     <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
   </div>
@@ -438,10 +455,14 @@ textarea.field{resize:none;min-height:70px;line-height:1.55;}
 
 <script>
 "use strict";
-const VERSION="1.18";
+const VERSION="1.19";
 const KEY="friendship-meter-v1";
 /* 更新紀錄:每次改版就在最前面加一筆(v 由大到小,設定頁「更新紀錄」會照這個順序顯示) */
 const CHANGELOG=[
+  {v:"1.19",date:"2026-08-06",items:[
+    "關係類別可以自訂:設定裡能新增/刪除,新增好友時也能直接加(刪除只是拿掉選項,好友身上的標籤不變)",
+    "多選批次打分:右上角「多選」進入,點選多位好友,一次記同一筆分數改動",
+  ]},
   {v:"1.18",date:"2026-08-06",items:[
     "修正設定滑到全開時內容會閃一下(拿掉抽屜的逐項淡入,放開時不再重新掛載動畫)",
     "設定開/關更跟手:拿掉開場時的重繪卡頓,位置全程跟著手指走",
@@ -499,7 +520,7 @@ const CHANGELOG=[
   {v:"1.2",date:"2026-08-04",items:["滑動操作、好友狀態、折線圖等距"]},
   {v:"1.1",date:"2026-08-04",items:["初期版本:基本的好友記錄與打分"]},
 ];
-const CATEGORIES=["摯友","同事","同學","家人","合作夥伴"];
+const DEFAULT_CATEGORIES=["摯友","同事","同學","家人","合作夥伴"];
 /* 好感度 → 連續色譜:紅(高)→ 黃(中)→ 藍(低),每個分數都有自己的顏色 */
 function _mix(a,b,t){return [a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,a[2]+(b[2]-a[2])*t];}
 function _hex(c){return "#"+c.map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,"0")).join("");}
@@ -522,9 +543,10 @@ function nameForScore(s){
   return "形同陌路";
 }
 function tierOf(s){ return {title:nameForScore(s), color:colorForScore(s), hot:s>=100}; }
-function defaultSettings(){ return {theme:"system",notifyCooldown:false,notifyDaily:false,askBeforeDeleteLog:true,layout:"list",_lastDaily:null}; }
+function defaultSettings(){ return {theme:"system",notifyCooldown:false,notifyDaily:false,askBeforeDeleteLog:true,layout:"list",categories:[...DEFAULT_CATEGORIES],_lastDaily:null}; }
 function load(){ try{ const r=localStorage.getItem(KEY); if(!r) return {v:1,friends:[],settings:defaultSettings()};
     const d=JSON.parse(r); if(!d.friends) d.friends=[]; d.settings=Object.assign(defaultSettings(),d.settings||{});
+    if(!Array.isArray(d.settings.categories)||!d.settings.categories.length) d.settings.categories=[...DEFAULT_CATEGORIES];
     d.friends.forEach(f=>{ if(!f.status) f.status="normal"; if(f.pinned===undefined) f.pinned=false; if(f.category==="密友") f.category="摯友"; }); return d;
   }catch(e){ return {v:1,friends:[],settings:defaultSettings()}; } }
 function save(d){ try{ localStorage.setItem(KEY,JSON.stringify(d)); }catch(e){ toast("儲存失敗:裝置空間可能已滿"); } }
@@ -645,8 +667,23 @@ function bindLongPress(el, onTap, onLong){
 }
 function bindFriendGestures(){
   document.querySelectorAll(".friend[data-fid]").forEach(el=>{ const fid=el.dataset.fid;
-    bindLongPress(el, ()=>{ haptic(); showDetail(fid); }, ()=>{ el.classList.add("pressing"); setTimeout(()=>el.classList.remove("pressing"),280); openContext(fid); }); });
+    if(selectMode){ const f=DB.friends.find(x=>x.id===fid); if(f&&f.status==="ended")return;
+      el.classList.toggle("selected",selectedIds.has(fid));
+      bindLongPress(el, ()=>toggleSelect(fid,el), null); }
+    else bindLongPress(el, ()=>{ haptic(); showDetail(fid); }, ()=>{ el.classList.add("pressing"); setTimeout(()=>el.classList.remove("pressing"),280); openContext(fid); }); });
 }
+
+/* ============ 多選 · 批次打分 ============ */
+let selectMode=false, batchIds=null; const selectedIds=new Set();
+function toggleSelectMode(){ if(selectMode) exitSelectMode(); else enterSelectMode(); }
+function enterSelectMode(){ if(currentDetailId||openedSheet||!DB.friends.some(f=>f.status!=="ended"))return; selectMode=true; selectedIds.clear(); document.body.classList.add("selecting"); haptic(); renderHome(false); updateSelectBar(); }
+function exitSelectMode(){ selectMode=false; selectedIds.clear(); batchIds=null; document.body.classList.remove("selecting"); renderHome(false); updateSelectBar(); }
+function toggleSelect(fid,el){ haptic(); if(selectedIds.has(fid)){ selectedIds.delete(fid); el&&el.classList.remove("selected"); } else { selectedIds.add(fid); el&&el.classList.add("selected"); } updateSelectBar(); }
+function updateSelectBar(){ const tb=$("homeTabbar"); if(selectMode){ const n=selectedIds.size;
+    tb.innerHTML=`<button class="btn small" data-press onclick="exitSelectMode()">取消</button><button class="btn primary" data-press ${n?'':'disabled'} onclick="openBatchScore()">批次打分${n?` · ${n}`:''}</button>`;
+  } else { tb.innerHTML=`<button class="btn small" data-press onclick="openData()">資料</button><button class="btn primary" data-press onclick="openAddFriend()">＋ 新增好友</button>`; }
+  bindPress(); }
+function openBatchScore(){ if(!selectedIds.size)return; batchIds=[...selectedIds]; $("scoreTitle").textContent=`批次打分 · ${batchIds.length} 人`; $("cNote").value="";$("qNote").value=""; thermoValue=0; openSheet("scoreSheet"); switchMode("custom"); }
 
 /* 長按選單 */
 function openContext(id){
@@ -676,7 +713,26 @@ function rerender(){ if(currentDetailId){ const f=DB.friends.find(x=>x.id===curr
 
 /* ============ 新增 / 編輯 ============ */
 let chosenCat="",editingId=null,initSign=1,deltaSign=1,leSign=1,editingLogFid=null,editingLogId=null;
-function renderCatChips(){ $("catChips").innerHTML=CATEGORIES.map(c=>`<button class="chip ${c===chosenCat?'on':''}" data-press onclick="pickCat('${c}')">${c}</button>`).join(""); bindPress(); }
+function renderCatChips(){ const cats=DB.settings.categories.slice(); if(chosenCat&&!cats.includes(chosenCat)) cats.push(chosenCat);
+  const box=$("catChips");
+  box.innerHTML=cats.map(c=>`<button class="chip ${c===chosenCat?'on':''}" data-press data-cat="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join("")+`<button class="chip chip-add" data-press data-addcat="1" aria-label="新增類別">＋</button>`;
+  box.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>pickCat(b.dataset.cat));
+  box.querySelector("[data-addcat]").onclick=promptAddCat; bindPress(); }
+function promptAddCat(){ const wrap=$("catChips"); if(wrap.querySelector(".cat-input"))return;
+  const inp=document.createElement("input"); inp.className="chip cat-input"; inp.placeholder="新類別…"; inp.maxLength=8;
+  wrap.appendChild(inp); inp.focus();
+  let done=false; const commit=()=>{ if(done)return; done=true; const v=inp.value.trim();
+    if(v&&!DB.settings.categories.includes(v)){ DB.settings.categories.push(v); save(DB); chosenCat=v; }
+    renderCatChips(); if(openedSheet==="settingsSheet")renderCatManage(); };
+  inp.addEventListener("keydown",e=>{ if(e.key==="Enter"){e.preventDefault();inp.blur();} });
+  inp.addEventListener("blur",commit); }
+function addCatFromSettings(){ const inp=$("catAddInp"); if(!inp)return; const v=inp.value.trim();
+  if(v&&!DB.settings.categories.includes(v)){ DB.settings.categories.push(v); save(DB); } inp.value=""; renderCatManage(); }
+function removeCategory(c){ DB.settings.categories=DB.settings.categories.filter(x=>x!==c); save(DB); renderCatManage(); toast("已移除類別(現有好友的標籤不變)"); }
+function renderCatManage(){ const box=$("catManage"); if(!box)return;
+  box.innerHTML=DB.settings.categories.map(c=>`<div class="set-row"><div class="k">${escapeHtml(c)}</div><button class="cat-del" data-press data-del="${escapeHtml(c)}" aria-label="刪除">✕</button></div>`).join("")
+    +`<div class="set-row"><input class="field cat-add-inp" id="catAddInp" placeholder="新增類別…" maxlength="8"><button class="btn small" data-press onclick="addCatFromSettings()">加入</button></div>`;
+  box.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>removeCategory(b.dataset.del)); bindPress(); }
 function pickCat(c){ chosenCat=(chosenCat===c?"":c); renderCatChips(); haptic(); }
 function setSign(which,s){ if(which==="init"){ initSign=s; $("fSignPos").classList.toggle("on",s>0); $("fSignNeg").classList.toggle("on",s<0);} else if(which==="log"){ leSign=s; $("leSignPos").classList.toggle("on",s>0); $("leSignNeg").classList.toggle("on",s<0);} haptic(); }
 function openAddFriend(){ editingId=null;chosenCat="";initSign=1; $("addTitle").textContent="新增好友"; $("addSave").textContent="建立"; $("fName").value="";$("fScore").value="50";$("fCool").value="14"; setSign("init",1); renderCatChips(); openSheet("addSheet"); setTimeout(()=>$("fName").focus(),320); }
@@ -689,7 +745,7 @@ function saveFriend(){ const name=$("fName").value.trim(); if(!name){toast("先�
 
 /* ============ 打分 ============ */
 let scoringId=null;
-function openScore(id){ const f=DB.friends.find(x=>x.id===id); if(!f||f.status==="ended")return; scoringId=id; $("scoreTitle").textContent=`${f.name} · 今日結算`; $("cNote").value="";$("qNote").value=""; thermoValue=0; openSheet("scoreSheet"); switchMode("custom"); }
+function openScore(id){ const f=DB.friends.find(x=>x.id===id); if(!f||f.status==="ended")return; batchIds=null; scoringId=id; $("scoreTitle").textContent=`${f.name} · 今日結算`; $("cNote").value="";$("qNote").value=""; thermoValue=0; openSheet("scoreSheet"); switchMode("custom"); }
 function segMove(c){ if(!c)return; const on=c.querySelector("button.on"); if(!on)return; let ind=c.querySelector(":scope > .seg-ind");
   if(!ind){ ind=document.createElement("div"); ind.className="seg-ind"; ind.style.transition="none"; c.insertBefore(ind,c.firstChild); ind.style.left=on.offsetLeft+"px"; ind.style.width=on.offsetWidth+"px"; void ind.offsetWidth; ind.style.transition=""; return; }
   ind.style.left=on.offsetLeft+"px"; ind.style.width=on.offsetWidth+"px"; }
@@ -699,8 +755,11 @@ function switchMode(m){ document.querySelectorAll("#modeSeg button").forEach(b=>
   const pane=m==="quick"?q:c; pane.classList.remove("pane-in"); void pane.offsetWidth; pane.classList.add("pane-in");
   if(m==="custom"){ bindThermo(); setThermo(thermoValue); } }
 function addLog(id,delta,note){ const f=DB.friends.find(x=>x.id===id); f.logs.push({id:uid(),ts:Date.now(),delta,note:(note||"").trim()}); save(DB); }
-function quickScore(delta){ haptic(); addLog(scoringId,delta,$("qNote").value); const id=scoringId; closeSheet(); afterScore(id,delta); }
-function customScore(){ const delta=thermoValue; haptic(); addLog(scoringId,delta,$("cNote").value); const id=scoringId; closeSheet(); afterScore(id,delta); }
+function commitScore(delta,note){ haptic();
+  if(batchIds&&batchIds.length){ const ids=batchIds.slice(); batchIds=null; ids.forEach(id=>addLog(id,delta,note)); closeSheet(); exitSelectMode(); toast(`已為 ${ids.length} 人記錄 ${delta>0?"+"+delta:delta}`); return; }
+  const id=scoringId; addLog(id,delta,note); closeSheet(); afterScore(id,delta); }
+function quickScore(delta){ commitScore(delta,$("qNote").value); }
+function customScore(){ commitScore(thermoValue,$("cNote").value); }
 
 /* 溫度計:0 在中央,上 +1~+20、下 −1~−20;拖曳中間水銀,當前度數放大 */
 let thermoValue=0;
@@ -835,7 +894,7 @@ function openChangelog(){ renderChangelog(); closeSheet(); openSheet("changelogS
 function syncSettingsUI(){ $("verText").textContent=VERSION;
   document.querySelectorAll("#themeSeg button").forEach(b=>b.classList.toggle("on",b.dataset.themeOpt===DB.settings.theme));
   document.querySelectorAll("#layoutSeg button").forEach(b=>b.classList.toggle("on",b.dataset.layout===DB.settings.layout));
-  segMove($("themeSeg")); segMove($("layoutSeg"));
+  segMove($("themeSeg")); segMove($("layoutSeg")); renderCatManage();
   $("swCooldown").classList.toggle("on",!!DB.settings.notifyCooldown);
   $("swDaily").classList.toggle("on",!!DB.settings.notifyDaily);
   $("swAskDel").classList.toggle("on",DB.settings.askBeforeDeleteLog!==false);
