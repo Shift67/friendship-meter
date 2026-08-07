@@ -432,7 +432,8 @@ body.selecting .list .friend:not(.ended)::after{top:50%;left:16px;right:auto;tra
 <div class="sheet" id="recapSheet">
   <div class="grabber"></div>
   <h2>回顧</h2>
-  <div class="seg" id="recapSpanSeg" style="margin-top:12px;"><button data-rs="7" onclick="setRecapSpan(7)">近 7 天</button><button class="on" data-rs="30" onclick="setRecapSpan(30)">近 30 天</button><button data-rs="0" onclick="setRecapSpan(0)">全部</button></div>
+  <div class="seg" id="recapModeSeg" style="margin-top:14px;"><button class="on" data-rm="stats" onclick="setRecapMode('stats')">數據</button><button data-rm="overlay" onclick="setRecapMode('overlay')">疊圖</button></div>
+  <div class="seg" id="recapSpanSeg" style="margin-top:10px;"><button data-rs="7" onclick="setRecapSpan(7)">近 7 天</button><button class="on" data-rs="30" onclick="setRecapSpan(30)">近 30 天</button><button data-rs="0" onclick="setRecapSpan(0)">全部</button></div>
   <div id="recapBody" style="margin-top:6px;"></div>
   <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
 </div>
@@ -469,14 +470,14 @@ body.selecting .list .friend:not(.ended)::after{top:50%;left:16px;right:auto;tra
     <div class="field-label">餘燼</div>
     <div class="set-group">
       <div class="set-row tap" onclick="toggleEmberDecay()"><div style="flex:1;"><div class="k">自然降溫</div><div class="sub">超過冷卻天數還沒互動,好感度會每天慢慢降(沒顧的餘燼會涼)。關掉就恢復,不會動到你的紀錄</div></div><div class="sw" id="swDecay"></div></div>
-      <div class="set-row" id="decayRateRow"><div style="flex:1;"><div class="k">降溫速度</div><div class="sub">過冷卻後每天大約降多少</div></div><div class="pillseg" id="decayRateSeg"><button data-rate="0.5" onclick="setDecayRate(0.5)">慢</button><button data-rate="1" onclick="setDecayRate(1)">中</button><button data-rate="2" onclick="setDecayRate(2)">快</button></div></div>
+      <div class="set-row" id="decayRateRow"><div style="flex:1;"><div class="k">降溫速度</div><div class="sub">過冷卻後大約:慢 = 每 2 天降 1 分 · 中 = 每天降 1 分 · 快 = 每天降 2 分</div></div><div class="pillseg" id="decayRateSeg"><button data-rate="0.5" onclick="setDecayRate(0.5)">慢</button><button data-rate="1" onclick="setDecayRate(1)">中</button><button data-rate="2" onclick="setDecayRate(2)">快</button></div></div>
     </div>
     <div class="field-label">刪除</div>
     <div class="set-group"><div class="set-row tap" onclick="toggleAskDel()"><div style="flex:1;"><div class="k">刪紀錄前先詢問</div><div class="sub">關掉後,長按日誌會直接刪除</div></div><div class="sw" id="swAskDel"></div></div></div>
     <div class="field-label">關於</div>
     <div class="set-group">
       <div class="set-row" data-press onclick="openChangelog()"><div class="k">更新紀錄</div><div class="set-val">查看 ›</div></div>
-      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.25</div></div>
+      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.26</div></div>
     </div>
     <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
   </div>
@@ -515,10 +516,15 @@ body.selecting .list .friend:not(.ended)::after{top:50%;left:16px;right:auto;tra
 
 <script>
 "use strict";
-const VERSION="1.25";
+const VERSION="1.26";
 const KEY="friendship-meter-v1";
 /* 更新紀錄:每次改版就在最前面加一筆(v 由大到小,設定頁「更新紀錄」會照這個順序顯示) */
 const CHANGELOG=[
+  {v:"1.26",date:"2026-08-07",items:[
+    "回顧新增「疊圖」分頁:把多位好友的折線疊在一起比較,可選要疊哪些人(全部/清空)",
+    "微調溫度計範圍改成 −5 ~ +10,格距變大,比較好調到準確的數字",
+    "設定的降溫速度寫清楚了:慢=每2天降1分、中=每天降1分、快=每天降2分",
+  ]},
   {v:"1.25",date:"2026-08-07",items:[
     "第三波。首頁「近 30 天 · 溫度變化」右邊多了「回顧 ›」:一張卡看這段期間記了幾筆、升溫/降溫/最常互動的人、新朋友、平均好感度,可切 7 天/30 天/全部",
     "回顧裡有「社交溫度總覽」:一條分段長條看你的好友分布在 熱/暖/涼/冷 各有幾個",
@@ -755,11 +761,39 @@ function renderInsights(){
 
 /* ============ 回顧 · 社交溫度總覽 ============ */
 function fmtDay(ts){const d=new Date(ts),p=n=>String(n).padStart(2,"0");return `${d.getFullYear()}/${p(d.getMonth()+1)}/${p(d.getDate())}`;}
-let recapSpan=30;
-function openRecap(){ recapSpan=30; document.querySelectorAll("#recapSpanSeg button").forEach(b=>b.classList.toggle("on",+b.dataset.rs===30)); renderRecap(); openSheet("recapSheet"); segMove($("recapSpanSeg")); }
+let recapSpan=30,recapMode="stats",overlayIds=null;
+function openRecap(){ recapSpan=30; recapMode="stats"; overlayIds=null;
+  document.querySelectorAll("#recapSpanSeg button").forEach(b=>b.classList.toggle("on",+b.dataset.rs===30));
+  document.querySelectorAll("#recapModeSeg button").forEach(b=>b.classList.toggle("on",b.dataset.rm==="stats"));
+  renderRecap(); openSheet("recapSheet"); segMove($("recapSpanSeg")); segMove($("recapModeSeg")); }
 function setRecapSpan(d){ recapSpan=d; document.querySelectorAll("#recapSpanSeg button").forEach(b=>b.classList.toggle("on",+b.dataset.rs===d)); segMove($("recapSpanSeg")); haptic(); renderRecap(); }
+function setRecapMode(m){ recapMode=m; document.querySelectorAll("#recapModeSeg button").forEach(b=>b.classList.toggle("on",b.dataset.rm===m)); segMove($("recapModeSeg")); haptic(); renderRecap(); }
+/* 疊圖:把選到的好友的折線(時間軸)疊在一起 */
+function friendTimeSeries(f,since){ const now=Date.now(); const evts=[{ts:f.createdAt,value:f.initial}]; let run=f.initial;
+  [...f.logs].sort((a,b)=>a.ts-b.ts).forEach(l=>{run+=l.delta;evts.push({ts:l.ts,value:run});});
+  const start=Math.max(since,f.createdAt); let base=f.initial; evts.forEach(e=>{ if(e.ts<=start) base=e.value; });
+  const pts=[{ts:start,value:base}]; evts.forEach(e=>{ if(e.ts>start&&e.ts<=now) pts.push(e); }); pts.push({ts:now,value:currentScore(f)}); return pts; }
+function renderOverlay(){ const box=$("recapBody"); const pool=DB.friends.filter(f=>f.status!=="ended");
+  if(!overlayIds) overlayIds=new Set(pool.map(f=>f.id));
+  const sel=pool.filter(f=>overlayIds.has(f.id)); const now=Date.now();
+  let since=recapSpan?now-recapSpan*86400000:(sel.length?Math.min(...sel.map(f=>f.createdAt)):now-30*86400000);
+  const seriesList=sel.map(f=>({f,pts:friendTimeSeries(f,since)}));
+  let vMin=Infinity,vMax=-Infinity; seriesList.forEach(s=>s.pts.forEach(p=>{if(p.value<vMin)vMin=p.value;if(p.value>vMax)vMax=p.value;}));
+  if(!isFinite(vMin)){vMin=0;vMax=100;} if(vMin===vMax){vMin-=5;vMax+=5;} const pd=(vMax-vMin)*0.12; vMin-=pd; vMax+=pd;
+  const W=320,H=200,padL=8,padR=8,padT=14,padB=14, span=Math.max(1,now-since);
+  const x=ts=>padL+((ts-since)/span)*(W-padL-padR), y=v=>padT+(vMax-v)/(vMax-vMin)*(H-padT-padB);
+  const lines=seriesList.map(s=>{ const col=tierOf(currentScore(s.f)).color; const d=s.pts.map((p,i)=>`${i?'L':'M'}${x(p.ts).toFixed(1)} ${y(p.value).toFixed(1)}`).join(" "); return `<path d="${d}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" opacity="0.92" vector-effect="non-scaling-stroke"/>`; }).join("");
+  const zero=(vMin<0&&vMax>0)?`<line x1="${padL}" y1="${y(0).toFixed(1)}" x2="${W-padR}" y2="${y(0).toFixed(1)}" stroke="#8a7d6b" stroke-opacity=".35" stroke-width="1"/>`:"";
+  const chips=pool.map(f=>`<button class="chip ${overlayIds.has(f.id)?'on':''}" data-press data-ov="${f.id}" style="${overlayIds.has(f.id)?`border-color:${tierOf(currentScore(f)).color};background:color-mix(in srgb,${tierOf(currentScore(f)).color} 22%,var(--surface));color:var(--ink)`:''}">${escapeHtml(f.name)}</button>`).join("");
+  box.innerHTML=`<div class="chart-wrap" style="margin-top:12px;">${seriesList.length?`<svg viewBox="0 0 ${W} ${H}" width="100%" preserveAspectRatio="xMidYMid meet">${zero}${lines}</svg>`:`<div class="empty-state" style="padding:34px 0"><div class="small">選下面的人來疊圖</div></div>`}</div>
+    <div class="field-label" style="display:flex;justify-content:space-between;align-items:center;">要疊哪些人<span><button class="edit-link" data-press id="ovAll">全部</button>　<button class="edit-link" data-press id="ovNone">清空</button></span></div>
+    <div class="chips">${chips}</div>`;
+  box.querySelectorAll("[data-ov]").forEach(b=>b.onclick=()=>{ const id=b.dataset.ov; if(overlayIds.has(id))overlayIds.delete(id); else overlayIds.add(id); haptic(); renderOverlay(); });
+  $("ovAll").onclick=()=>{ overlayIds=new Set(pool.map(f=>f.id)); haptic(); renderOverlay(); };
+  $("ovNone").onclick=()=>{ overlayIds=new Set(); haptic(); renderOverlay(); }; bindPress(); }
 const _BANDCOL={熱:colorForScore(90),暖:colorForScore(65),涼:colorForScore(25),冷:colorForScore(-15)};
 function renderRecap(){
+  if(recapMode==="overlay"){ renderOverlay(); return; }
   const pool=DB.friends.filter(f=>f.status!=="ended");
   const since=recapSpan?Date.now()-recapSpan*86400000:0;
   let totalLogs=0, mostF=null, mostN=-1;
@@ -962,18 +996,19 @@ function commitScore(delta,note){ haptic();
 function quickScore(delta){ commitScore(delta,$("qNote").value); }
 function customScore(){ commitScore(thermoValue,$("cNote").value); }
 
-/* 溫度計:0 在中央,上 +1~+20、下 −1~−20;拖曳中間水銀,當前度數放大 */
+/* 溫度計:範圍 −5 ~ +10(格距較大,好微調);拖曳中間水銀,當前度數放大 */
 let thermoValue=0;
+const T_MIN=-5,T_MAX=10,T_SPAN=15;
 function buildThermo(){ const nums=$("thermoNums"),ticks=$("thermoTicks"); if(!nums||nums._b)return; nums._b=true;
   let nh="",th="";
-  for(let v=20;v>=-20;v--){ const top=(1-(v+20)/40)*100;
+  for(let v=T_MAX;v>=T_MIN;v--){ const top=(1-(v-T_MIN)/T_SPAN)*100;
     const major=(v%5===0);
     th+=`<div class="thermo-tick" style="top:${top}%;width:${major?9:5}px;background:${major?'#3a352c':'#9a917f'}"></div>`;
     nh+=`<div class="thermo-num" data-v="${v}" style="top:${top}%;font-weight:${major?600:400}">${v>0?'+'+v:v}</div>`;
   }
   ticks.innerHTML=th; nums.innerHTML=nh;
 }
-function setThermo(v){ v=Math.max(-20,Math.min(20,Math.round(v))); thermoValue=v; const f=(v+20)/40;
+function setThermo(v){ v=Math.max(T_MIN,Math.min(T_MAX,Math.round(v))); thermoValue=v; const f=(v-T_MIN)/T_SPAN;
   const fill=$("thermoFill"),tip=$("thermoTip"); if(fill) fill.style.height=(f*100)+"%"; if(tip) tip.style.bottom="calc("+(f*100)+"% - 10.5px)";
   document.querySelectorAll("#thermoNums .thermo-num").forEach(el=>el.classList.toggle("on",+el.dataset.v===v));
   const b=$("customSave"); if(b) b.textContent="記錄 "+(v>0?'+'+v:v);
@@ -981,7 +1016,7 @@ function setThermo(v){ v=Math.max(-20,Math.min(20,Math.round(v))); thermoValue=v
 function bindThermo(){ buildThermo(); const face=$("thermoFace"); if(!face||face._t)return; face._t=true;
   let active=false;
   const upd=cy=>{ const r=face.getBoundingClientRect(); const top=r.top+26,bot=r.bottom-48;
-    const f=Math.max(0,Math.min(1,(bot-cy)/(bot-top))); const v=Math.round(f*40-20); if(v!==thermoValue) haptic(); setThermo(v); };
+    const f=Math.max(0,Math.min(1,(bot-cy)/(bot-top))); const v=Math.round(f*T_SPAN+T_MIN); if(v!==thermoValue) haptic(); setThermo(v); };
   face.addEventListener("pointerdown",e=>{ active=true; try{face.setPointerCapture(e.pointerId);}catch(_){} upd(e.clientY); e.preventDefault(); });
   face.addEventListener("pointermove",e=>{ if(active){ upd(e.clientY); e.preventDefault(); } });
   const end=()=>{active=false;}; face.addEventListener("pointerup",end); face.addEventListener("pointercancel",end);
