@@ -57,6 +57,7 @@ input,select,textarea{font-family:inherit;font-size:16px;}
 .gear{width:40px;height:40px;border-radius:50%;border:1px solid var(--hair);background:var(--surface);display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
 .gear svg{width:19px;height:19px;stroke:var(--ink-2);fill:none;stroke-width:1.6;}
 .topbtns{display:flex;gap:9px;flex:0 0 auto;}
+.selall-btn{padding:9px 15px !important;font-size:13.5px;flex:0 0 auto;}
 .sortbtn{position:relative;flex:0 0 auto;}
 .sortbtn.act{border-color:var(--gold);}
 .sortbtn.act::after{content:"";position:absolute;top:4px;right:4px;width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 2px var(--canvas);}
@@ -320,7 +321,7 @@ body.selecting .list .friend:not(.ended)::after{top:50%;left:16px;right:auto;tra
       </defs><circle cx="16" cy="16" r="15" fill="url(#emberGlow)"/><circle cx="16" cy="15.4" r="9.4" fill="url(#ember)"/><ellipse cx="12.6" cy="12" rx="2.6" ry="1.8" fill="#fff7e6" opacity="0.5"/></svg>
       <span class="wm"><h1>餘溫</h1><span class="en">ember</span></span>
     </div><div class="count" id="countLine">0 段關係</div></div>
-    <div class="topbtns"><button class="gear" data-press onclick="toggleSelectMode()" aria-label="多選"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M3.5 6l1.2 1.2L6.6 4.7"/><path d="M3.5 12l1.2 1.2L6.6 10.7"/><path d="M3.5 18l1.2 1.2L6.6 16.7"/></svg></button><button class="gear" data-press onclick="openSettings()" aria-label="設定"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></div>
+    <div class="topbtns"><button class="btn small selall-btn" id="selectAllBtn" data-press style="display:none;" onclick="toggleSelectAll()">全選</button><button class="gear" id="multiBtn" data-press onclick="toggleSelectMode()" aria-label="多選"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M3.5 6l1.2 1.2L6.6 4.7"/><path d="M3.5 12l1.2 1.2L6.6 10.7"/><path d="M3.5 18l1.2 1.2L6.6 16.7"/></svg></button><button class="gear" id="gearBtn" data-press onclick="openSettings()" aria-label="設定"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></div>
   </div>
   <div class="searchwrap" style="display:flex;gap:10px;align-items:center;"><input class="search" id="searchInput" placeholder="搜尋姓名或標籤" autocomplete="off" style="flex:1;"><button class="gear sortbtn" id="sortBtn" data-press onclick="openSortFilter()" aria-label="排序與篩選"><svg viewBox="0 0 24 24"><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="16" x2="20" y2="16"/><circle cx="9" cy="8" r="2.4" fill="var(--surface)"/><circle cx="15" cy="16" r="2.4" fill="var(--surface)"/></svg></button></div>
   <div class="chips" id="filterBar" style="padding:2px 22px 0;"></div>
@@ -459,7 +460,7 @@ body.selecting .list .friend:not(.ended)::after{top:50%;left:16px;right:auto;tra
     <div class="field-label">關於</div>
     <div class="set-group">
       <div class="set-row" data-press onclick="openChangelog()"><div class="k">更新紀錄</div><div class="set-val">查看 ›</div></div>
-      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.23</div></div>
+      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.24</div></div>
     </div>
     <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
   </div>
@@ -498,10 +499,16 @@ body.selecting .list .friend:not(.ended)::after{top:50%;left:16px;right:auto;tra
 
 <script>
 "use strict";
-const VERSION="1.23";
+const VERSION="1.24";
 const KEY="friendship-meter-v1";
 /* 更新紀錄:每次改版就在最前面加一筆(v 由大到小,設定頁「更新紀錄」會照這個順序顯示) */
 const CHANGELOG=[
+  {v:"1.24",date:"2026-08-07",items:[
+    "多選新增「全選/全不選」(右上角)",
+    "多選可以用拖曳的:在卡片上側向滑動就能一次塗選多個(垂直捲動不受影響)",
+    "選取時不會再誤觸滑開設定介面",
+    "把「恢復提醒」改名成「取消不熟了」,比較好懂",
+  ]},
   {v:"1.23",date:"2026-08-07",items:[
     "第二波。搜尋列右邊多了排序/篩選鈕:可依 分數/最近互動/久沒聯絡/名字 排序,並依類別或「只看降溫中」篩選(有篩選時上方會出現可清除的標籤)",
     "多選擴充:選好多人後,除了批次打分,還能按「⋯」一次改類別、設冷卻期、設不熟了/恢復、結束或刪除",
@@ -741,27 +748,47 @@ function bindLongPress(el, onTap, onLong){
 function bindFriendGestures(){
   document.querySelectorAll(".friend[data-fid]").forEach(el=>{ const fid=el.dataset.fid;
     if(selectMode){ const f=DB.friends.find(x=>x.id===fid); if(f&&f.status==="ended")return;
-      el.classList.toggle("selected",selectedIds.has(fid));
-      bindLongPress(el, ()=>toggleSelect(fid,el), null); }
+      el.classList.toggle("selected",selectedIds.has(fid)); /* 選取手勢由 bindSelectDrag 統一處理(支援點選與拖曳塗選) */ }
     else bindLongPress(el, ()=>{ haptic(); showDetail(fid); }, ()=>{ el.classList.add("pressing"); setTimeout(()=>el.classList.remove("pressing"),280); openContext(fid); }); });
 }
 
 /* ============ 多選 · 批次打分 ============ */
 let selectMode=false, batchIds=null; const selectedIds=new Set();
 function toggleSelectMode(){ if(selectMode) exitSelectMode(); else enterSelectMode(); }
-function enterSelectMode(){ if(currentDetailId||openedSheet||!DB.friends.some(f=>f.status!=="ended"))return; selectMode=true; selectedIds.clear(); document.body.classList.add("selecting"); haptic(); renderHome(false); updateSelectBar(); }
-function exitSelectMode(){ selectMode=false; selectedIds.clear(); batchIds=null; document.body.classList.remove("selecting"); renderHome(false); updateSelectBar(); }
+function enterSelectMode(){ if(currentDetailId||openedSheet||!DB.friends.some(f=>f.status!=="ended"))return; selectMode=true; selectedIds.clear(); document.body.classList.add("selecting");
+  $("selectAllBtn").style.display=""; $("multiBtn").style.display="none"; $("gearBtn").style.display="none";
+  haptic(); renderHome(false); updateSelectBar(); }
+function exitSelectMode(){ selectMode=false; selectedIds.clear(); batchIds=null; document.body.classList.remove("selecting");
+  $("selectAllBtn").style.display="none"; $("multiBtn").style.display=""; $("gearBtn").style.display="";
+  renderHome(false); updateSelectBar(); }
 function toggleSelect(fid,el){ haptic(); if(selectedIds.has(fid)){ selectedIds.delete(fid); el&&el.classList.remove("selected"); } else { selectedIds.add(fid); el&&el.classList.add("selected"); } updateSelectBar(); }
+function selectableCards(){ return [...document.querySelectorAll('.friend[data-fid]')].filter(el=>{const f=DB.friends.find(x=>x.id===el.dataset.fid);return f&&f.status!=="ended";}); }
+function toggleSelectAll(){ const cards=selectableCards(); const allSel=cards.length&&cards.every(el=>selectedIds.has(el.dataset.fid));
+  cards.forEach(el=>{ const fid=el.dataset.fid; if(allSel){selectedIds.delete(fid);el.classList.remove("selected");} else {selectedIds.add(fid);el.classList.add("selected");} }); haptic(); updateSelectBar(); }
+function updateSelectAllLabel(){ const btn=$("selectAllBtn"); if(!btn||!selectMode)return; const cards=selectableCards(); btn.textContent=(cards.length&&cards.every(el=>selectedIds.has(el.dataset.fid)))?"全不選":"全選"; }
+/* 選取模式:點一下切換單一;側向拖曳可一次塗選多個(不干擾垂直捲動) */
+function bindSelectDrag(){ const box=$("friendList"); if(box._sel)return; box._sel=true;
+  let startFid=null,sx=0,sy=0,painting=false,decided=false,mode="add",painted=null;
+  const paint=el=>{ if(!el)return; const fid=el.dataset&&el.dataset.fid; if(!fid||painted.has(fid))return; const f=DB.friends.find(x=>x.id===fid); if(f&&f.status==="ended")return; painted.add(fid);
+    if(mode==="add"){ if(!selectedIds.has(fid)){selectedIds.add(fid);el.classList.add("selected");haptic();} } else { if(selectedIds.has(fid)){selectedIds.delete(fid);el.classList.remove("selected");haptic();} } updateSelectBar(); };
+  box.addEventListener("pointerdown",e=>{ if(!selectMode){startFid=null;return;} const el=e.target.closest(".friend[data-fid]"); if(!el){startFid=null;return;} const f=DB.friends.find(x=>x.id===el.dataset.fid); if(f&&f.status==="ended"){startFid=null;return;}
+    startFid=el.dataset.fid; sx=e.clientX; sy=e.clientY; painting=false; decided=false; painted=new Set(); mode=selectedIds.has(startFid)?"remove":"add"; });
+  box.addEventListener("pointermove",e=>{ if(!selectMode||!startFid)return; const mx=e.clientX-sx,my=e.clientY-sy;
+    if(!decided){ if(Math.abs(mx)<9&&Math.abs(my)<9)return; decided=true;
+      if(Math.abs(mx)>Math.abs(my)){ painting=true; paint(document.querySelector(`.friend[data-fid="${startFid}"]`)); try{box.setPointerCapture(e.pointerId);}catch(_){} } else { startFid=null; return; } }
+    if(painting){ e.preventDefault(); const t=document.elementFromPoint(e.clientX,e.clientY); const card=t&&t.closest?t.closest(".friend[data-fid]"):null; paint(card); } },{passive:false});
+  const end=()=>{ if(selectMode&&startFid&&!painting){ toggleSelect(startFid,document.querySelector(`.friend[data-fid="${startFid}"]`)); } startFid=null; painting=false; };
+  box.addEventListener("pointerup",end); box.addEventListener("pointercancel",()=>{startFid=null;painting=false;}); }
 function updateSelectBar(){ const tb=$("homeTabbar"); if(selectMode){ const n=selectedIds.size;
     tb.innerHTML=`<button class="btn small" data-press onclick="exitSelectMode()">取消</button><button class="btn primary" data-press ${n?'':'disabled'} onclick="openBatchScore()">批次打分${n?` · ${n}`:''}</button><button class="btn small" data-press ${n?'':'disabled'} onclick="openBatchMenu()">⋯</button>`;
   } else { tb.innerHTML=`<button class="btn small" data-press onclick="openData()">資料</button><button class="btn primary" data-press onclick="openAddFriend()">＋ 新增好友</button>`; }
-  bindPress(); }
+  bindPress(); updateSelectAllLabel(); }
 function openBatchMenu(){ if(!selectedIds.size)return; $("ctxTitle").textContent=`批次動作 · ${selectedIds.size} 人`;
   $("ctxBody").innerHTML=`
     <div class="menu-item" data-press onclick="closeSheet();openBatchCat()"><div class="mi-k">改類別</div><div class="mi-sub">一次改所有選取的人的關係類別</div></div>
     <div class="menu-item" data-press onclick="closeSheet();openBatchCool()"><div class="mi-k">設冷卻期</div><div class="mi-sub">一次調整所有人幾天沒互動就提醒</div></div>
     <div class="menu-item" data-press onclick="batchStatus('dormant','設為不熟了')"><div class="mi-k">設為不熟了</div></div>
-    <div class="menu-item" data-press onclick="batchStatus('normal','恢復提醒')"><div class="mi-k">恢復提醒</div></div>
+    <div class="menu-item" data-press onclick="batchStatus('normal','取消不熟了')"><div class="mi-k">取消不熟了</div><div class="mi-sub">恢復成一般好友,重新提醒</div></div>
     <div class="menu-item" data-press onclick="askBatchEnd()"><div class="mi-k danger">結束好友關係</div></div>
     <div class="menu-item" data-press onclick="askBatchDelete()"><div class="mi-k danger">刪除</div></div>`;
   bindPress(); openSheet("ctxSheet"); }
@@ -787,7 +814,7 @@ function openContext(id){
     <div class="menu-item" data-press onclick="closeSheet();openEditFriend('${id}')"><div class="mi-k">編輯資料</div><div class="mi-sub">改名字、標籤、初始值(不動紀錄)</div></div>`;
   if(!ended){
     if(f.status!=="dormant") items+=`<div class="menu-item" data-press onclick="setDormant('${id}')"><div class="mi-k">不熟了</div><div class="mi-sub">分數停在原地,不再提醒紀錄</div></div>`;
-    else items+=`<div class="menu-item" data-press onclick="restoreNormal('${id}')"><div class="mi-k">恢復提醒</div><div class="mi-sub">取消「不熟了」,恢復冷卻提醒</div></div>`;
+    else items+=`<div class="menu-item" data-press onclick="restoreNormal('${id}')"><div class="mi-k">取消不熟了</div><div class="mi-sub">恢復成一般好友,重新提醒冷卻</div></div>`;
     items+=`<div class="menu-item" data-press onclick="endFriend('${id}')"><div class="mi-k danger">結束好友關係</div><div class="mi-sub">歸零並移到「已經不是好友了」</div></div>`;
   } else {
     items+=`<div class="menu-item" data-press onclick="restoreFriend('${id}')"><div class="mi-k">恢復好友</div></div>`;
@@ -1113,7 +1140,7 @@ function bindSheetDrag(){ const sc=$("scrim"); document.querySelectorAll(".sheet
 function bindHomeSwipe(){ const hv=$("homeView"); if(!hv||hv._hs)return; hv._hs=true;
   const d=$("settingsSheet"), sc=$("scrim");
   let sx=0,sy=0,active=false,decided=false,horiz=false,W=1,p=0;
-  hv.addEventListener("pointerdown",e=>{ if(openedSheet||currentDetailId||e.target.closest("input,textarea")){active=false;return;} sx=e.clientX;sy=e.clientY;active=true;decided=false;horiz=false;p=0;W=window.innerWidth; });
+  hv.addEventListener("pointerdown",e=>{ if(selectMode||openedSheet||currentDetailId||e.target.closest("input,textarea")){active=false;return;} sx=e.clientX;sy=e.clientY;active=true;decided=false;horiz=false;p=0;W=window.innerWidth; });
   hv.addEventListener("pointermove",e=>{ if(!active)return; const mx=e.clientX-sx,my=e.clientY-sy;
     if(!decided){ if(Math.abs(mx)<9&&Math.abs(my)<9)return; decided=true; horiz=(mx<0&&Math.abs(mx)>Math.abs(my)*1.2);
       if(!horiz){ active=false; return; }
@@ -1147,7 +1174,7 @@ async function checkForUpdate(){ const now=Date.now(); if(now-_upChk<4000)return
 document.addEventListener("visibilitychange",()=>{ if(!document.hidden) checkForUpdate(); });
 window.addEventListener("focus",checkForUpdate);
 
-applyTheme(); renderHome(true); addSheetHeaders(); syncSettingsUI(); bindPress(); bindSheetDrag(); bindHomeSwipe(); bindDetailSwipe(); segMoveAll(); runReminders();
+applyTheme(); renderHome(true); addSheetHeaders(); syncSettingsUI(); bindPress(); bindSheetDrag(); bindHomeSwipe(); bindDetailSwipe(); bindSelectDrag(); segMoveAll(); runReminders();
 </script>
 </body>
 </html>
