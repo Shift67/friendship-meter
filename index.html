@@ -82,6 +82,14 @@ html[data-theme="light"] .reminder{border-color:#e9c98a;background:#fdf3df;}
 .insight .who{font-size:15px;font-weight:600;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;position:relative;}
 .insight .val{font-family:var(--mono);font-size:16px;font-weight:700;margin-top:1px;position:relative;}
 .insight .none{font-size:12px;color:var(--ink-3);margin-top:5px;position:relative;}
+.rc-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:12px;}
+.rc-card{border:1px solid var(--hair);border-radius:15px;padding:13px 14px;background:var(--surface);}
+.rc-cap{font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--ink-3);text-transform:uppercase;}
+.rc-big{font-size:17px;font-weight:700;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rc-sub{font-size:12px;color:var(--ink-3);margin-top:2px;}
+.rc-bar{display:flex;height:28px;border-radius:9px;overflow:hidden;margin:10px 0 2px;border:1px solid var(--hair);}
+.rc-seg{display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11.5px;font-weight:700;color:#231604;min-width:22px;}
+.rc-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:9px;font-family:var(--mono);font-size:11px;color:var(--ink-2);}
 
 /* 共用:好友底色與火條 */
 .friend{--c:#888;position:relative;overflow:hidden;border:1px solid var(--hair);
@@ -421,6 +429,14 @@ body.selecting .list .friend:not(.ended)::after{top:50%;left:16px;right:auto;tra
   <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">取消</button></div>
 </div>
 
+<div class="sheet" id="recapSheet">
+  <div class="grabber"></div>
+  <h2>回顧</h2>
+  <div class="seg" id="recapSpanSeg" style="margin-top:12px;"><button data-rs="7" onclick="setRecapSpan(7)">近 7 天</button><button class="on" data-rs="30" onclick="setRecapSpan(30)">近 30 天</button><button data-rs="0" onclick="setRecapSpan(0)">全部</button></div>
+  <div id="recapBody" style="margin-top:6px;"></div>
+  <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
+</div>
+
 <div class="sheet" id="batchCoolSheet">
   <div class="grabber"></div>
   <h2 id="batchCoolTitle">批次設冷卻期</h2>
@@ -460,7 +476,7 @@ body.selecting .list .friend:not(.ended)::after{top:50%;left:16px;right:auto;tra
     <div class="field-label">關於</div>
     <div class="set-group">
       <div class="set-row" data-press onclick="openChangelog()"><div class="k">更新紀錄</div><div class="set-val">查看 ›</div></div>
-      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.24</div></div>
+      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.25</div></div>
     </div>
     <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
   </div>
@@ -499,10 +515,15 @@ body.selecting .list .friend:not(.ended)::after{top:50%;left:16px;right:auto;tra
 
 <script>
 "use strict";
-const VERSION="1.24";
+const VERSION="1.25";
 const KEY="friendship-meter-v1";
 /* 更新紀錄:每次改版就在最前面加一筆(v 由大到小,設定頁「更新紀錄」會照這個順序顯示) */
 const CHANGELOG=[
+  {v:"1.25",date:"2026-08-07",items:[
+    "第三波。首頁「近 30 天 · 溫度變化」右邊多了「回顧 ›」:一張卡看這段期間記了幾筆、升溫/降溫/最常互動的人、新朋友、平均好感度,可切 7 天/30 天/全部",
+    "回顧裡有「社交溫度總覽」:一條分段長條看你的好友分布在 熱/暖/涼/冷 各有幾個",
+    "好友詳情頁新增「里程碑」:認識幾天、最高/最低溫、第一次破 100 的日期、累計筆數",
+  ]},
   {v:"1.24",date:"2026-08-07",items:[
     "多選新增「全選/全不選」(右上角)",
     "多選可以用拖曳的:在卡片上側向滑動就能一次塗選多個(垂直捲動不受影響)",
@@ -729,8 +750,47 @@ function renderInsights(){
   const gain=[...deltas].sort((a,b)=>b.sum-a.sum)[0], drop=[...deltas].sort((a,b)=>a.sum-b.sum)[0];
   const up=(gain&&gain.sum>0)?`<div class="who">${escapeHtml(gain.name)}</div><div class="val" style="color:var(--warm)">+${gain.sum}</div>`:`<div class="none">近 30 天沒有明顯升溫</div>`;
   const down=(drop&&drop.sum<0)?`<div class="who">${escapeHtml(drop.name)}</div><div class="val" style="color:var(--cool)">${drop.sum}</div>`:`<div class="none">近 30 天沒有明顯降溫</div>`;
-  box.innerHTML=`<div class="eyebrow">近 30 天 · 溫度變化</div><div class="insight-row"><div class="insight"><div class="glow" style="background:radial-gradient(80% 100% at 100% 0,var(--warm),transparent 70%)"></div><div class="cap">升溫最多</div>${up}</div><div class="insight"><div class="glow" style="background:radial-gradient(80% 100% at 100% 0,var(--cool),transparent 70%)"></div><div class="cap">降溫最多</div>${down}</div></div>`;
+  box.innerHTML=`<div class="eyebrow" style="display:flex;justify-content:space-between;align-items:center;">近 30 天 · 溫度變化<button class="edit-link" data-press onclick="openRecap()">回顧 ›</button></div><div class="insight-row"><div class="insight"><div class="glow" style="background:radial-gradient(80% 100% at 100% 0,var(--warm),transparent 70%)"></div><div class="cap">升溫最多</div>${up}</div><div class="insight"><div class="glow" style="background:radial-gradient(80% 100% at 100% 0,var(--cool),transparent 70%)"></div><div class="cap">降溫最多</div>${down}</div></div>`;
 }
+
+/* ============ 回顧 · 社交溫度總覽 ============ */
+function fmtDay(ts){const d=new Date(ts),p=n=>String(n).padStart(2,"0");return `${d.getFullYear()}/${p(d.getMonth()+1)}/${p(d.getDate())}`;}
+let recapSpan=30;
+function openRecap(){ recapSpan=30; document.querySelectorAll("#recapSpanSeg button").forEach(b=>b.classList.toggle("on",+b.dataset.rs===30)); renderRecap(); openSheet("recapSheet"); segMove($("recapSpanSeg")); }
+function setRecapSpan(d){ recapSpan=d; document.querySelectorAll("#recapSpanSeg button").forEach(b=>b.classList.toggle("on",+b.dataset.rs===d)); segMove($("recapSpanSeg")); haptic(); renderRecap(); }
+const _BANDCOL={熱:colorForScore(90),暖:colorForScore(65),涼:colorForScore(25),冷:colorForScore(-15)};
+function renderRecap(){
+  const pool=DB.friends.filter(f=>f.status!=="ended");
+  const since=recapSpan?Date.now()-recapSpan*86400000:0;
+  let totalLogs=0, mostF=null, mostN=-1;
+  const deltas=pool.map(f=>{ const ls=f.logs.filter(l=>l.ts>=since); totalLogs+=ls.length; if(ls.length>mostN){mostN=ls.length;mostF=f;} return {f,sum:ls.reduce((s,l)=>s+l.delta,0)}; });
+  const gain=[...deltas].sort((a,b)=>b.sum-a.sum)[0], drop=[...deltas].sort((a,b)=>a.sum-b.sum)[0];
+  const newFriends=DB.friends.filter(f=>f.createdAt>=since).length;
+  const scores=pool.map(currentScore); const avg=scores.length?Math.round(scores.reduce((a,b)=>a+b,0)/scores.length):0;
+  const bands=[["熱",s=>s>=80],["暖",s=>s>=50&&s<80],["涼",s=>s>=0&&s<50],["冷",s=>s<0]].map(([l,fn])=>({l,n:scores.filter(fn).length}));
+  const spanTxt=recapSpan?`近 ${recapSpan} 天`:"全部";
+  $("recapBody").innerHTML=`
+    <div class="rc-grid">
+      <div class="rc-card"><div class="rc-cap">記了幾筆</div><div class="rc-big">${totalLogs} 筆</div><div class="rc-sub">${spanTxt}</div></div>
+      <div class="rc-card"><div class="rc-cap">新朋友</div><div class="rc-big">${newFriends} 位</div><div class="rc-sub">${spanTxt}</div></div>
+      <div class="rc-card"><div class="rc-cap">升溫最多</div>${gain&&gain.sum>0?`<div class="rc-big" style="color:var(--warm)">${escapeHtml(gain.f.name)}</div><div class="rc-sub">+${gain.sum}</div>`:`<div class="rc-sub" style="margin-top:7px">沒有明顯升溫</div>`}</div>
+      <div class="rc-card"><div class="rc-cap">降溫最多</div>${drop&&drop.sum<0?`<div class="rc-big" style="color:var(--cool)">${escapeHtml(drop.f.name)}</div><div class="rc-sub">${drop.sum}</div>`:`<div class="rc-sub" style="margin-top:7px">沒有明顯降溫</div>`}</div>
+      <div class="rc-card"><div class="rc-cap">最常互動</div>${mostF&&mostN>0?`<div class="rc-big">${escapeHtml(mostF.name)}</div><div class="rc-sub">${mostN} 筆</div>`:`<div class="rc-sub" style="margin-top:7px">還沒有紀錄</div>`}</div>
+      <div class="rc-card"><div class="rc-cap">平均好感度</div><div class="rc-big" style="color:${colorForScore(avg)}">${avg}</div><div class="rc-sub">${pool.length} 位好友</div></div>
+    </div>
+    <div class="eyebrow" style="margin-top:20px;">社交溫度總覽 · 目前</div>
+    <div class="rc-bar">${bands.filter(b=>b.n>0).map(b=>`<div class="rc-seg" style="flex:${b.n};background:${_BANDCOL[b.l]}">${b.n}</div>`).join("")||`<div class="rc-seg" style="flex:1;background:var(--surface);color:var(--ink-3)">還沒有好友</div>`}</div>
+    <div class="rc-legend">${bands.map(b=>`<span><span class="dot" style="background:${_BANDCOL[b.l]}"></span>${b.l} ${b.n}</span>`).join("")}</div>
+    <div class="hint" style="margin-top:8px;">熱 80+ · 暖 50–79 · 涼 0–49 · 冷 負溫</div>`;
+}
+function milestonesHtml(f){ const out=[]; const days=Math.floor((Date.now()-f.createdAt)/86400000);
+  out.push(days>=365?`認識 ${Math.floor(days/365)} 年 ${days%365} 天`:`認識 ${days} 天`);
+  const ser=seriesOf(f); let peak=ser[0],low=ser[0]; ser.forEach(p=>{if(p.value>peak.value)peak=p;if(p.value<low.value)low=p;});
+  out.push(`最高溫 ${peak.value}`); if(low.value!==peak.value) out.push(`最低溫 ${low.value}`);
+  let run=f.initial,hit=null; if(f.initial>=100)hit=f.createdAt; else [...f.logs].sort((a,b)=>a.ts-b.ts).forEach(l=>{run+=l.delta; if(hit===null&&run>=100)hit=l.ts;});
+  if(hit!==null) out.push(`${fmtDay(hit)} 第一次破 100`);
+  out.push(`累計 ${f.logs.length} 筆紀錄`);
+  return out.map(m=>`<span class="tag">${escapeHtml(m)}</span>`).join(""); }
 
 /* ============ 長按手勢(取代左滑) ============ */
 function bindLongPress(el, onTap, onLong){
@@ -966,7 +1026,9 @@ function renderDetail(id,animateScore){
     <div class="detail-head" style="--c:${dColor}"><div><div class="d-name">${escapeHtml(f.name)}</div><div class="d-tier" style="color:${dColor}">${dTitle}${f.category?" · "+escapeHtml(f.category):""}</div><div class="d-sub">冷卻設定 ${f.cooldownDays} 天${cool}</div>${statusNote}${decayNote}</div><div class="d-score" id="dScore" style="color:${dColor}">${dScore}</div></div>
     <div class="seg" style="margin-top:14px">${spanBtns}</div>
     <div class="chart-wrap">${chartSVG(f)}</div>
-    ${ended?"":`<div style="margin-top:14px;"><button class="btn primary" data-press style="width:100%" onclick="openScore('${f.id}')">今日結算</button></div>`}
+    <div class="section-t">里程碑</div>
+    <div class="chips" style="margin-top:2px">${milestonesHtml(f)}</div>
+    ${ended?"":`<div style="margin-top:16px;"><button class="btn primary" data-press style="width:100%" onclick="openScore('${f.id}')">今日結算</button></div>`}
     <div class="section-t">時間軸日誌 · 長按可刪</div>
     ${logsHtml}
     <div style="text-align:center;margin:26px 0 10px"><button class="linkbtn del-friend" data-press onclick="askDeleteFriend('${f.id}')">刪除這位好友與所有紀錄</button></div>`;
