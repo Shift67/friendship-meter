@@ -300,6 +300,8 @@ body.selecting .list .friend:not(.ended)::after{top:50%;left:16px;right:auto;tra
 .log-after{font-family:var(--mono);font-size:12px;color:var(--ink-2);margin-top:3px;}
 .log-item.reconcile{border-left:2px solid var(--warm);margin-left:-12px;padding-left:12px;background:linear-gradient(90deg,color-mix(in srgb,var(--warm) 11%,transparent),transparent 58%);}
 .recon-badge{display:inline-block;font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.04em;color:#231604;background:var(--warm);border-radius:6px;padding:1px 7px;margin-right:7px;vertical-align:1px;}
+.log-item.decay{border-left:2px solid var(--cool);margin-left:-12px;padding-left:12px;background:linear-gradient(90deg,color-mix(in srgb,var(--cool) 9%,transparent),transparent 58%);}
+.decay-badge{display:inline-block;font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.04em;color:#fff;background:var(--cool);border-radius:6px;padding:1px 7px;margin-right:7px;vertical-align:1px;}
 .recon-toggle{display:flex;align-items:center;gap:11px;margin-top:14px;border:1px solid var(--hair);background:var(--surface);border-radius:13px;padding:12px 14px;}
 .recon-toggle .rt-k{font-size:14px;}
 .recon-toggle .rt-sub{font-size:11.5px;color:var(--ink-3);margin-top:2px;line-height:1.4;}
@@ -507,13 +509,14 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
     <div class="set-group">
       <div class="set-row tap" onclick="toggleEmberDecay()"><div style="flex:1;"><div class="k">自然降溫</div><div class="sub">超過冷卻天數還沒互動,好感度會每天慢慢降(沒顧的餘燼會涼)。關掉就恢復,不會動到你的紀錄</div></div><div class="sw" id="swDecay"></div></div>
       <div class="set-row" id="decayRateRow"><div style="flex:1;"><div class="k">降溫速度</div><div class="sub">過冷卻後大約:慢 = 每 2 天降 1 分 · 中 = 每天降 1 分 · 快 = 每天降 2 分</div></div><div class="pillseg" id="decayRateSeg"><button data-rate="0.5" onclick="setDecayRate(0.5)">慢</button><button data-rate="1" onclick="setDecayRate(1)">中</button><button data-rate="2" onclick="setDecayRate(2)">快</button></div></div>
+      <div class="set-row tap" id="decayKeepRow" onclick="toggleDecayKeep()"><div style="flex:1;"><div class="k">保留涼掉的分數</div><div class="sub">關:再加分會把涼掉的分數暖回來(原本行為)。開:涼掉的就留著,記成一筆「自然降溫」,新的加減接在涼掉後的分數上,加分不再莫名跳一大截</div></div><div class="sw" id="swDecayKeep"></div></div>
     </div>
     <div class="field-label">刪除</div>
     <div class="set-group"><div class="set-row tap" onclick="toggleAskDel()"><div style="flex:1;"><div class="k">刪紀錄前先詢問</div><div class="sub">關掉後,長按日誌會直接刪除</div></div><div class="sw" id="swAskDel"></div></div></div>
     <div class="field-label">關於</div>
     <div class="set-group">
       <div class="set-row" data-press onclick="openChangelog()"><div class="k">更新紀錄</div><div class="set-val">查看 ›</div></div>
-      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.28</div></div>
+      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.29</div></div>
     </div>
     <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
   </div>
@@ -552,10 +555,14 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 
 <script>
 "use strict";
-const VERSION="1.28";
+const VERSION="1.29";
 const KEY="friendship-meter-v1";
 /* 更新紀錄:每次改版就在最前面加一筆(v 由大到小,設定頁「更新紀錄」會照這個順序顯示) */
 const CHANGELOG=[
+  {v:"1.29",date:"2026-08-08",items:[
+    "自然降溫新增「保留涼掉的分數」設定:以前晾太久涼掉的分,只要再加分就整包暖回來(加分會莫名跳一大截);現在可以選讓它留著 —— 涼掉多少會記成一筆「自然降溫」,新的加減接在涼掉後的分數上",
+    "(位置:設定 → 餘燼 → 打開自然降溫後出現;預設維持原本「加分會暖回來」,想改再打開)",
+  ]},
   {v:"1.28",date:"2026-08-08",items:[
     "有數字的地方進場會從低往上「跑」到真實值(首頁分數、詳情大分數、里程碑),手感更好",
     "折線圖重做:線會自己一筆畫出來、面積浮起、最高/最低點彈進、末端「現在」那點像餘燼一圈圈呼吸;線改成暖紅到暖橘漸層加柔光",
@@ -685,7 +692,7 @@ function nameForScore(s){
   return "形同陌路";
 }
 function tierOf(s){ return {title:nameForScore(s), color:colorForScore(s), hot:s>=100}; }
-function defaultSettings(){ return {theme:"system",notifyCooldown:false,notifyDaily:false,askBeforeDeleteLog:true,layout:"list",categories:[...DEFAULT_CATEGORIES],presets:[...DEFAULT_PRESETS],emberDecay:false,emberDecayRate:1,sortBy:"score",filterCat:"",filterCooling:false,_lastDaily:null,_lastExport:null}; }
+function defaultSettings(){ return {theme:"system",notifyCooldown:false,notifyDaily:false,askBeforeDeleteLog:true,layout:"list",categories:[...DEFAULT_CATEGORIES],presets:[...DEFAULT_PRESETS],emberDecay:false,emberDecayRate:1,decayKeep:false,sortBy:"score",filterCat:"",filterCooling:false,_lastDaily:null,_lastExport:null}; }
 function load(){ try{ const r=localStorage.getItem(KEY); if(!r) return {v:1,friends:[],settings:defaultSettings()};
     const d=JSON.parse(r); if(!d.friends) d.friends=[]; d.settings=Object.assign(defaultSettings(),d.settings||{});
     if(!Array.isArray(d.settings.categories)||!d.settings.categories.length) d.settings.categories=[...DEFAULT_CATEGORIES];
@@ -875,7 +882,7 @@ function milestonesHtml(f){ const out=[]; const days=Math.floor((Date.now()-f.cr
   out.push(`最高溫 ${_mnum(peak.value)}`); if(low.value!==peak.value) out.push(`最低溫 ${_mnum(low.value)}`);
   let run=f.initial,hit=null; if(f.initial>=100)hit=f.createdAt; else [...f.logs].sort((a,b)=>a.ts-b.ts).forEach(l=>{run+=l.delta; if(hit===null&&run>=100)hit=l.ts;});
   if(hit!==null) out.push(`${fmtDay(hit)} 第一次破 100`);
-  out.push(`累計 ${_mnum(f.logs.length)} 筆紀錄`);
+  out.push(`累計 ${_mnum(f.logs.filter(l=>l.kind!=="decay").length)} 筆紀錄`);
   /* 里程碑字串皆由程式產生(無使用者輸入),數字包在 .count 供進場 count-up */
   return out.map((m,i)=>`<span class="tag ms" style="animation-delay:${(0.9+i*0.06).toFixed(2)}s">${m}</span>`).join(""); }
 
@@ -1045,7 +1052,10 @@ function switchMode(m){ document.querySelectorAll("#modeSeg button").forEach(b=>
   const q=$("quickPane"),c=$("customPane"); q.style.display=m==="quick"?"block":"none"; c.style.display=m==="custom"?"block":"none";
   const pane=m==="quick"?q:c; pane.classList.remove("pane-in"); void pane.offsetWidth; pane.classList.add("pane-in");
   if(m==="custom"){ bindThermo(); setThermo(thermoValue); } }
-function addLog(id,delta,note,kind){ const f=DB.friends.find(x=>x.id===id); const l={id:uid(),ts:Date.now(),delta,note:(note||"").trim()}; if(kind)l.kind=kind; f.logs.push(l); save(DB); }
+function addLog(id,delta,note,kind){ const f=DB.friends.find(x=>x.id===id);
+  /* 「保留涼掉的分數」:加分前先把目前累積的自然降溫記成一筆,之後這次互動會重置降溫時鐘,涼掉的就不會暖回來 */
+  if(DB.settings.emberDecay&&DB.settings.decayKeep&&f.status==="normal"){ const d=decayOf(f); if(d>0) f.logs.push({id:uid(),ts:Date.now()-1,delta:-d,note:"自然降溫(太久沒聯絡)",kind:"decay"}); }
+  const l={id:uid(),ts:Date.now(),delta,note:(note||"").trim()}; if(kind)l.kind=kind; f.logs.push(l); save(DB); }
 function commitScore(delta,note){ haptic(); const kind=reconcileFlag?"reconcile":null;
   if(batchIds&&batchIds.length){ const ids=batchIds.slice(); batchIds=null; ids.forEach(id=>addLog(id,delta,note,kind)); closeSheet(); exitSelectMode(); toast(`已為 ${ids.length} 人記錄 ${delta>0?"+"+delta:delta}`); return; }
   const id=scoringId; addLog(id,delta,note,kind); closeSheet(); afterScore(id,delta); }
@@ -1109,9 +1119,10 @@ function renderDetail(id,animateScore){
   const logsHtml=[...f.logs].sort((a,b)=>b.ts-a.ts).map(l=>{
     const cls=l.delta>0?"up":(l.delta<0?"down":"flat"),sign=l.delta>0?"+":"";
     const upto=f.logs.filter(x=>x.ts<=l.ts).reduce((s,x)=>s+x.delta,f.initial);
-    const recon=l.kind==="reconcile", badge=recon?`<span class="recon-badge">和好</span>`:"";
-    const noteTxt=l.note?escapeHtml(l.note):(recon?"和好 / 破冰":"（無備註）");
-    return `<div class="log-item${recon?' reconcile':''}" data-lid="${l.id}"><div class="log-delta ${cls}">${sign}${l.delta}</div><div class="log-body"><div class="log-date">${fmtDate(l.ts)}</div><div class="log-note ${(l.note||recon)?'':'none'}">${badge}${noteTxt}</div><div class="log-after">→ ${upto}</div></div></div>`;
+    const recon=l.kind==="reconcile", decayL=l.kind==="decay";
+    const badge=recon?`<span class="recon-badge">和好</span>`:(decayL?`<span class="decay-badge">降溫</span>`:"");
+    const noteTxt=l.note?escapeHtml(l.note):(recon?"和好 / 破冰":(decayL?"自然降溫":"（無備註）"));
+    return `<div class="log-item${recon?' reconcile':''}${decayL?' decay':''}" data-lid="${l.id}"><div class="log-delta ${cls}">${sign}${l.delta}</div><div class="log-body"><div class="log-date">${fmtDate(l.ts)}</div><div class="log-note ${(l.note||recon||decayL)?'':'none'}">${badge}${noteTxt}</div><div class="log-after">→ ${upto}</div></div></div>`;
   }).join("")||`<div class="empty-state" style="padding:30px 0"><div class="small">還沒有紀錄,點「今日結算」開始</div></div>`;
   const statusNote=f.status==="dormant"?`<div class="d-sub" style="color:var(--warm)">已設為「不熟了」,不再提醒紀錄</div>`:(ended?`<div class="d-sub" style="color:var(--ink-3)">已結束的好友,分數以 0 呈現;可長按卡片恢復</div>`:"");
   const dec=(!ended)?decayOf(f):0; const decayNote=dec>0?`<div class="d-sub" style="color:var(--cool)">餘燼降溫中,已涼 −${dec}(過冷卻 ${daysSince(lastActivityTs(f))-f.cooldownDays} 天)</div>`:"";
@@ -1221,11 +1232,14 @@ function syncSettingsUI(){ $("verText").textContent=VERSION;
   $("swAskDel").classList.toggle("on",DB.settings.askBeforeDeleteLog!==false);
   $("swDecay").classList.toggle("on",!!DB.settings.emberDecay);
   $("decayRateRow").style.display=DB.settings.emberDecay?"flex":"none";
+  $("decayKeepRow").style.display=DB.settings.emberDecay?"flex":"none";
+  $("swDecayKeep").classList.toggle("on",!!DB.settings.decayKeep);
   document.querySelectorAll("#decayRateSeg button").forEach(b=>b.classList.toggle("on",+b.dataset.rate===(DB.settings.emberDecayRate||1)));
   segMove($("decayRateSeg"));
 }
 function toggleEmberDecay(){ DB.settings.emberDecay=!DB.settings.emberDecay; save(DB); syncSettingsUI(); haptic(); if(currentDetailId)renderDetail(currentDetailId,false); else renderHome(false); }
 function setDecayRate(r){ DB.settings.emberDecayRate=r; save(DB); syncSettingsUI(); haptic(); if(currentDetailId)renderDetail(currentDetailId,false); else renderHome(false); }
+function toggleDecayKeep(){ DB.settings.decayKeep=!DB.settings.decayKeep; save(DB); syncSettingsUI(); haptic(); }
 function setLayout(l){ DB.settings.layout=l; save(DB); syncSettingsUI(); haptic(); renderHome(true); }
 function toggleNotify(kind){ const key=kind==="cooldown"?"notifyCooldown":"notifyDaily"; const next=!DB.settings[key];
   if(next&&"Notification"in window&&Notification.permission==="default"){ try{Notification.requestPermission();}catch(e){} }
