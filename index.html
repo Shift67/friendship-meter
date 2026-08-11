@@ -302,6 +302,19 @@ body.selecting .list .friend:not(.ended)::after{top:50%;left:16px;right:auto;tra
 .recon-badge{display:inline-block;font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.04em;color:#231604;background:var(--warm);border-radius:6px;padding:1px 7px;margin-right:7px;vertical-align:1px;}
 .log-item.decay{border-left:2px solid var(--cool);margin-left:-12px;padding-left:12px;background:linear-gradient(90deg,color-mix(in srgb,var(--cool) 9%,transparent),transparent 58%);}
 .decay-badge{display:inline-block;font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.04em;color:#fff;background:var(--cool);border-radius:6px;padding:1px 7px;margin-right:7px;vertical-align:1px;}
+/* v1.30 撤銷 toast */
+.utoast{position:fixed;left:16px;right:16px;bottom:calc(102px + env(safe-area-inset-bottom));z-index:82;max-width:440px;margin:0 auto;background:var(--ink);color:var(--canvas);border-radius:13px;padding:12px 6px 12px 16px;display:flex;align-items:center;gap:8px;box-shadow:0 12px 30px rgba(0,0,0,.42);transform:translateY(16px);opacity:0;pointer-events:none;transition:transform .3s var(--spring),opacity .2s;overflow:hidden;}
+.utoast.on{transform:none;opacity:1;pointer-events:auto;}
+.utoast .umsg{flex:1;font-weight:700;font-size:13.5px;}
+.utoast .undo-btn{color:var(--warm);font-weight:800;font-size:14px;padding:8px 13px;border-radius:9px;}
+.utoast .undo-btn:active{background:color-mix(in srgb,var(--warm) 18%,transparent);}
+.utoast .ubar{position:absolute;left:0;bottom:0;height:3px;background:var(--warm);width:100%;}
+.utoast.on .ubar{animation:ubarDrain 3s linear forwards;}
+@keyframes ubarDrain{to{width:0;}}
+/* v1.30 首頁降溫指示 */
+.friend.cooling .flame{opacity:.32;filter:saturate(.55);box-shadow:none;}
+.friend.cooling .score{color:#8493b8 !important;text-shadow:none !important;}
+.snow{display:inline-flex;align-items:center;gap:3px;font-family:var(--mono);font-size:10px;color:var(--cool);border:1px solid color-mix(in srgb,var(--cool) 45%,var(--hair));background:color-mix(in srgb,var(--cool) 12%,var(--surface));padding:2px 8px;border-radius:20px;white-space:nowrap;}
 .recon-toggle{display:flex;align-items:center;gap:11px;margin-top:14px;border:1px solid var(--hair);background:var(--surface);border-radius:13px;padding:12px 14px;}
 .recon-toggle .rt-k{font-size:14px;}
 .recon-toggle .rt-sub{font-size:11.5px;color:var(--ink-3);margin-top:2px;line-height:1.4;}
@@ -438,6 +451,9 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
   <div class="numrow"><div class="signseg"><button class="pos on" id="leSignPos" onclick="setSign('log',1)">＋</button><button class="neg" id="leSignNeg" onclick="setSign('log',-1)">－</button></div><input class="field" id="leDelta" inputmode="numeric" pattern="[0-9]*"></div>
   <div class="field-label">原因 / 小故事(可留白)</div>
   <textarea class="field" id="leNote"></textarea>
+  <div class="field-label">日期時間</div>
+  <input type="datetime-local" class="field" id="leDate">
+  <div class="hint">補記前幾天的事,改這裡就補在對的位置。</div>
   <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">取消</button><button class="btn primary" data-press onclick="saveLogEdit()">儲存</button></div>
 </div>
 
@@ -491,7 +507,6 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
     <div class="field-label">外觀</div>
     <div class="set-group">
       <div class="set-row"><div class="k">主題</div><div class="pillseg" id="themeSeg"><button data-theme-opt="light" onclick="setTheme('light')">淺色</button><button data-theme-opt="dark" onclick="setTheme('dark')">深色</button><button data-theme-opt="system" onclick="setTheme('system')">跟隨系統</button></div></div>
-      <div class="set-row"><div style="flex:1;"><div class="k">好友卡片版面</div><div class="sub">長方形清單,或正方形格狀(格狀每格含迷你折線圖)</div></div><div class="pillseg" id="layoutSeg"><button data-layout="list" onclick="setLayout('list')">長方</button><button data-layout="grid" onclick="setLayout('grid')">正方</button></div></div>
     </div>
     <div class="field-label">關係類別</div>
     <div class="set-group" id="catManage"></div>
@@ -516,7 +531,7 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
     <div class="field-label">關於</div>
     <div class="set-group">
       <div class="set-row" data-press onclick="openChangelog()"><div class="k">更新紀錄</div><div class="set-val">查看 ›</div></div>
-      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.29</div></div>
+      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.30</div></div>
     </div>
     <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
   </div>
@@ -535,8 +550,7 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
   <div class="stagger">
     <h2>資料</h2>
     <div class="field-label">備份與轉移</div>
-    <button class="btn" data-press style="width:100%;margin-bottom:11px;" onclick="exportJSON()">匯出 JSON(完整備份)</button>
-    <button class="btn" data-press style="width:100%;margin-bottom:11px;" onclick="exportCSV()">匯出 CSV(給試算表看)</button>
+    <button class="btn primary" data-press style="width:100%;margin-bottom:11px;" onclick="exportJSON()">備份到「檔案 / iCloud」</button>
     <div><div class="field-label">從備份還原(可選覆蓋或合併)</div><button class="btn" data-press style="width:100%;" onclick="document.getElementById('importFile').click()">匯入 JSON</button><input type="file" id="importFile" accept="application/json,.json" style="display:none" onchange="importJSON(event)"></div>
     <div class="hint" style="margin-top:14px;">資料只存在這台裝置的瀏覽器。換手機或清瀏覽器資料前,先匯出。</div>
     <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
@@ -551,14 +565,22 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 </div>
 
 <input type="checkbox" switch id="hapticSwitch" style="position:absolute;opacity:0;pointer-events:none;width:0;height:0;">
+<div class="utoast" id="undoToast"><span class="umsg" id="undoMsg"></span><button class="undo-btn" data-press onclick="runUndo()">撤銷</button><span class="ubar"></span></div>
 <div class="toast" id="toast"></div>
 
 <script>
 "use strict";
-const VERSION="1.29";
+const VERSION="1.30";
 const KEY="friendship-meter-v1";
 /* 更新紀錄:每次改版就在最前面加一筆(v 由大到小,設定頁「更新紀錄」會照這個順序顯示) */
 const CHANGELOG=[
+  {v:"1.30",date:"2026-08-11",items:[
+    "新增撤銷:打分、刪紀錄、刪好友後,下方會跳「已記錄 · 撤銷」,3 秒內反悔一鍵還原,可以放心亂按",
+    "首頁降溫指示:正在自然降溫的卡,火條會變暗加藍色 ❄ 標記,一眼分得出是「涼掉的」不是被你扣的(需開自然降溫)",
+    "紀錄可以改日期時間了:長按日誌 → 編輯,補記前幾天的事就補在對的位置,折線圖和降溫天數都算得準(iOS 是原生日期滾輪)",
+    "備份升級:資料頁的備份會直接叫出系統儲存選單,一鍵存到「檔案 / iCloud」,換手機不怕",
+    "拿掉 CSV 匯出;好友卡片只留格狀版面(長方形移除)",
+  ]},
   {v:"1.29",date:"2026-08-08",items:[
     "自然降溫新增「保留涼掉的分數」設定:以前晾太久涼掉的分,只要再加分就整包暖回來(加分會莫名跳一大截);現在可以選讓它留著 —— 涼掉多少會記成一筆「自然降溫」,新的加減接在涼掉後的分數上",
     "(位置:設定 → 餘燼 → 打開自然降溫後出現;預設維持原本「加分會暖回來」,想改再打開)",
@@ -754,30 +776,18 @@ function miniChartSVG(f){
 let searchQ="";
 $("searchInput").addEventListener("input",e=>{searchQ=e.target.value.trim();renderHome(false);});
 
-function listCardHTML(f,animate,i){
-  const sc=currentScore(f),t=tierOf(sc),ended=f.status==="ended";
-  const cool=isCooling(f)?`<span class="cool">${daysSince(lastActivityTs(f))} 天沒聯絡</span>`:"";
-  const cat=f.category?`<span class="tag ${ended?'mute':''}">${escapeHtml(f.category)}</span>`:"";
-  const dormant=f.status==="dormant"?`<span class="tag mute">不熟了</span>`:"";
-  const endedTag=ended?`<span class="tag mute">已結束</span>`:"";
-  const pin=(f.pinned&&!ended)?PINSVG:"";
-  const showScore=ended?0:sc, tcol=ended?"var(--ink-3)":t.color, ttitle=ended?"已經不是好友了":t.title;
-  return `<div class="friend ${animate?'anim':''}" data-fid="${f.id}" style="--c:${tcol};animation-delay:${(i||0)*0.04}s">
-    <div class="flame"></div>
-    <div class="info"><div class="name">${pin}<span>${escapeHtml(f.name)}</span></div><div class="meta">${cat}${dormant}${endedTag}<span class="tier-title" style="color:${tcol}">${ttitle}</span>${cool}</div></div>
-    <div class="score-wrap"><div class="score ${t.hot&&!ended?'hot':''}">${showScore}</div><div class="score-cap">好感度</div></div>
-  </div>`;
-}
 function gridCellHTML(f,animate,i){
   const sc=currentScore(f),t=tierOf(sc),ended=f.status==="ended";
   const cool=isCooling(f)?`<span class="cool">${daysSince(lastActivityTs(f))}天</span>`:"";
   const cat=f.category?`<span class="tag ${ended?'mute':''}">${escapeHtml(f.category)}</span>`:"";
   const pin=(f.pinned&&!ended)?PINSVG:"";
+  const dec=(!ended)?decayOf(f):0;                                  /* 降溫中的即時減項,>0 就顯示指示 */
+  const snow=dec>0?`<span class="snow">❄ 降溫 −${dec}</span>`:"";
   const showScore=ended?0:sc, tcol=ended?"var(--ink-3)":t.color, ttitle=ended?"已結束":t.title;
-  return `<div class="friend ${animate?'anim':''}" data-fid="${f.id}" style="--c:${tcol};animation-delay:${(i||0)*0.04}s">
+  return `<div class="friend ${animate?'anim':''}${dec>0?' cooling':''}" data-fid="${f.id}" style="--c:${tcol};animation-delay:${(i||0)*0.04}s">
     <div class="flame"></div>
     <div class="name">${pin}<span>${escapeHtml(f.name)}</span></div>
-    <div class="gmeta"><span class="tier-title" style="color:${tcol}">${ttitle}</span>${cat}${cool}</div>
+    <div class="gmeta"><span class="tier-title" style="color:${tcol}">${ttitle}</span>${cat}${snow||cool}</div>
     <div class="gmini">${miniChartSVG(f)}</div>
     <div class="gbottom"><div class="score">${showScore}</div><div class="score-cap">好感度</div></div>
   </div>`;
@@ -796,7 +806,7 @@ function renderHome(animate){
   const active=DB.friends.filter(f=>f.status!=="ended"&&match(f)&&coolOk(f)).sort(cmp);
   const ended=DB.friends.filter(f=>f.status==="ended"&&match(f)&&coolOk(f)).sort((a,b)=>b.createdAt-a.createdAt);
   renderFilterBar(); $("sortBtn").classList.toggle("act",!!(fc||fcool));
-  const grid=DB.settings.layout==="grid", cardFn=grid?gridCellHTML:listCardHTML, cls=grid?"grid":"list";
+  const cardFn=gridCellHTML, cls="grid";   /* v1.30 只留格狀版面 */
   const box=$("friendList");
   if(DB.friends.length===0){ box.className=""; box.innerHTML=`<div class="empty-state"><div class="em"></div><div class="big">還沒有任何關係</div><div class="small">點下方「新增好友」,開始記錄溫度</div></div>`; return; }
   let html=active.length?`<div class="${cls}">`+active.map((f,i)=>cardFn(f,animate,i)).join("")+`</div>`:"";
@@ -1056,9 +1066,12 @@ function addLog(id,delta,note,kind){ const f=DB.friends.find(x=>x.id===id);
   /* 「保留涼掉的分數」:加分前先把目前累積的自然降溫記成一筆,之後這次互動會重置降溫時鐘,涼掉的就不會暖回來 */
   if(DB.settings.emberDecay&&DB.settings.decayKeep&&f.status==="normal"){ const d=decayOf(f); if(d>0) f.logs.push({id:uid(),ts:Date.now()-1,delta:-d,note:"自然降溫(太久沒聯絡)",kind:"decay"}); }
   const l={id:uid(),ts:Date.now(),delta,note:(note||"").trim()}; if(kind)l.kind=kind; f.logs.push(l); save(DB); }
-function commitScore(delta,note){ haptic(); const kind=reconcileFlag?"reconcile":null;
-  if(batchIds&&batchIds.length){ const ids=batchIds.slice(); batchIds=null; ids.forEach(id=>addLog(id,delta,note,kind)); closeSheet(); exitSelectMode(); toast(`已為 ${ids.length} 人記錄 ${delta>0?"+"+delta:delta}`); return; }
-  const id=scoringId; addLog(id,delta,note,kind); closeSheet(); afterScore(id,delta); }
+function commitScore(delta,note){ haptic(); const kind=reconcileFlag?"reconcile":null; const ds=(delta>0?"+"+delta:""+delta);
+  if(batchIds&&batchIds.length){ const ids=batchIds.slice(); batchIds=null; const snap=ids.map(id=>({id,logs:_cloneLogs(id)}));
+    ids.forEach(id=>addLog(id,delta,note,kind)); closeSheet(); exitSelectMode();
+    offerUndo(`已為 ${ids.length} 人記錄 ${ds}`, ()=>{ snap.forEach(s=>_restoreLogs(s.id,s.logs)); save(DB); renderHome(false); }); return; }
+  const id=scoringId; const before=_cloneLogs(id); addLog(id,delta,note,kind); closeSheet(); afterScore(id,delta);
+  offerUndo(`已記錄 ${ds}`, ()=>{ _restoreLogs(id,before); save(DB); if(currentDetailId===id)renderDetail(id,false); else renderHome(false); }); }
 function quickScore(delta){ commitScore(delta,$("qNote").value); }
 function customScore(){ commitScore(thermoValue,$("cNote").value); }
 
@@ -1088,7 +1101,7 @@ function bindThermo(){ buildThermo(); const face=$("thermoFace"); if(!face||face
   const end=()=>{active=false;}; face.addEventListener("pointerup",end); face.addEventListener("pointercancel",end);
 }
 function flyDelta(el,delta){ if(!el||!delta)return; const r=el.getBoundingClientRect(); const d=document.createElement("div"); d.className="delta-fly"; d.textContent=(delta>0?"+":"")+delta; d.style.left=(r.left+r.width/2)+"px"; d.style.top=(r.top+4)+"px"; d.style.color=delta>0?"var(--warm)":"var(--cool)"; document.body.appendChild(d); setTimeout(()=>d.remove(),1000); }
-function afterScore(id,delta){ if($("detailView").style.display!=="none"&&currentDetailId===id){ renderDetail(id,true); flyDelta($("dScore"),delta); } else { renderHome(false); const c=document.querySelector(`.friend[data-fid="${id}"]`); if(c){ c.classList.add("pulse");setTimeout(()=>c.classList.remove("pulse"),700); flyDelta(c.querySelector(".score")||c,delta); } } toast("已記錄"); }
+function afterScore(id,delta){ if($("detailView").style.display!=="none"&&currentDetailId===id){ renderDetail(id,true); flyDelta($("dScore"),delta); } else { renderHome(false); const c=document.querySelector(`.friend[data-fid="${id}"]`); if(c){ c.classList.add("pulse");setTimeout(()=>c.classList.remove("pulse"),700); flyDelta(c.querySelector(".score")||c,delta); } } }
 
 /* ============ 詳情 + 折線圖 ============ */
 let currentDetailId=null,spanDays=30;
@@ -1185,20 +1198,26 @@ function closeConfirm(){ $("confirmScrim").classList.remove("on"); $("confirmBox
 $("confirmYes").addEventListener("click",()=>{ const cb=confirmYesCb; closeConfirm(); if(cb) cb(); });
 function askDeleteFriend(id){ const f=DB.friends.find(x=>x.id===id); if(!f)return; closeSheet(); askConfirm(`刪除「${f.name}」與全部紀錄?無法復原。`,null,()=>doDeleteFriend(id)); }
 function doDeleteFriend(id){ haptic();
-  const fin=()=>{ DB.friends=DB.friends.filter(x=>x.id!==id); save(DB); if(currentDetailId===id) showHome(); else renderHome(false); toast("已刪除"); };
+  const idx=DB.friends.findIndex(x=>x.id===id); const snap=idx>=0?JSON.parse(JSON.stringify(DB.friends[idx])):null;
+  const fin=()=>{ DB.friends=DB.friends.filter(x=>x.id!==id); save(DB); if(currentDetailId===id) showHome(); else renderHome(false);
+    offerUndo(snap?`已刪掉「${snap.name}」`:"已刪除", ()=>{ if(snap&&!DB.friends.some(x=>x.id===id)){ DB.friends.push(snap); save(DB); renderHome(false); } }); };
   const el=(currentDetailId!==id)&&document.querySelector(`.friend[data-fid="${id}"]`);
   if(el){ el.classList.add("removing"); setTimeout(fin,250); } else fin(); }
 function askDeleteLog(fid,lid){ askConfirm("刪除這一筆紀錄?好感度會重新計算。","askBeforeDeleteLog",()=>doDeleteLog(fid,lid)); }
-function doDeleteLog(fid,lid){ const f=DB.friends.find(x=>x.id===fid); if(!f)return; f.logs=f.logs.filter(l=>l.id!==lid); save(DB); haptic(); renderDetail(fid,true); toast("已刪除該筆"); }
+function doDeleteLog(fid,lid){ const f=DB.friends.find(x=>x.id===fid); if(!f)return; const before=_cloneLogs(fid); f.logs=f.logs.filter(l=>l.id!==lid); save(DB); haptic(); renderDetail(fid,true);
+  offerUndo("已刪掉這筆", ()=>{ _restoreLogs(fid,before); save(DB); if(currentDetailId===fid)renderDetail(fid,false); else renderHome(false); }); }
 function openLogContext(fid,lid){ $("ctxTitle").textContent="這筆紀錄";
   $("ctxBody").innerHTML=`<div class="menu-item" data-press onclick="editLog('${fid}','${lid}')"><div class="mi-k">編輯這筆</div><div class="mi-sub">改分數或備註</div></div><div class="menu-item" data-press onclick="closeSheet();askDeleteLog('${fid}','${lid}')"><div class="mi-k danger">刪除這筆</div></div>`;
   bindPress(); openSheet("ctxSheet"); }
 function editLog(fid,lid){ const f=DB.friends.find(x=>x.id===fid); const l=f&&f.logs.find(x=>x.id===lid); if(!l)return;
   editingLogFid=fid; editingLogId=lid; $("leDelta").value=String(Math.abs(l.delta)); $("leNote").value=l.note||""; setSign("log", l.delta<0?-1:1);
+  const de=$("leDate"); if(de){ de.value=_toLocalInput(l.ts); de.max=_toLocalInput(Date.now()); }
   closeSheet(); openSheet("logEditSheet"); }
 function saveLogEdit(){ const abs=parseInt($("leDelta").value,10); if(!Number.isFinite(abs)){toast("填一個數值");return;}
   const f=DB.friends.find(x=>x.id===editingLogFid); const l=f&&f.logs.find(x=>x.id===editingLogId); if(!l)return;
-  l.delta=abs*leSign; l.note=$("leNote").value.trim(); save(DB); haptic(); closeSheet(); renderDetail(editingLogFid,true); toast("已更新該筆"); }
+  l.delta=abs*leSign; l.note=$("leNote").value.trim();
+  const dv=$("leDate")&&$("leDate").value; if(dv){ const ts=new Date(dv).getTime(); if(Number.isFinite(ts)) l.ts=ts; }
+  save(DB); haptic(); closeSheet(); renderDetail(editingLogFid,true); toast("已更新該筆"); }
 
 /* ============ 設定 ============ */
 /* ============ 排序 · 篩選 ============ */
@@ -1225,8 +1244,7 @@ function renderChangelog(){ $("changelogBody").innerHTML=CHANGELOG.map(c=>`<div 
 function openChangelog(){ renderChangelog(); closeSheet(); openSheet("changelogSheet"); }
 function syncSettingsUI(){ $("verText").textContent=VERSION;
   document.querySelectorAll("#themeSeg button").forEach(b=>b.classList.toggle("on",b.dataset.themeOpt===DB.settings.theme));
-  document.querySelectorAll("#layoutSeg button").forEach(b=>b.classList.toggle("on",b.dataset.layout===DB.settings.layout));
-  segMove($("themeSeg")); segMove($("layoutSeg")); renderCatManage(); renderPresetManage();
+  segMove($("themeSeg")); renderCatManage(); renderPresetManage();
   $("swCooldown").classList.toggle("on",!!DB.settings.notifyCooldown);
   $("swDaily").classList.toggle("on",!!DB.settings.notifyDaily);
   $("swAskDel").classList.toggle("on",DB.settings.askBeforeDeleteLog!==false);
@@ -1240,7 +1258,6 @@ function syncSettingsUI(){ $("verText").textContent=VERSION;
 function toggleEmberDecay(){ DB.settings.emberDecay=!DB.settings.emberDecay; save(DB); syncSettingsUI(); haptic(); if(currentDetailId)renderDetail(currentDetailId,false); else renderHome(false); }
 function setDecayRate(r){ DB.settings.emberDecayRate=r; save(DB); syncSettingsUI(); haptic(); if(currentDetailId)renderDetail(currentDetailId,false); else renderHome(false); }
 function toggleDecayKeep(){ DB.settings.decayKeep=!DB.settings.decayKeep; save(DB); syncSettingsUI(); haptic(); }
-function setLayout(l){ DB.settings.layout=l; save(DB); syncSettingsUI(); haptic(); renderHome(true); }
 function toggleNotify(kind){ const key=kind==="cooldown"?"notifyCooldown":"notifyDaily"; const next=!DB.settings[key];
   if(next&&"Notification"in window&&Notification.permission==="default"){ try{Notification.requestPermission();}catch(e){} }
   DB.settings[key]=next; save(DB); syncSettingsUI(); haptic(); }
@@ -1261,12 +1278,12 @@ function runReminders(){ const msgs=[];
 function openData(){ openSheet("dataSheet"); }
 function download(fn,text,mime){ const b=new Blob([text],{type:mime}),u=URL.createObjectURL(b),a=document.createElement("a"); a.href=u;a.download=fn;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000); }
 function stamp(){ const d=new Date(),p=n=>String(n).padStart(2,"0"); return `${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}`; }
-function exportJSON(){ DB.settings._lastExport=Date.now(); save(DB); download(`好感度備份_${stamp()}.json`,JSON.stringify(DB,null,2),"application/json"); toast("已匯出 JSON"); }
-function exportCSV(){ const rows=[["好友","類別","狀態","時間","變化","當下好感度","備註"]];
-  DB.friends.forEach(f=>{ let run=f.initial; const st=f.status==="ended"?"已結束":(f.status==="dormant"?"不熟了":"");
-    rows.push([f.name,f.category||"",st,fmtDate(f.createdAt),"初始 "+f.initial,f.initial,""]);
-    [...f.logs].sort((a,b)=>a.ts-b.ts).forEach(l=>{ run+=l.delta; rows.push([f.name,f.category||"",st,fmtDate(l.ts),(l.delta>0?"+":"")+l.delta,run,l.note||""]); }); });
-  const csv="\uFEFF"+rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(",")).join("\n"); download(`好感度明細_${stamp()}.csv`,csv,"text/csv"); toast("已匯出 CSV"); }
+async function exportJSON(){ DB.settings._lastExport=Date.now(); save(DB);
+  const fn=`好感度備份_${stamp()}.json`, data=JSON.stringify(DB,null,2);
+  try{ if(navigator.canShare){ const file=new File([data],fn,{type:"application/json"});
+    if(navigator.canShare({files:[file]})){ await navigator.share({files:[file],title:"餘溫備份"}); toast("已開啟備份選單"); return; } } }
+  catch(e){ if(e&&e.name==="AbortError") return; }   /* 使用者取消分享 → 不落地下載 */
+  download(fn,data,"application/json"); toast("已匯出備份"); }
 let _pendingImport=null;
 /* 把匯入的好友補齊必要欄位、順手修一下舊資料(不動 id,合併才對得上) */
 function normImportFriends(arr){ return arr.map(f=>{ const g=Object.assign({},f);
@@ -1418,6 +1435,16 @@ function emberBg(on){ if(!_emCv)return;
   const run=on&&!_reduce()&&!document.hidden&&!currentDetailId;
   if(run){ if(!_emRaf){ _emSize(); if(!_emParts.length){for(let i=0;i<15;i++)_emParts.push(_emMk(true));} _emRaf=requestAnimationFrame(_emTick); } }
   else if(_emRaf){ cancelAnimationFrame(_emRaf); _emRaf=0; if(_emCtx)_emCtx.clearRect(0,0,_emW,_emH); } }
+
+/* ---- v1.30 撤銷 / 改日期 ---- */
+let _undo=null,_undoT=null;
+function _cloneLogs(id){ const f=DB.friends.find(x=>x.id===id); return f?JSON.parse(JSON.stringify(f.logs)):null; }
+function _restoreLogs(id,logs){ const f=DB.friends.find(x=>x.id===id); if(f&&logs)f.logs=logs; }
+function offerUndo(msg,revert){ _undo={revert}; const t=$("undoToast"); if(!t)return; $("undoMsg").textContent=msg;
+  t.classList.remove("on"); void t.offsetWidth; t.classList.add("on"); clearTimeout(_undoT); _undoT=setTimeout(dismissUndo,3000); }
+function runUndo(){ if(_undo&&_undo.revert)_undo.revert(); _undo=null; haptic(); dismissUndo(); }
+function dismissUndo(){ clearTimeout(_undoT); const t=$("undoToast"); if(t)t.classList.remove("on"); _undo=null; }
+function _toLocalInput(ts){ const d=new Date(ts),p=n=>String(n).padStart(2,"0"); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`; }
 
 _emCv=$("emberCanvas"); if(_emCv){ _emCtx=_emCv.getContext("2d"); _emSize(); }
 applyTheme(); renderHome(true); addSheetHeaders(); syncSettingsUI(); bindPress(); bindSheetDrag(); bindHomeSwipe(); bindDetailSwipe(); bindSelectDrag(); segMoveAll(); runReminders();
