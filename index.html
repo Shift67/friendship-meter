@@ -220,9 +220,9 @@ body.selecting .list .friend:not(.ended)::after{top:50%;left:16px;right:auto;tra
 .quick.zero:active{border-color:var(--ink-2);}
 
 /* 溫度計微調 */
-.thermo-area{display:flex;justify-content:center;padding:6px 0 2px;}
-.thermo-bezel{width:120px;padding:7px;border-radius:58px;background:linear-gradient(150deg,#f0f1f3,#b7babf 32%,#dcdee1 52%,#a9acb1 78%,#e9eaec);box-shadow:0 8px 20px rgba(0,0,0,.4),inset 0 1px 2px rgba(255,255,255,.8),inset 0 -2px 4px rgba(0,0,0,.2);}
-.thermo-face{position:relative;height:clamp(260px,40vh,384px);border-radius:52px;background:linear-gradient(#fdfdf9,#f3f2ea);box-shadow:inset 0 2px 6px rgba(0,0,0,.14);overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none;}
+.thermo-area{display:flex;justify-content:center;padding:2px 0 0;}
+.thermo-bezel{width:108px;padding:7px;border-radius:58px;background:linear-gradient(150deg,#f0f1f3,#b7babf 32%,#dcdee1 52%,#a9acb1 78%,#e9eaec);box-shadow:0 8px 20px rgba(0,0,0,.4),inset 0 1px 2px rgba(255,255,255,.8),inset 0 -2px 4px rgba(0,0,0,.2);}
+.thermo-face{position:relative;height:clamp(196px,27vh,240px);border-radius:52px;background:linear-gradient(#fdfdf9,#f3f2ea);box-shadow:inset 0 2px 6px rgba(0,0,0,.14);overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none;}
 .thermo-tube{position:absolute;left:50%;transform:translateX(-50%);top:26px;bottom:48px;width:15px;border-radius:8px;background:linear-gradient(90deg,#dedbd0,#f2f0e8,#dedbd0);box-shadow:inset 0 0 3px rgba(0,0,0,.3);pointer-events:none;}
 .thermo-fill{position:absolute;left:1px;right:1px;bottom:0;border-radius:0 0 7px 7px;background:linear-gradient(90deg,#c81810,#ff5a4a,#c81810);}
 .thermo-tip{position:absolute;left:50%;width:21px;height:21px;border-radius:50%;transform:translateX(-50%);background:radial-gradient(circle at 38% 32%,#ff7d6d,#d21b12);box-shadow:0 1px 3px rgba(0,0,0,.35);}
@@ -316,7 +316,9 @@ body.selecting .list .friend:not(.ended)::after{top:50%;left:16px;right:auto;tra
 .friend.cooling .score{color:#8493b8 !important;text-shadow:none !important;}
 .snow{display:inline-flex;align-items:center;gap:3px;font-family:var(--mono);font-size:10px;color:var(--cool);border:1px solid color-mix(in srgb,var(--cool) 45%,var(--hair));background:color-mix(in srgb,var(--cool) 12%,var(--surface));padding:2px 8px;border-radius:20px;white-space:nowrap;}
 .recon-toggle{display:flex;align-items:center;gap:11px;margin-top:14px;border:1px solid var(--hair);background:var(--surface);border-radius:13px;padding:12px 14px;}
-.recon-toggle .rt-k{font-size:14px;}
+.recon-toggle.compact{margin-top:12px;padding:11px 14px;}
+.recon-toggle.compact .rt-k{flex:1;font-size:13.5px;}
+textarea.field.field-sm{min-height:48px;}
 .recon-toggle .rt-sub{font-size:11.5px;color:var(--ink-3);margin-top:2px;line-height:1.4;}
 .recon-toggle .cb.on{background:var(--warm);border-color:var(--warm);}
 .section-t{font-family:var(--mono);font-size:10.5px;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-3);margin:24px 0 6px;}
@@ -373,6 +375,27 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 .record-ribbon{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 60px);z-index:86;background:linear-gradient(180deg,#ffe08a,#ffb64a);color:#2a1a04;font-family:var(--disp);font-weight:800;font-size:15px;padding:9px 20px;border-radius:14px;box-shadow:0 12px 30px rgba(0,0,0,.45);opacity:0;white-space:nowrap;pointer-events:none;transform:translate(-50%,-160%);}
 .record-ribbon.on{animation:ribbonDrop 2.4s cubic-bezier(.34,1.56,.64,1) forwards;}
 @keyframes ribbonDrop{0%{opacity:0;transform:translate(-50%,-160%);}12%{opacity:1;transform:translate(-50%,0);}78%{opacity:1;transform:translate(-50%,0);}100%{opacity:0;transform:translate(-50%,-40%);}}
+/* v1.33 成就:解鎖橫幅 + 成就櫃 */
+.achv-banner{position:fixed;left:14px;right:14px;top:calc(env(safe-area-inset-top) + 12px);max-width:440px;margin:0 auto;z-index:87;background:var(--surface-hi);border:1px solid color-mix(in srgb,var(--warm) 45%,var(--hair));border-radius:16px;padding:12px 14px;display:flex;gap:12px;align-items:center;box-shadow:0 16px 40px rgba(0,0,0,.5);transform:translateY(-170%);opacity:0;transition:transform .45s var(--spring),opacity .3s;pointer-events:none;}
+.achv-banner.on{transform:none;opacity:1;}
+.achv-banner .ab-disc{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:21px;flex:0 0 auto;background:radial-gradient(circle at 40% 35%,#fff3cf,var(--warm));box-shadow:0 0 16px -2px var(--warm);}
+.achv-banner .ab-cap{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);}
+.achv-banner .ab-t{font-family:var(--disp);font-weight:800;font-size:15.5px;margin-top:1px;}
+.achv-banner .ab-s{font-size:11.5px;color:var(--ink-2);margin-top:1px;line-height:1.35;}
+.achv-count{font-family:var(--mono);font-size:13px;color:var(--ink-3);font-weight:400;}
+.achv-group{margin-top:14px;}
+.ag-h{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:var(--ink-3);text-transform:uppercase;margin:0 2px 8px;display:flex;justify-content:space-between;}
+.ag-h span{color:var(--warm);}
+.achv-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.medal{display:flex;gap:10px;align-items:center;border:1px solid var(--hair);background:var(--surface);border-radius:14px;padding:10px 11px;overflow:hidden;}
+.medal .disc{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;flex:0 0 auto;background:var(--surface-hi);filter:grayscale(1) brightness(.62);transition:.4s;}
+.medal .mtx{min-width:0;}
+.medal .mt{font-size:12.5px;font-weight:700;color:var(--ink-3);line-height:1.15;}
+.medal .ms{font-size:10px;color:var(--ink-3);opacity:.65;margin-top:2px;line-height:1.3;}
+.medal.got{border-color:color-mix(in srgb,var(--warm) 40%,var(--hair));}
+.medal.got .disc{filter:none;background:radial-gradient(circle at 40% 35%,#fff3cf,var(--warm));box-shadow:0 0 14px -3px var(--warm);}
+.medal.got .mt{color:var(--ink);}
+.medal.got .ms{opacity:.85;}
 /* v1.32 結算畫面選時間 */
 .score-head{display:flex;align-items:center;justify-content:space-between;gap:10px;}
 .score-head h2{flex:1;min-width:0;}
@@ -442,7 +465,6 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
     </div>
   </div>
   <div class="seg" id="modeSeg" style="margin-top:14px;"><button class="on" data-mode="quick" onclick="switchMode('quick')">快速</button><button data-mode="custom" onclick="switchMode('custom')">微調</button></div>
-  <div class="recon-toggle" id="reconRow" data-press onclick="toggleReconcile()"><span class="cb" id="reconCb"></span><div style="flex:1;"><div class="rt-k">標記為「和好 / 破冰」</div><div class="rt-sub">冷戰或吵架後和好的一筆,會在時間軸高亮</div></div></div>
   <div id="quickPane">
     <div class="quickrow">
       <button class="quick plus" data-press onclick="quickScore(5)"><div class="q-val">+5</div><div class="q-cap">升溫</div></button>
@@ -451,11 +473,9 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
     </div>
     <div class="field-label">原因 / 小故事(可留白)</div>
     <div class="chips presets" id="qPresets"></div>
-    <textarea class="field" id="qNote" placeholder="今天為什麼加分或扣分?不寫也行"></textarea>
-    <div class="hint">先寫好備註,再點上面的按鈕,就會一起記下來。</div>
+    <textarea class="field field-sm" id="qNote" placeholder="今天為什麼加分或扣分?不寫也行"></textarea>
   </div>
   <div id="customPane" style="display:none;">
-    <div class="field-label">好感度變化 · 拖曳中間的水銀</div>
     <div class="thermo-area">
       <div class="thermo-bezel"><div class="thermo-face" id="thermoFace">
         <div class="thermo-tube"><div class="thermo-fill" id="thermoFill"></div><div class="thermo-tip" id="thermoTip"></div></div>
@@ -464,11 +484,11 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
         <div class="thermo-nums" id="thermoNums"></div>
       </div></div>
     </div>
-    <div class="field-label">原因 / 小故事(可留白)</div>
-    <div class="chips presets" id="cPresets"></div>
-    <textarea class="field" id="cNote" placeholder="今天發生了什麼?"></textarea>
-    <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">取消</button><button class="btn primary" data-press id="customSave" onclick="customScore()">記錄</button></div>
+    <div class="chips presets" id="cPresets" style="margin-top:14px"></div>
+    <textarea class="field field-sm" id="cNote" placeholder="今天發生了什麼?(可留白)"></textarea>
   </div>
+  <div class="recon-toggle compact" id="reconRow" data-press onclick="toggleReconcile()"><span class="cb" id="reconCb"></span><div class="rt-k">標記為「和好 / 破冰」</div></div>
+  <div class="sheet-actions" id="scoreActions" style="margin-top:14px"><button class="btn" data-press onclick="closeSheet()">取消</button><button class="btn primary" data-press id="customSave" onclick="customScore()">記錄</button></div>
 </div>
 
 <div class="sheet" id="logEditSheet">
@@ -555,10 +575,14 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
     </div>
     <div class="field-label">刪除</div>
     <div class="set-group"><div class="set-row tap" onclick="toggleAskDel()"><div style="flex:1;"><div class="k">刪紀錄前先詢問</div><div class="sub">關掉後,長按日誌會直接刪除</div></div><div class="sw" id="swAskDel"></div></div></div>
+    <div class="field-label">成就</div>
+    <div class="set-group">
+      <div class="set-row" data-press onclick="openAchv()"><div class="k">成就櫃</div><div class="set-val" id="achvSetCount">0 / 150</div></div>
+    </div>
     <div class="field-label">關於</div>
     <div class="set-group">
       <div class="set-row" data-press onclick="openChangelog()"><div class="k">更新紀錄</div><div class="set-val">查看 ›</div></div>
-      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.32</div></div>
+      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.33</div></div>
     </div>
     <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
   </div>
@@ -569,6 +593,14 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
   <h2>更新紀錄</h2>
   <div class="hint" style="margin:2px 2px 0;">每一代改了什麼,最新在最上面。</div>
   <div id="changelogBody" style="margin-top:6px;"></div>
+  <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
+</div>
+
+<div class="sheet" id="achvSheet">
+  <div class="grabber"></div>
+  <h2>成就 <span class="achv-count" id="achvCount"></span></h2>
+  <div class="hint" style="margin:2px 2px 0;">都跟「關係」有關,溫柔不刷量。達成會自動點亮。</div>
+  <div id="achvShelf" style="margin-top:8px;"></div>
   <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
 </div>
 
@@ -593,15 +625,21 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 
 <input type="checkbox" switch id="hapticSwitch" style="position:absolute;opacity:0;pointer-events:none;width:0;height:0;">
 <div class="record-ribbon" id="recordRibbon" aria-hidden="true">🎉 新高溫</div>
+<div class="achv-banner" id="achvBanner" aria-hidden="true"><div class="ab-disc" id="abDisc">🏅</div><div class="ab-txt"><div class="ab-cap">成就解鎖</div><div class="ab-t" id="abTitle"></div><div class="ab-s" id="abSub"></div></div></div>
 <div class="utoast" id="undoToast"><span class="umsg" id="undoMsg"></span><button class="undo-btn" data-press onclick="runUndo()">撤銷</button><span class="ubar"></span></div>
 <div class="toast" id="toast"></div>
 
 <script>
 "use strict";
-const VERSION="1.32";
+const VERSION="1.33";
 const KEY="friendship-meter-v1";
 /* 更新紀錄:每次改版就在最前面加一筆(v 由大到小,設定頁「更新紀錄」會照這個順序顯示) */
 const CHANGELOG=[
+  {v:"1.33",date:"2026-08-11",items:[
+    "新增成就系統:150 個跟「關係」有關的成就(破冰、週年、破百、和好、連續記錄…),達成會從上面滑進一張成就卡 + 火花,設定「成就 → 成就櫃」看已解鎖/未解鎖,溫柔不刷量",
+    "結算畫面重排:把「和好 / 破冰」移到最下面、溫度計縮小、原因選項往上移,現在一打開就能直接拖溫度計又能直接點選項,不用再上下捲",
+    "(成就的獎勵:外框、折線樣式之後會另外做原型再上)",
+  ]},
   {v:"1.32",date:"2026-08-11",items:[
     "打分火花優化:火花出現時不再掉幀。改用預先畫好的光點貼圖 + 疊加混色,拿掉每顆粒子最吃效能的 shadowBlur",
     "結算畫面可以直接選時間了:標題右邊「🕐 現在」點一下就跳系統時間滾輪(iOS 原生),補記前幾天的事不用再先記一筆進去改;選了會顯示日期,按旁邊 ✕ 改回現在",
@@ -752,7 +790,7 @@ function nameForScore(s){
   return "形同陌路";
 }
 function tierOf(s){ return {title:nameForScore(s), color:colorForScore(s), hot:s>=100}; }
-function defaultSettings(){ return {theme:"system",notifyCooldown:false,notifyDaily:false,askBeforeDeleteLog:true,layout:"list",categories:[...DEFAULT_CATEGORIES],presets:[...DEFAULT_PRESETS],emberDecay:false,emberDecayRate:1,decayKeep:false,sortBy:"score",filterCat:"",filterCooling:false,_lastDaily:null,_lastExport:null}; }
+function defaultSettings(){ return {theme:"system",notifyCooldown:false,notifyDaily:false,askBeforeDeleteLog:true,layout:"list",categories:[...DEFAULT_CATEGORIES],presets:[...DEFAULT_PRESETS],emberDecay:false,emberDecayRate:1,decayKeep:false,sortBy:"score",filterCat:"",filterCooling:false,_lastDaily:null,_lastExport:null,achv:{},_did:{}}; }
 function load(){ try{ const r=localStorage.getItem(KEY); if(!r) return {v:1,friends:[],settings:defaultSettings()};
     const d=JSON.parse(r); if(!d.friends) d.friends=[]; d.settings=Object.assign(defaultSettings(),d.settings||{});
     if(!Array.isArray(d.settings.categories)||!d.settings.categories.length) d.settings.categories=[...DEFAULT_CATEGORIES];
@@ -788,7 +826,7 @@ const PINSVG=`<svg class="pin" viewBox="0 0 24 24"><path d="M9 3.5h6M10 3.5l-.6 
 
 const mql=window.matchMedia("(prefers-color-scheme: dark)");
 function resolvedTheme(){ const t=DB.settings.theme; return t==="system"?(mql.matches?"dark":"light"):t; }
-function applyTheme(){ const r=resolvedTheme(); document.documentElement.setAttribute("data-theme",r); const m=document.querySelector('meta[name=theme-color]'); if(m)m.content=(r==="dark"?"#17130f":"#f7f2ea"); }
+function applyTheme(){ const r=resolvedTheme(); document.documentElement.setAttribute("data-theme",r); const m=document.querySelector('meta[name=theme-color]'); if(m)m.content=(r==="dark"?"#17130f":"#f7f2ea"); if(typeof evalAchievements==="function"){try{evalAchievements();}catch(e){}} }
 mql.addEventListener("change",()=>{ if(DB.settings.theme==="system") applyTheme(); });
 function setTheme(t){ DB.settings.theme=t; save(DB); applyTheme(); syncSettingsUI(); haptic(); }
 
@@ -1026,9 +1064,9 @@ function openContext(id){
 }
 function togglePin(id){ const f=DB.friends.find(x=>x.id===id); f.pinned=!f.pinned; save(DB); haptic(); closeSheet(); renderHome(false); toast(f.pinned?"已釘選":"已取消釘選"); }
 function setDormant(id){ const f=DB.friends.find(x=>x.id===id); f.status="dormant"; save(DB); haptic(); closeSheet(); rerender(); toast("已設為不熟了"); }
-function restoreNormal(id){ const f=DB.friends.find(x=>x.id===id); f.status="normal"; save(DB); haptic(); closeSheet(); rerender(); toast("已恢復提醒"); }
+function restoreNormal(id){ const f=DB.friends.find(x=>x.id===id); f.status="normal"; save(DB); haptic(); closeSheet(); rerender(); toast("已恢復提醒"); markDid("undormant"); }
 function endFriend(id){ const f=DB.friends.find(x=>x.id===id); f.status="ended"; f.pinned=false; save(DB); haptic(); closeSheet(); rerender(); toast("已結束好友關係"); }
-function restoreFriend(id){ const f=DB.friends.find(x=>x.id===id); f.status="normal"; save(DB); haptic(); closeSheet(); rerender(); toast("已恢復好友"); }
+function restoreFriend(id){ const f=DB.friends.find(x=>x.id===id); f.status="normal"; save(DB); haptic(); closeSheet(); rerender(); toast("已恢復好友"); markDid("restore"); }
 function rerender(){ if(currentDetailId){ const f=DB.friends.find(x=>x.id===currentDetailId); if(!f||f.status==="ended") showHome(); else renderDetail(currentDetailId,false); } else renderHome(false); }
 
 /* ============ 新增 / 編輯 ============ */
@@ -1099,6 +1137,7 @@ function segMoveAll(){ document.querySelectorAll(".seg,.pillseg").forEach(segMov
 function switchMode(m){ document.querySelectorAll("#modeSeg button").forEach(b=>b.classList.toggle("on",b.dataset.mode===m)); segMove($("modeSeg"));
   const q=$("quickPane"),c=$("customPane"); q.style.display=m==="quick"?"block":"none"; c.style.display=m==="custom"?"block":"none";
   const pane=m==="quick"?q:c; pane.classList.remove("pane-in"); void pane.offsetWidth; pane.classList.add("pane-in");
+  const acts=$("scoreActions"); if(acts) acts.style.display=m==="custom"?"flex":"none";
   if(m==="custom"){ bindThermo(); setThermo(thermoValue); } }
 function addLog(id,delta,note,kind,ts){ const f=DB.friends.find(x=>x.id===id);
   /* 「保留涼掉的分數」:加分前先把目前累積的自然降溫記成一筆,之後這次互動會重置降溫時鐘,涼掉的就不會暖回來 */
@@ -1114,13 +1153,14 @@ function resetScoreTime(e){ if(e&&e.stopPropagation)e.stopPropagation(); scoreTs
 function commitScore(delta,note){ haptic(); const kind=reconcileFlag?"reconcile":null; const ds=(delta>0?"+"+delta:""+delta);
   if(batchIds&&batchIds.length){ const ids=batchIds.slice(); batchIds=null; const snap=ids.map(id=>({id,logs:_cloneLogs(id)}));
     ids.forEach(id=>addLog(id,delta,note,kind,scoreTs)); closeSheet(); exitSelectMode();
-    offerUndo(`已為 ${ids.length} 人記錄 ${ds}`, ()=>{ snap.forEach(s=>_restoreLogs(s.id,s.logs)); save(DB); renderHome(false); }); return; }
+    offerUndo(`已為 ${ids.length} 人記錄 ${ds}`, ()=>{ snap.forEach(s=>_restoreLogs(s.id,s.logs)); save(DB); renderHome(false); }); evalAchievements(); return; }
   const id=scoringId; const before=_cloneLogs(id);
   const _f=DB.friends.find(x=>x.id===id); const _prevPeak=_f?peakScore(_f):0; const _priorReal=_f?_f.logs.filter(l=>l.kind!=="decay").length:0;
   addLog(id,delta,note,kind,scoreTs);
   const _newHigh=!!(_f&&delta>0&&_priorReal>=3&&rawScore(_f)>_prevPeak&&rawScore(_f)>0);
   closeSheet(); afterScore(id,delta,_newHigh);
-  offerUndo(`已記錄 ${ds}`, ()=>{ _restoreLogs(id,before); save(DB); if(currentDetailId===id)renderDetail(id,false); else renderHome(false); }); }
+  offerUndo(`已記錄 ${ds}`, ()=>{ _restoreLogs(id,before); save(DB); if(currentDetailId===id)renderDetail(id,false); else renderHome(false); });
+  if(_newHigh) markDid("newHigh"); evalAchievements(); }
 function quickScore(delta){ commitScore(delta,$("qNote").value); }
 function customScore(){ commitScore(thermoValue,$("cNote").value); }
 
@@ -1267,8 +1307,8 @@ function editLog(fid,lid){ const f=DB.friends.find(x=>x.id===fid); const l=f&&f.
 function saveLogEdit(){ const abs=parseInt($("leDelta").value,10); if(!Number.isFinite(abs)){toast("填一個數值");return;}
   const f=DB.friends.find(x=>x.id===editingLogFid); const l=f&&f.logs.find(x=>x.id===editingLogId); if(!l)return;
   l.delta=abs*leSign; l.note=$("leNote").value.trim();
-  const dv=$("leDate")&&$("leDate").value; if(dv){ const ts=new Date(dv).getTime(); if(Number.isFinite(ts)) l.ts=ts; }
-  save(DB); haptic(); closeSheet(); renderDetail(editingLogFid,true); toast("已更新該筆"); }
+  const dv=$("leDate")&&$("leDate").value; if(dv){ const ts=new Date(dv).getTime(); if(Number.isFinite(ts)&&ts!==l.ts){ l.ts=ts; markDid("editDate"); } }
+  save(DB); haptic(); closeSheet(); renderDetail(editingLogFid,true); toast("已更新該筆"); evalAchievements(); }
 
 /* ============ 設定 ============ */
 /* ============ 排序 · 篩選 ============ */
@@ -1329,7 +1369,7 @@ function runReminders(){ const msgs=[];
 function openData(){ openSheet("dataSheet"); }
 function download(fn,text,mime){ const b=new Blob([text],{type:mime}),u=URL.createObjectURL(b),a=document.createElement("a"); a.href=u;a.download=fn;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000); }
 function stamp(){ const d=new Date(),p=n=>String(n).padStart(2,"0"); return `${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}`; }
-async function exportJSON(){ DB.settings._lastExport=Date.now(); save(DB);
+async function exportJSON(){ DB.settings._lastExport=Date.now(); if(!DB.settings._did)DB.settings._did={}; DB.settings._did.backups=(DB.settings._did.backups||0)+1; save(DB); evalAchievements();
   const fn=`好感度備份_${stamp()}.json`, data=JSON.stringify(DB,null,2);
   try{ if(navigator.canShare){ const file=new File([data],fn,{type:"application/json"});
     if(navigator.canShare({files:[file]})){ await navigator.share({files:[file],title:"餘溫備份"}); toast("已開啟備份選單"); return; } } }
@@ -1355,7 +1395,7 @@ function openImportChoice(d){ const incoming=d.friends.length; closeSheet();
   bindPress(); openSheet("ctxSheet"); }
 function doImport(mode){ const d=_pendingImport; _pendingImport=null; if(!d){closeSheet();return;} haptic();
   if(mode==="replace"){ DB={v:1,friends:normImportFriends(d.friends),settings:Object.assign(defaultSettings(),d.settings||{})};
-    save(DB); applyTheme(); closeSheet(); renderHome(true); toast(`已覆蓋匯入 ${DB.friends.length} 人`); return; }
+    save(DB); applyTheme(); closeSheet(); renderHome(true); toast(`已覆蓋匯入 ${DB.friends.length} 人`); markDid("import"); evalAchievements(true); return; }
   /* 合併:依 friend.id 對齊,重複的人合併 logs(依 log.id 去重),不存在的新增 */
   const incoming=normImportFriends(d.friends); let added=0,newLogs=0;
   incoming.forEach(nf=>{ const cur=DB.friends.find(x=>x.id===nf.id);
@@ -1364,7 +1404,7 @@ function doImport(mode){ const d=_pendingImport; _pendingImport=null; if(!d){clo
   /* 類別 / 常用原因取聯集,不丟失對方的自訂 */
   if(d.settings){ if(Array.isArray(d.settings.categories)) d.settings.categories.forEach(c=>{ if(c&&!DB.settings.categories.includes(c))DB.settings.categories.push(c); });
     if(Array.isArray(d.settings.presets)) d.settings.presets.forEach(p=>{ if(p&&!DB.settings.presets.includes(p))DB.settings.presets.push(p); }); }
-  save(DB); closeSheet(); renderHome(true); toast(`已合併:新增 ${added} 人、${newLogs} 筆紀錄`); }
+  save(DB); closeSheet(); renderHome(true); toast(`已合併:新增 ${added} 人、${newLogs} 筆紀錄`); markDid("import"); markDid("merge"); evalAchievements(true); }
 
 /* ============ sheet + 按壓 ============ */
 let openedSheet=null;
@@ -1527,13 +1567,228 @@ function fxNewHigh(el,score){ const rb=$("recordRibbon");
   const c=_fxCenter(el); if(c){ fxBurst(c.x,c.y,{n:38,pal:_FX_GOLD,spd:4.6,up:1.4,life:84,sz:3.1}); setTimeout(()=>{ const c2=_fxCenter(el)||c; fxBurst(c2.x,c2.y,{n:22,pal:_FX_GOLD,spd:3.3,life:74,sz:2.7}); },160); }
   haptic(); }
 
+/* ============ v1.33 成就系統 ============ */
+/* 判定資料大多能從現有資料算;撤銷/改日期/匯入/恢復等動作靠一個旗標 _did 記。所有判定包 try/catch,壞一個不影響其他 */
+function _did(k){ return !!(DB.settings._did&&DB.settings._did[k]); }
+function markDid(k){ if(!DB.settings._did)DB.settings._did={}; if(!DB.settings._did[k]){ DB.settings._did[k]=Date.now(); save(DB); try{evalAchievements();}catch(e){} } }
+const _AF=()=>DB.friends, _AA=()=>DB.friends.filter(f=>f.status!=="ended");
+function _aLogs(real){ const o=[]; DB.friends.forEach(f=>f.logs.forEach(l=>{ if(!real||l.kind!=="decay") o.push({f,l}); })); return o; }
+function _aTrough(f){ let run=f.initial,mn=f.initial; [...f.logs].sort((a,b)=>a.ts-b.ts).forEach(l=>{run+=l.delta;if(run<mn)mn=run;}); return mn; }
+function _aReconCount(){ return _aLogs(true).filter(x=>x.l.kind==="reconcile").length; }
+function _aDayKey(ts){ const d=new Date(ts); return d.getFullYear()*10000+d.getMonth()*100+d.getDate(); }
+function _aDaySet(){ const s=new Set(); _aLogs(true).forEach(x=>s.add(_aDayKey(x.l.ts))); return s; }
+function _aPerDayMax(){ const m={}; _aLogs(true).forEach(x=>{ const k=_aDayKey(x.l.ts); (m[k]=m[k]||new Set()).add(x.f.id); }); let mx=0; for(const k in m) if(m[k].size>mx)mx=m[k].size; return mx; }
+function _aStreak(){ const days=[..._aDaySet()].map(k=>{const y=Math.floor(k/10000),mo=Math.floor(k/100)%100,da=k%100;return new Date(y,mo,da).getTime();}).sort((a,b)=>a-b);
+  let best=0,run=0,prev=null; days.forEach(t=>{ run=(prev!==null&&t-prev===86400000)?run+1:1; prev=t; if(run>best)best=run; }); return best; }
+function _aUseDays(){ return DB.friends.length?daysSince(Math.min(...DB.friends.map(f=>f.createdAt))):0; }
+function _aHourAny(lo,hi){ return _aLogs(true).some(x=>{ const h=new Date(x.l.ts).getHours(); return h>=lo&&h<=hi; }); }
+function _aDateAny(pred){ return _aLogs(true).some(x=>pred(new Date(x.l.ts))); }
+function _aGain30(f){ const since=Date.now()-30*86400000; return f.logs.filter(l=>l.ts>=since&&l.kind!=="decay").reduce((a,l)=>a+l.delta,0); }
+function _aMonthGainMax(){ let mx=0; DB.friends.forEach(f=>{ const s=_aGain30(f); if(s>mx)mx=s; }); return mx; }
+function _aTitleReached(min){ return DB.friends.some(f=>peakScore(f)>=min); }
+function _aTitleNow(name){ return DB.friends.some(f=>nameForScore(currentScore(f))===name); }
+function _aSorted(f){ return f.logs.filter(l=>l.kind!=="decay").slice().sort((a,b)=>a.ts-b.ts); }
+function _aPosWhileNeg(f){ let run=f.initial; for(const l of [...f.logs].sort((a,b)=>a.ts-b.ts)){ if(l.kind!=="decay"&&l.delta>0&&run<0)return true; run+=l.delta; } return false; }
+function _aConsecUp(f,n){ let r=0; for(const l of _aSorted(f)){ if(l.delta>0){r++;if(r>=n)return true;}else r=0; } return false; }
+function _aConsecZero(f,n){ let r=0; for(const l of _aSorted(f)){ if(l.delta===0){r++;if(r>=n)return true;}else r=0; } return false; }
+function _aWarmAfterGap(f){ const ls=_aSorted(f); let c=0; for(let i=1;i<ls.length;i++){ if(ls[i].delta>0&&(ls[i].ts-ls[i-1].ts)>(f.cooldownDays||14)*86400000)c++; } return c; }
+function _aReconAfterNeg(f){ const ls=_aSorted(f); for(let i=0;i<ls.length;i++){ if(ls[i].kind==="reconcile"){ for(let j=i-1;j>=0;j--){ if(ls[j].delta<0){ if(ls[i].ts>ls[j].ts&&ls[i].ts-ls[j].ts<=86400000)return true; break; } } } } return false; }
+function _aRecover(fromBelow,curAtLeast){ return DB.friends.some(f=>_aTrough(f)<=fromBelow&&currentScore(f)>=curAtLeast); }
+function _aCats(){ return new Set(DB.friends.filter(f=>f.category).map(f=>f.category)); }
+function _aWithin(n,span){ const s=_AA().map(currentScore).sort((a,b)=>a-b); for(let i=0;i+n-1<s.length;i++) if(s[i+n-1]-s[i]<=span)return true; return false; }
+function _aAvg(){ const s=_AA().map(currentScore); return s.length?s.reduce((a,b)=>a+b,0)/s.length:0; }
+function _aBucketMax(div){ const m={}; _aLogs(true).forEach(x=>{ const k=Math.floor(x.l.ts/div); (m[k]=m[k]||new Set()).add(x.f.id); }); let mx=0; for(const k in m) if(m[k].size>mx)mx=m[k].size; return mx; }
+function _aSameDayMax(f){ const m={}; f.logs.filter(l=>l.kind!=="decay").forEach(l=>{const k=_aDayKey(l.ts);m[k]=(m[k]||0)+1;}); let mx=0;for(const k in m)if(m[k]>mx)mx=m[k];return mx; }
+function _aFullDay(){ const act=_AA().length; if(act<2)return false; const m={}; _aLogs(true).forEach(x=>{ if(x.f.status==="ended")return; const k=_aDayKey(x.l.ts);(m[k]=m[k]||new Set()).add(x.f.id); }); for(const k in m) if(m[k].size>=act)return true; return false; }
+function _aSwing7(f){ const ls=_aSorted(f); let run=f.initial; const pts=ls.map(l=>{run+=l.delta;return {ts:l.ts,v:run};});
+  for(let i=0;i<pts.length;i++){ let mn=pts[i].v,mnTs=pts[i].ts; for(let j=i;j<pts.length&&pts[j].ts-pts[i].ts<=7*86400000;j++){ if(pts[j].v<mn){mn=pts[j].v;mnTs=pts[j].ts;} if(pts[j].ts>mnTs&&pts[j].v-mn>20)return true; } } return false; }
+function _aSameScore(n){ const m={}; _AA().forEach(f=>{const v=currentScore(f);m[v]=(m[v]||0)+1;}); for(const k in m) if(m[k]>=n)return true; return false; }
+function _aMixedDay(f){ const m={}; f.logs.filter(l=>l.kind!=="decay").forEach(l=>{const k=_aDayKey(l.ts);const o=m[k]=m[k]||{p:0,n:0};if(l.delta>0)o.p=1;if(l.delta<0)o.n=1;}); for(const k in m) if(m[k].p&&m[k].n)return true; return false; }
+function _aDayHas(f,a,b){ const m={}; f.logs.filter(l=>l.kind!=="decay").forEach(l=>{const k=_aDayKey(l.ts);(m[k]=m[k]||new Set()).add(l.delta);}); for(const k in m) if(m[k].has(a)&&m[k].has(b))return true; return false; }
+function _aAllPosDay(){ const m={}; _aLogs(true).forEach(x=>{ const k=_aDayKey(x.l.ts); const o=m[k]=m[k]||{n:0,ok:true}; o.n++; if(x.l.delta<=0)o.ok=false; }); for(const k in m) if(m[k].n>=5&&m[k].ok)return true; return false; }
+function _aSpan(f){ const ls=f.logs.filter(l=>l.kind!=="decay"); if(ls.length<2)return 0; const ts=ls.map(l=>l.ts); return Math.max(...ts)-Math.min(...ts); }
+function _aDayAbsMax(f){ const m={}; f.logs.filter(l=>l.kind!=="decay").forEach(l=>{const k=_aDayKey(l.ts);m[k]=(m[k]||0)+Math.abs(l.delta);}); let mx=0;for(const k in m)if(m[k]>mx)mx=m[k];return mx; }
+function _aCatAllPos(n){ const m={}; _AA().forEach(f=>{ if(f.category)(m[f.category]=m[f.category]||[]).push(currentScore(f)); }); for(const k in m) if(m[k].length>=n&&m[k].every(v=>v>0))return true; return false; }
+function _aTopGap(i,j,span,within){ const s=_AA().map(currentScore).sort((a,b)=>b-a); if(s.length<=Math.max(i,j))return false; return within?(s[i]-s[j]<=span):(s[i]-s[j]>=span); }
+function _achvCount(){ return Object.keys(DB.settings.achv||{}).length; }
+const _G=["溫度里程碑","稱號收藏","圈子大小","勤勞記錄","用心維繫","修復與和好","光譜與分類","App 習慣","週年與時間","高光時刻","隱藏彩蛋","節慶時令","關係動態","收藏家 · 獎勵"];
+const ACHV=[
+ {id:"n1",ic:"🧊",g:_G[0],t:"破冰",d:"讓一個負分的人回到 0 以上",c:()=>_aRecover(-1,0)},
+ {id:"n2",ic:"🌡️",g:_G[0],t:"微溫",d:"有人升到 25",c:()=>_aTitleReached(25)},
+ {id:"n3",ic:"✅",g:_G[0],t:"及格邊緣",d:"有人升到 50",c:()=>_aTitleReached(50)},
+ {id:"n4",ic:"🔥",g:_G[0],t:"熱起來了",d:"有人升到 75",c:()=>_aTitleReached(75)},
+ {id:"n5",ic:"💯",g:_G[0],t:"破百",d:"和某人的溫度破 100",c:()=>_aTitleReached(100)},
+ {id:"n6",ic:"🤝",g:_G[0],t:"過命的朋友",d:"有人到 105",c:()=>_aTitleReached(105)},
+ {id:"n7",ic:"⚔️",g:_G[0],t:"生死之交",d:"有人到 110",c:()=>_aTitleReached(110)},
+ {id:"n8",ic:"🩸",g:_G[0],t:"血濃於水",d:"有人到 115",c:()=>_aTitleReached(115)},
+ {id:"n9",ic:"♾️",g:_G[0],t:"一輩子的朋友",d:"有人到 120",c:()=>_aTitleReached(120)},
+ {id:"n10",ic:"🎇",g:_G[0],t:"靈魂共振",d:"有人到 125",c:()=>_aTitleReached(125)},
+ {id:"n11",ic:"💞",g:_G[0],t:"命定的靈魂伴侶",d:"有人到 130",c:()=>_aTitleReached(130)},
+ {id:"n12",ic:"❄️",g:_G[0],t:"冰點",d:"有人掉到 0 以下",c:()=>DB.friends.some(f=>_aTrough(f)<0)},
+ {id:"n101",ic:"💔",g:_G[0],t:"有心結",d:"有人掉到 −10",c:()=>DB.friends.some(f=>_aTrough(f)<=-10)},
+ {id:"n102",ic:"🌩️",g:_G[0],t:"撕破臉邊緣",d:"有人掉到 −30",c:()=>DB.friends.some(f=>_aTrough(f)<=-30)},
+ {id:"n103",ic:"🌅",g:_G[0],t:"大回暖",d:"從 −20 以下回到正分",c:()=>_aRecover(-20,1)},
+ {id:"n104",ic:"⚖️",g:_G[0],t:"歸零",d:"有人剛好停在 0",c:()=>DB.friends.some(f=>f.logs.length&&currentScore(f)===0)},
+ {id:"n13",ic:"🙂",g:_G[1],t:"點頭之交",d:"升到「點頭之交」",c:()=>_aTitleReached(35)},
+ {id:"n14",ic:"👥",g:_G[1],t:"普通朋友",d:"升到「普通的朋友」",c:()=>_aTitleReached(50)},
+ {id:"n15",ic:"😊",g:_G[1],t:"很要好",d:"升到「很要好的朋友」",c:()=>_aTitleReached(65)},
+ {id:"n16",ic:"👯",g:_G[1],t:"形影不離",d:"升到「常黏在一起」",c:()=>_aTitleReached(70)},
+ {id:"n17",ic:"🫂",g:_G[1],t:"超麻吉",d:"升到「超麻吉的朋友」",c:()=>_aTitleReached(75)},
+ {id:"n18",ic:"😎",g:_G[1],t:"死黨等級",d:"升到「死黨等級」",c:()=>_aTitleReached(80)},
+ {id:"n19",ic:"❤️‍🔥",g:_G[1],t:"掏心掏肺",d:"升到「掏心掏肺」",c:()=>_aTitleReached(85)},
+ {id:"n20",ic:"🗣️",g:_G[1],t:"無話不談",d:"升到「無話不談」",c:()=>_aTitleReached(90)},
+ {id:"n21",ic:"🌋",g:_G[1],t:"滾燙的朋友",d:"升到「滾燙的朋友」",c:()=>_aTitleReached(95)},
+ {id:"n22",ic:"⭐",g:_G[1],t:"命中註定",d:"升到「命中註定」",c:()=>_aTitleReached(100)},
+ {id:"n105",ic:"🚶",g:_G[1],t:"快變陌生人",d:"有人掉到這個稱號",c:()=>_aTitleNow("快變陌生人")},
+ {id:"n106",ic:"🌫️",g:_G[1],t:"形同陌路",d:"有人掉到「形同陌路」",c:()=>_aTitleNow("形同陌路")},
+ {id:"n23",ic:"🌱",g:_G[2],t:"第一段關係",d:"記錄第 1 位好友",c:()=>_AF().length>=1},
+ {id:"n24",ic:"👋",g:_G[2],t:"小圈圈",d:"記錄 5 位好友",c:()=>_AF().length>=5},
+ {id:"n25",ic:"🍱",g:_G[2],t:"一桌人",d:"記錄 10 位好友",c:()=>_AF().length>=10},
+ {id:"n26",ic:"🏫",g:_G[2],t:"一個班",d:"記錄 25 位好友",c:()=>_AF().length>=25},
+ {id:"n27",ic:"💐",g:_G[2],t:"交際花",d:"記錄 50 位好友",c:()=>_AF().length>=50},
+ {id:"n28",ic:"🌍",g:_G[2],t:"都記得",d:"記錄 100 位好友",c:()=>_AF().length>=100},
+ {id:"n29",ic:"📝",g:_G[3],t:"第一筆",d:"記下第 1 筆",c:()=>_aLogs(true).length>=1},
+ {id:"n30",ic:"🔟",g:_G[3],t:"十筆",d:"累積 10 筆",c:()=>_aLogs(true).length>=10},
+ {id:"n31",ic:"💾",g:_G[3],t:"百筆",d:"累積 100 筆",c:()=>_aLogs(true).length>=100},
+ {id:"n107",ic:"📚",g:_G[3],t:"兩百筆",d:"累積 200 筆",c:()=>_aLogs(true).length>=200},
+ {id:"n32",ic:"🗂️",g:_G[3],t:"五百筆",d:"累積 500 筆",c:()=>_aLogs(true).length>=500},
+ {id:"n33",ic:"🏔️",g:_G[3],t:"千筆",d:"累積 1000 筆",c:()=>_aLogs(true).length>=1000},
+ {id:"n108",ic:"🗿",g:_G[3],t:"兩千筆",d:"累積 2000 筆",c:()=>_aLogs(true).length>=2000},
+ {id:"n34",ic:"🪴",g:_G[3],t:"用心經營",d:"單一好友 25 筆",c:()=>DB.friends.some(f=>f.logs.filter(l=>l.kind!=="decay").length>=25)},
+ {id:"n35",ic:"📖",g:_G[3],t:"一本傳記",d:"單一好友 100 筆",c:()=>DB.friends.some(f=>f.logs.filter(l=>l.kind!=="decay").length>=100)},
+ {id:"n37",ic:"✍️",g:_G[3],t:"有話直說",d:"單筆備註超過 50 字",c:()=>_aLogs(true).some(x=>(x.l.note||"").length>50)},
+ {id:"n110",ic:"📜",g:_G[3],t:"長篇",d:"單筆備註超過 100 字",c:()=>_aLogs(true).some(x=>(x.l.note||"").length>100)},
+ {id:"n109",ic:"🖊️",g:_G[3],t:"小作家",d:"累積 50 則備註",c:()=>_aLogs(true).filter(x=>(x.l.note||"").trim()).length>=50},
+ {id:"n38",ic:"🤫",g:_G[3],t:"盡在不言中",d:"20 筆沒寫備註",c:()=>_aLogs(true).filter(x=>!(x.l.note||"").trim()).length>=20},
+ {id:"n39",ic:"3️⃣",g:_G[4],t:"三連",d:"連續記錄 3 天",c:()=>_aStreak()>=3},
+ {id:"n40",ic:"🗓️",g:_G[4],t:"一週不斷",d:"連續記錄 7 天",c:()=>_aStreak()>=7},
+ {id:"n41",ic:"📆",g:_G[4],t:"一個月",d:"連續記錄 30 天",c:()=>_aStreak()>=30},
+ {id:"n111",ic:"💠",g:_G[4],t:"連續百天",d:"連續記錄 100 天",c:()=>_aStreak()>=100},
+ {id:"n42",ic:"🖐️",g:_G[4],t:"一口氣",d:"一天顧了 5 個人",c:()=>_aPerDayMax()>=5},
+ {id:"n43",ic:"🙌",g:_G[4],t:"全員集合",d:"一天顧了 10 個人",c:()=>_aPerDayMax()>=10},
+ {id:"n112",ic:"🌊",g:_G[4],t:"一波流",d:"一小時內顧了 5 個人",c:()=>_aBucketMax(3600000)>=5},
+ {id:"n113",ic:"🧹",g:_G[4],t:"大掃除",d:"一次批次記了 5 個人以上",c:()=>_aBucketMax(60000)>=5},
+ {id:"n44",ic:"🌤️",g:_G[4],t:"週末問候",d:"在週末記錄",c:()=>_aDateAny(d=>{const w=d.getDay();return w===0||w===6;})},
+ {id:"n45",ic:"🦉",g:_G[4],t:"夜貓子",d:"在凌晨 1–4 點記錄",c:()=>_aHourAny(1,4)},
+ {id:"n46",ic:"🐦",g:_G[4],t:"早鳥",d:"在清晨 5–7 點記錄",c:()=>_aHourAny(5,7)},
+ {id:"n47",ic:"🎯",g:_G[4],t:"全勤日",d:"某天把所有好友都記了一遍",c:()=>_aFullDay()},
+ {id:"n48",ic:"🔁",g:_G[4],t:"回訪",d:"一天對同一人記了 3 筆",c:()=>DB.friends.some(f=>_aSameDayMax(f)>=3)},
+ {id:"n114",ic:"🎛️",g:_G[4],t:"微調偏執",d:"用溫度計微調記了 20 次",c:()=>_aLogs(true).filter(x=>![5,0,-5].includes(x.l.delta)).length>=20},
+ {id:"n49",ic:"🕊️",g:_G[5],t:"第一次和好",d:"標記一筆和好 / 破冰",c:()=>_aReconCount()>=1},
+ {id:"n50",ic:"🧑‍⚖️",g:_G[5],t:"和事佬",d:"和好 5 次",c:()=>_aReconCount()>=5},
+ {id:"n51",ic:"🌈",g:_G[5],t:"破鏡重圓",d:"負分的人和好回到正分",c:()=>DB.friends.some(f=>_aTrough(f)<0&&currentScore(f)>0&&f.logs.some(l=>l.kind==="reconcile"))},
+ {id:"n52",ic:"🌡️",g:_G[5],t:"冷戰終結者",d:"讓一個涼掉的人回溫",c:()=>DB.friends.some(f=>_aWarmAfterGap(f)>=1)},
+ {id:"n53",ic:"🧊",g:_G[5],t:"融冰",d:"把「不熟了」的人恢復",c:()=>_did("undormant")},
+ {id:"n54",ic:"🔥",g:_G[5],t:"浴火重生",d:"恢復一位已結束的好友",c:()=>_did("restore")},
+ {id:"n55",ic:"🩹",g:_G[5],t:"修修補補",d:"讓人回溫 3 次",c:()=>DB.friends.reduce((a,f)=>a+_aWarmAfterGap(f),0)>=3},
+ {id:"n56",ic:"🌙",g:_G[5],t:"沒有隔夜仇",d:"降分後 24 小時內和好",c:()=>DB.friends.some(_aReconAfterNeg)},
+ {id:"n115",ic:"🕯️",g:_G[5],t:"守夜人",d:"對同一人連續 3 次加分",c:()=>DB.friends.some(f=>_aConsecUp(f,3))},
+ {id:"n116",ic:"🌱",g:_G[5],t:"重新開始",d:"恢復的好友升回正分",c:()=>_did("restore")&&DB.friends.some(f=>f.status==="normal"&&currentScore(f)>0)},
+ {id:"n117",ic:"🕊️",g:_G[5],t:"以德報怨",d:"對負分的人加分",c:()=>DB.friends.some(_aPosWhileNeg)},
+ {id:"n57",ic:"🗃️",g:_G[6],t:"分門別類",d:"用了 3 種關係類別",c:()=>_aCats().size>=3},
+ {id:"n58",ic:"🌈",g:_G[6],t:"關係光譜",d:"用了 5 種關係類別",c:()=>_aCats().size>=5},
+ {id:"n59",ic:"🏷️",g:_G[6],t:"自訂達人",d:"新增了自訂類別",c:()=>DB.settings.categories.some(c=>!DEFAULT_CATEGORIES.includes(c))},
+ {id:"n60",ic:"♨️",g:_G[6],t:"冷暖自知",d:"同時有正分和負分的好友",c:()=>_AA().some(f=>currentScore(f)>0)&&_AA().some(f=>currentScore(f)<0)},
+ {id:"n61",ic:"🍵",g:_G[6],t:"一碗水端平",d:"有 5 人分數在 ±5 內",c:()=>_aWithin(5,10)},
+ {id:"n62",ic:"🌶️",g:_G[6],t:"火辣人脈",d:"同時 3 人破 100",c:()=>_AA().filter(f=>currentScore(f)>=100).length>=3},
+ {id:"n63",ic:"🌿",g:_G[7],t:"落地生根",d:"使用滿 7 天",c:()=>_aUseDays()>=7},
+ {id:"n64",ic:"🏠",g:_G[7],t:"常客",d:"使用滿 30 天",c:()=>_aUseDays()>=30},
+ {id:"n65",ic:"🎖️",g:_G[7],t:"老用戶",d:"使用滿 100 天",c:()=>_aUseDays()>=100},
+ {id:"n66",ic:"🕰️",g:_G[7],t:"一年之火",d:"使用滿 365 天",c:()=>_aUseDays()>=365},
+ {id:"n67",ic:"💽",g:_G[7],t:"有備無患",d:"第一次備份",c:()=>(DB.settings._did&&DB.settings._did.backups>=1)||!!DB.settings._lastExport},
+ {id:"n68",ic:"🗄️",g:_G[7],t:"未雨綢繆",d:"備份 5 次",c:()=>(DB.settings._did&&DB.settings._did.backups>=5)},
+ {id:"n69",ic:"📦",g:_G[7],t:"搬家",d:"匯入過備份",c:()=>_did("import")},
+ {id:"n70",ic:"🧬",g:_G[7],t:"合而為一",d:"用「合併」匯入",c:()=>_did("merge")},
+ {id:"n71",ic:"⏪",g:_G[7],t:"補記者",d:"第一次改紀錄日期",c:()=>_did("editDate")},
+ {id:"n72",ic:"↩️",g:_G[7],t:"反悔",d:"第一次使用撤銷",c:()=>_did("undo")},
+ {id:"n73",ic:"🔺",g:_G[7],t:"微調控",d:"溫度計調到 +10",c:()=>_aLogs(true).some(x=>x.l.delta>=10)},
+ {id:"n74",ic:"🔻",g:_G[7],t:"谷底",d:"溫度計調到 −5",c:()=>_aLogs(true).some(x=>x.l.delta<=-5)},
+ {id:"n118",ic:"🌑",g:_G[7],t:"深色控",d:"用深色主題",c:()=>DB.settings.theme==="dark"},
+ {id:"n119",ic:"🌕",g:_G[7],t:"淺色控",d:"用淺色主題",c:()=>DB.settings.theme==="light"},
+ {id:"n120",ic:"🥶",g:_G[7],t:"冷處理",d:"打開自然降溫",c:()=>DB.settings.emberDecay===true},
+ {id:"n121",ic:"🧊",g:_G[7],t:"保留派",d:"打開「保留涼掉的分數」",c:()=>DB.settings.decayKeep===true},
+ {id:"n75",ic:"🎂",g:_G[8],t:"一週年",d:"和某人認識滿 1 年",c:()=>DB.friends.some(f=>daysSince(f.createdAt)>=365)},
+ {id:"n122",ic:"🎂",g:_G[8],t:"兩週年",d:"認識滿 2 年",c:()=>DB.friends.some(f=>daysSince(f.createdAt)>=730)},
+ {id:"n76",ic:"🎉",g:_G[8],t:"三週年",d:"認識滿 3 年",c:()=>DB.friends.some(f=>daysSince(f.createdAt)>=1095)},
+ {id:"n77",ic:"🥂",g:_G[8],t:"五週年",d:"認識滿 5 年",c:()=>DB.friends.some(f=>daysSince(f.createdAt)>=1825)},
+ {id:"n123",ic:"🏅",g:_G[8],t:"七年",d:"認識滿 7 年",c:()=>DB.friends.some(f=>daysSince(f.createdAt)>=2555)},
+ {id:"n78",ic:"🕯️",g:_G[8],t:"十年知己",d:"認識滿 10 年",c:()=>DB.friends.some(f=>daysSince(f.createdAt)>=3650)},
+ {id:"n124",ic:"🗿",g:_G[8],t:"二十年",d:"認識滿 20 年",c:()=>DB.friends.some(f=>daysSince(f.createdAt)>=7300)},
+ {id:"n79",ic:"🌳",g:_G[8],t:"老朋友",d:"認識超過 1000 天",c:()=>DB.friends.some(f=>daysSince(f.createdAt)>1000)},
+ {id:"n80",ic:"🌊",g:_G[8],t:"細水長流",d:"有 5 位都認識超過 1 年",c:()=>DB.friends.filter(f=>daysSince(f.createdAt)>=365).length>=5},
+ {id:"n80b",ic:"🔭",g:_G[8],t:"久別重逢",d:"超過 60 天沒記,又記了一筆",c:()=>DB.friends.some(f=>{const ls=_aSorted(f);for(let i=1;i<ls.length;i++)if(ls[i].ts-ls[i-1].ts>60*86400000)return true;return false;})},
+ {id:"n81",ic:"🚀",g:_G[9],t:"一飛沖天",d:"單筆加超過 +8",c:()=>_aLogs(true).some(x=>x.l.delta>8)},
+ {id:"n82",ic:"💥",g:_G[9],t:"重摔",d:"單筆扣超過 −8",c:()=>_aLogs(true).some(x=>x.l.delta<-8)},
+ {id:"n83",ic:"📈",g:_G[9],t:"大躍進",d:"某人一個月升超過 +30",c:()=>_aMonthGainMax()>30},
+ {id:"n84",ic:"🔥",g:_G[9],t:"暖爐",d:"好友平均分數超過 70",c:()=>_AA().length>=1&&_aAvg()>70},
+ {id:"n85",ic:"👑",g:_G[9],t:"頭號人物",d:"只有一個人破 100",c:()=>_AA().filter(f=>currentScore(f)>=100).length===1},
+ {id:"n86",ic:"🏔️",g:_G[9],t:"巔峰",d:"創下某人的歷史最高溫",c:()=>_did("newHigh")},
+ {id:"n87",ic:"♨️",g:_G[9],t:"三溫暖",d:"一週內先降後升超過 20",c:()=>DB.friends.some(_aSwing7)},
+ {id:"n88",ic:"🔄",g:_G[9],t:"逆轉勝",d:"從最低回升超過 +40",c:()=>DB.friends.some(f=>currentScore(f)-_aTrough(f)>40)},
+ {id:"n89",ic:"🌸",g:_G[9],t:"滿堂紅",d:"一天記 5 筆以上全是加分",c:()=>_aAllPosDay()},
+ {id:"n90",ic:"🩹",g:_G[9],t:"及時止血",d:"讓涼掉中的人當天回溫",c:()=>DB.friends.some(f=>_aWarmAfterGap(f)>=1)},
+ {id:"n125",ic:"🐎",g:_G[9],t:"黑馬",d:"一個月內衝上第一",c:()=>{const a=_AA();if(a.length<2)return false;const top=a.slice().sort((x,y)=>currentScore(y)-currentScore(x))[0];const g=_aGain30(top);return g>0&&a.every(f=>f===top||_aGain30(f)<=g);}},
+ {id:"n126",ic:"🔀",g:_G[9],t:"換位",d:"第一名易主過",c:()=>{const a=_AA();if(a.length<2)return false;const top=a.slice().sort((x,y)=>currentScore(y)-currentScore(x))[0];return a.some(f=>f!==top&&peakScore(f)>=currentScore(top)&&currentScore(top)>0);}},
+ {id:"n127",ic:"🧗",g:_G[9],t:"谷底翻身",d:"負分回到平均以上",c:()=>DB.friends.some(f=>_aTrough(f)<0&&currentScore(f)>=_aAvg())},
+ {id:"n128",ic:"🎢",g:_G[9],t:"大起大落",d:"一天振幅超過 20",c:()=>DB.friends.some(f=>_aDayAbsMax(f)>20)},
+ {id:"n91",ic:"🕛",g:_G[10],t:"午夜結算",d:"在 00:00–00:05 記錄",c:()=>_aLogs(true).some(x=>{const d=new Date(x.l.ts);return d.getHours()===0&&d.getMinutes()<5;})},
+ {id:"n92",ic:"➖",g:_G[10],t:"三同分",d:"三個人分數剛好一樣",c:()=>_aSameScore(3)},
+ {id:"n93",ic:"💠",g:_G[10],t:"整齊控",d:"有人剛好 100 或 88",c:()=>_AA().some(f=>{const s=currentScore(f);return s===100||s===88;})},
+ {id:"n94",ic:"📍",g:_G[10],t:"老地方",d:"對同一人紀錄橫跨滿一年",c:()=>DB.friends.some(f=>_aSpan(f)>=365*86400000)},
+ {id:"n95",ic:"☯️",g:_G[10],t:"一半一半",d:"好友剛好一半正一半負",c:()=>{const a=_AA();const p=a.filter(f=>currentScore(f)>0).length,n=a.filter(f=>currentScore(f)<0).length,z=a.filter(f=>currentScore(f)===0).length;return a.length>=2&&z===0&&p===n;}},
+ {id:"n96",ic:"🔟",g:_G[10],t:"十全十美",d:"一次批次剛好 10 人",c:()=>_aBucketMax(60000)===10},
+ {id:"n97",ic:"🌪️",g:_G[10],t:"情緒風暴",d:"一天對同一人又加又減",c:()=>DB.friends.some(_aMixedDay)},
+ {id:"n98",ic:"😌",g:_G[10],t:"佛系",d:"連 5 筆都記 0",c:()=>DB.friends.some(f=>_aConsecZero(f,5))},
+ {id:"n99",ic:"🎭",g:_G[10],t:"兩面手法",d:"同天給某人 +5 又 −5",c:()=>DB.friends.some(f=>_aDayHas(f,5,-5))},
+ {id:"n100",ic:"🔥",g:_G[10],t:"餘溫永存",d:"每個好友都至少記過一筆",c:()=>DB.friends.length>0&&DB.friends.every(f=>f.logs.some(l=>l.kind!=="decay"))},
+ {id:"n129",ic:"🎆",g:_G[11],t:"跨年夜",d:"在 12/31 記錄",c:()=>_aDateAny(d=>d.getMonth()===11&&d.getDate()===31)},
+ {id:"n130",ic:"🧧",g:_G[11],t:"大年初一",d:"在 1/1 記錄",c:()=>_aDateAny(d=>d.getMonth()===0&&d.getDate()===1)},
+ {id:"n131",ic:"💘",g:_G[11],t:"情人節",d:"在 2/14 記錄",c:()=>_aDateAny(d=>d.getMonth()===1&&d.getDate()===14)},
+ {id:"n132",ic:"🎄",g:_G[11],t:"聖誕節",d:"在 12/24–25 記錄",c:()=>_aDateAny(d=>d.getMonth()===11&&(d.getDate()===24||d.getDate()===25))},
+ {id:"n133",ic:"🌸",g:_G[11],t:"春日",d:"在 3–5 月記錄",c:()=>_aDateAny(d=>d.getMonth()>=2&&d.getMonth()<=4)},
+ {id:"n134",ic:"🍁",g:_G[11],t:"秋思",d:"在 9–11 月記錄",c:()=>_aDateAny(d=>d.getMonth()>=8&&d.getMonth()<=10)},
+ {id:"n135",ic:"🌻",g:_G[11],t:"仲夏",d:"在 7–8 月記錄",c:()=>_aDateAny(d=>d.getMonth()>=6&&d.getMonth()<=7)},
+ {id:"n136",ic:"⛄",g:_G[11],t:"隆冬",d:"在 12–2 月記錄",c:()=>_aDateAny(d=>d.getMonth()===11||d.getMonth()<=1)},
+ {id:"n137",ic:"🥇",g:_G[12],t:"唯一的第一",d:"第一名比第二高 20 以上",c:()=>_aTopGap(0,1,20,false)},
+ {id:"n138",ic:"⚖️",g:_G[12],t:"勢均力敵",d:"前三名在 10 分內",c:()=>_aTopGap(0,2,10,true)},
+ {id:"n139",ic:"🔱",g:_G[12],t:"兩極",d:"同時有 130 和 −30",c:()=>_AA().some(f=>currentScore(f)>=130)&&_AA().some(f=>currentScore(f)<=-30)},
+ {id:"n140",ic:"🪜",g:_G[12],t:"步步高升",d:"對同一人連 5 筆加分",c:()=>DB.friends.some(f=>_aConsecUp(f,5))},
+ {id:"n141",ic:"🧲",g:_G[12],t:"磁場",d:"同類別 5 人都正分",c:()=>_aCatAllPos(5)},
+ {id:"n146",ic:"🏹",g:_G[13],t:"成就獵人",d:"解鎖 25 個成就",c:()=>_achvCount()>=25},
+ {id:"n147",ic:"🎗️",g:_G[13],t:"半百",d:"解鎖 50 個成就",c:()=>_achvCount()>=50},
+ {id:"n148",ic:"🔥",g:_G[13],t:"百鍊",d:"解鎖 100 個成就",c:()=>_achvCount()>=100},
+ {id:"n149",ic:"💎",g:_G[13],t:"收藏狂",d:"解鎖 125 個成就",c:()=>_achvCount()>=125},
+ {id:"n142",ic:"🖼️",g:_G[13],t:"初獲外框",d:"解鎖 10 個成就(獎勵之後開放)",c:()=>_achvCount()>=10},
+ {id:"n143",ic:"🎴",g:_G[13],t:"外框收藏家",d:"解鎖 30 個成就(獎勵之後開放)",c:()=>_achvCount()>=30},
+ {id:"n144",ic:"✨",g:_G[13],t:"點亮線條",d:"解鎖 20 個成就(獎勵之後開放)",c:()=>_achvCount()>=20},
+ {id:"n145",ic:"🌟",g:_G[13],t:"線條大師",d:"解鎖 60 個成就(獎勵之後開放)",c:()=>_achvCount()>=60},
+ {id:"n150",ic:"🏆",g:_G[13],t:"圓滿",d:"解鎖其他所有成就",c:()=>_achvCount()>=149},
+];
+let _abQueue=[],_abBusy=false,_achvReady=false;
+function evalAchievements(silent){ if(!DB.settings.achv)DB.settings.achv={}; const got=DB.settings.achv, newly=[]; let changed=true,guard=0;
+  while(changed&&guard++<8){ changed=false; for(const a of ACHV){ if(got[a.id])continue; let ok=false; try{ ok=!!a.c(); }catch(e){ ok=false; } if(ok){ got[a.id]=Date.now(); newly.push(a); changed=true; } } }
+  if(newly.length){ save(DB); refreshAchvCountUI(); if(!silent&&_achvReady){ newly.forEach(a=>_abQueue.push(a)); if(!_abBusy)_abNext(); } }
+  return newly; }
+function _abNext(){ if(!_abQueue.length){_abBusy=false;return;} _abBusy=true; const a=_abQueue.shift(); showAchvBanner(a); setTimeout(_abNext,2900); }
+function showAchvBanner(a){ const b=$("achvBanner"); if(!b)return; $("abDisc").textContent=a.ic||"🏅"; $("abTitle").textContent=a.t; $("abSub").textContent=a.d;
+  b.classList.remove("on"); void b.offsetWidth; b.classList.add("on"); haptic();
+  const c=_fxCenter(b); if(c&&!_reduce()) fxBurst(c.x,c.y,{n:18,pal:_FX_GOLD,spd:3.2,life:66,sz:2.6});
+  setTimeout(()=>b.classList.remove("on"),2600); }
+function refreshAchvCountUI(){ const n=_achvCount(); const e=$("achvSetCount"); if(e)e.textContent=`${n} / ${ACHV.length}`; if(openedSheet==="achvSheet")renderAchvShelf(); }
+function openAchv(){ renderAchvShelf(); closeSheet(); openSheet("achvSheet"); }
+function renderAchvShelf(){ const box=$("achvShelf"); if(!box)return; const got=DB.settings.achv||{}; const cnt=$("achvCount"); if(cnt)cnt.textContent=`${_achvCount()} / ${ACHV.length}`;
+  const groups=[],gi={}; ACHV.forEach(a=>{ if(gi[a.g]==null){gi[a.g]=groups.length;groups.push({g:a.g,items:[]});} groups[gi[a.g]].items.push(a); });
+  box.innerHTML=groups.map(gr=>{ const un=gr.items.filter(a=>got[a.id]).length;
+    return `<div class="achv-group"><div class="ag-h">${escapeHtml(gr.g)} <span>${un}/${gr.items.length}</span></div><div class="achv-grid">`+
+      gr.items.map(a=>`<div class="medal ${got[a.id]?'got':''}"><div class="disc">${a.ic}</div><div class="mtx"><div class="mt">${escapeHtml(a.t)}</div><div class="ms">${escapeHtml(a.d)}</div></div></div>`).join("")+`</div></div>`; }).join(""); }
+
 /* ---- v1.30 撤銷 / 改日期 ---- */
 let _undo=null,_undoT=null;
 function _cloneLogs(id){ const f=DB.friends.find(x=>x.id===id); return f?JSON.parse(JSON.stringify(f.logs)):null; }
 function _restoreLogs(id,logs){ const f=DB.friends.find(x=>x.id===id); if(f&&logs)f.logs=logs; }
 function offerUndo(msg,revert){ _undo={revert}; const t=$("undoToast"); if(!t)return; $("undoMsg").textContent=msg;
   t.classList.remove("on"); void t.offsetWidth; t.classList.add("on"); clearTimeout(_undoT); _undoT=setTimeout(dismissUndo,3000); }
-function runUndo(){ if(_undo&&_undo.revert)_undo.revert(); _undo=null; haptic(); dismissUndo(); }
+function runUndo(){ if(_undo&&_undo.revert)_undo.revert(); _undo=null; haptic(); dismissUndo(); markDid("undo"); }
 function dismissUndo(){ clearTimeout(_undoT); const t=$("undoToast"); if(t)t.classList.remove("on"); _undo=null; }
 function _toLocalInput(ts){ const d=new Date(ts),p=n=>String(n).padStart(2,"0"); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`; }
 
@@ -1541,6 +1796,7 @@ _emCv=$("emberCanvas"); if(_emCv){ _emCtx=_emCv.getContext("2d"); _emSize(); }
 _fxCv=$("fxCanvas"); if(_fxCv){ _fxCtx=_fxCv.getContext("2d"); _fxSize(); }
 { const di=$("scoreDate"); if(di) di.addEventListener("change",()=>{ const v=di.value; if(v){ const ts=new Date(v).getTime(); scoreTs=Number.isFinite(ts)?Math.min(ts,Date.now()):null; } else scoreTs=null; updateScoreTimeLabel(); haptic(); }); }
 applyTheme(); renderHome(true); addSheetHeaders(); syncSettingsUI(); bindPress(); bindSheetDrag(); bindHomeSwipe(); bindDetailSwipe(); bindSelectDrag(); segMoveAll(); runReminders();
+evalAchievements(true); _achvReady=true; refreshAchvCountUI();
 window.addEventListener("resize",()=>{ if(_emCv&&_emRaf)_emSize(); if(_fxCv)_fxSize(); });
 document.addEventListener("visibilitychange",()=>emberBg(true));
 </script>
