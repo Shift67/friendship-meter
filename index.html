@@ -403,18 +403,76 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 .medal.got .disc{filter:none;background:radial-gradient(circle at 40% 35%,#fff3cf,var(--warm));box-shadow:0 0 14px -3px var(--warm);}
 .medal.got .mt{color:var(--ink);}
 .medal.got .ms{opacity:.85;}
-/* v1.34 獎勵:外框(首頁卡片)+ 折線 + 裝扮選擇 */
-.friend.frame-gold{border:1.5px solid #ffcf6a !important;box-shadow:0 0 18px -4px #ffcf6a,inset 0 0 0 1px rgba(255,207,106,.28);}
-.friend.frame-ice{border:1.5px solid #8fd4ff !important;box-shadow:0 0 18px -4px #8fd4ff,inset 0 0 0 1px rgba(143,212,255,.28);}
-.friend.frame-lava{border:1.5px solid #ff7f2a !important;box-shadow:0 0 20px -3px #ff7f2a;animation:lavaPulse 2.6s ease-in-out infinite;}
+/* v1.35 外觀系統:外框 / 折線 / 徽章 + 圖鑑 + 預覽 */
+/* 光暈系:邊框色 + box-shadow(不會被 overflow 裁切) */
+.frame-gold{border-color:#ffcf6a !important;box-shadow:0 0 17px -4px #ffcf6a,inset 0 0 0 1px rgba(255,207,106,.28);}
+.frame-ice{border-color:#8fd4ff !important;box-shadow:0 0 17px -4px #8fd4ff,inset 0 0 0 1px rgba(143,212,255,.28);}
+.frame-crown{border-color:#ffe08a !important;box-shadow:0 0 20px -3px #ffd76a,inset 0 0 0 2px rgba(255,215,120,.45);}
+.frame-rose{border-color:#ff8fbf !important;box-shadow:0 0 16px -4px #ff8fbf,inset 0 0 0 1px rgba(255,143,191,.25);}
+.frame-mint{border-color:#7ee0c0 !important;box-shadow:0 0 16px -4px #7ee0c0;}
+.frame-violet{border-color:#c77dff !important;box-shadow:0 0 16px -4px #c77dff;}
+.frame-sky{border-color:#8fbaff !important;box-shadow:0 0 16px -4px #8fbaff;}
+.frame-lava{border-color:#ff7f2a !important;box-shadow:0 0 20px -3px #ff7f2a;animation:lavaPulse 2.6s ease-in-out infinite;}
 @keyframes lavaPulse{0%,100%{box-shadow:0 0 15px -4px #ff6f1e;}50%{box-shadow:0 0 28px -2px #ff9d3c;}}
-.friend.frame-crown{border:1.5px solid #ffe08a !important;box-shadow:0 0 22px -3px #ffd76a,inset 0 0 0 2px rgba(255,215,120,.45);}
-.dress-chips{gap:8px;}
-.dress-chip{padding:9px 13px;font-size:13px;border:1px solid var(--hair);background:var(--surface);border-radius:20px;color:var(--ink-2);font-family:var(--sans);}
-.dress-chip.on{border-color:var(--warm);color:var(--ink);background:color-mix(in srgb,var(--warm) 16%,var(--surface));}
-.dress-chip.locked{opacity:.5;}
-.chart-line.line-neon{animation:neonPulse 1.7s ease-in-out infinite;}
+.frame-pulsegold{border-color:#ffcf6a !important;animation:pulseGold 2.4s ease-in-out infinite;}
+@keyframes pulseGold{0%,100%{box-shadow:0 0 10px -4px #ffcf6a;}50%{box-shadow:0 0 26px -1px #ffe08a;}}
+.frame-pulserose{border-color:#ff8fbf !important;animation:pulseRose 2.4s ease-in-out infinite;}
+@keyframes pulseRose{0%,100%{box-shadow:0 0 10px -4px #ff8fbf;}50%{box-shadow:0 0 26px -1px #ffb0d4;}}
+/* 漸層邊(mask 技法,尊重圓角,不裁切) */
+.gframe{border-color:transparent !important;}
+.gframe::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:2px;background:var(--g,linear-gradient(135deg,#fff,#888));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;z-index:4;}
+.gframe.gspin::before{background:var(--gc,conic-gradient(from 0deg,#ff5a4a,#ffcf6a,#7ee08a,#5b8def,#c77dff,#ff5a4a));animation:hueSpin 4.5s linear infinite;}
+@keyframes hueSpin{to{filter:hue-rotate(360deg);}}
+.frame-rainbowspin{--gc:conic-gradient(from 0deg,#ff5a4a,#ffcf6a,#7ee08a,#5b8def,#c77dff,#ff5a4a);}
+.frame-emberspin{--gc:conic-gradient(from 0deg,#c81810,#ff5a4a,#ff9d3c,#ffd76a,#ff5a4a,#c81810);}
+.frame-neonspin{--gc:conic-gradient(from 0deg,#7ee0ff,#c77dff,#7ee0ff);}
+.frame-sunset{--g:linear-gradient(135deg,#ff5a4a,#ffd76a);}
+.frame-ocean{--g:linear-gradient(135deg,#3a7bd5,#00d2ff,#7ee0d0);}
+.frame-aurora{--g:linear-gradient(135deg,#7ee08a,#5b8def,#c77dff);}
+.frame-candy{--g:linear-gradient(135deg,#ff6fae,#ffd76a,#7ee0ff);}
+.frame-forest{--g:linear-gradient(135deg,#2f7a4d,#7ee08a,#d7f06a);}
+.frame-flamingo{--g:linear-gradient(135deg,#ff6fae,#ff9d3c);}
+.frame-blackgold{--g:linear-gradient(135deg,#3a3222,#ffd76a,#3a3222);}
+.frame-peach{--g:linear-gradient(135deg,#ffb0a0,#ffd7b0);}
+/* 繞圈小動物:卡片 overflow 放開,一個元素沿橢圓繞行 */
+.frame-fancy{overflow:visible !important;}
+.frame-fancy .flame{top:7px;bottom:7px;border-radius:3px;}
+.friend.frame-fancy{border-color:color-mix(in srgb,var(--c) 55%,var(--hair)) !important;box-shadow:0 0 14px -6px var(--c);}
+.orbit{position:absolute;inset:-7px;pointer-events:none;z-index:6;animation:orbitSpin 5.5s linear infinite;}
+.orbit>span{position:absolute;top:-9px;left:50%;transform:translateX(-50%);font-size:16px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.5));}
+@keyframes orbitSpin{to{transform:rotate(360deg);}}
+/* 徽章:卡片右上角 */
+.fbadge{position:absolute;top:7px;right:8px;font-size:16px;z-index:5;filter:drop-shadow(0 1px 2px rgba(0,0,0,.5));}
+/* 折線動態 */
+.chart-line.line-pulse{animation:neonPulse 1.7s ease-in-out infinite;}
 @keyframes neonPulse{0%,100%{opacity:.78;}50%{opacity:1;}}
+.chart-line.line-flow{animation:lineFlow 1.1s linear infinite;}
+@keyframes lineFlow{to{stroke-dashoffset:-34;}}
+/* 預覽:小卡片 / 小折線 / 徽章 */
+.fprev{position:relative;width:96px;height:64px;border-radius:14px;border:1.5px solid var(--hair);background:radial-gradient(120% 120% at 100% 0,color-mix(in srgb,var(--c) 16%,transparent),transparent 60%),var(--surface);display:flex;align-items:flex-end;justify-content:flex-end;padding:8px;overflow:hidden;}
+.fprev.frame-fancy{overflow:visible;}
+.fprev-n{font-family:var(--mono);font-size:22px;font-weight:800;color:var(--c);}
+.orbit-mini{position:absolute;top:-8px;left:50%;transform:translateX(-50%);font-size:15px;animation:orbMini 4s linear infinite;}
+@keyframes orbMini{from{transform:rotate(0) translateY(-30px) rotate(0);}to{transform:rotate(360deg) translateY(-30px) rotate(-360deg);}}
+.lprev{width:112px;height:34px;display:block;}
+.bprev{width:96px;height:64px;display:flex;align-items:center;justify-content:center;font-size:34px;border-radius:14px;border:1px solid var(--hair);background:var(--surface);}
+/* 圖鑑 */
+.gtiles{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.gtiles-badge{grid-template-columns:1fr 1fr 1fr 1fr;}
+.gtile{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;}
+.gprev{position:relative;display:flex;align-items:center;justify-content:center;}
+.gtile.lock .gprev{opacity:.4;filter:grayscale(.7);}
+.glockmark{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.gname{font-size:11px;font-weight:600;color:var(--ink);}
+.gtile.lock .gname{color:var(--ink-3);}
+.greq{font-size:9.5px;color:var(--ink-3);line-height:1.25;}
+/* 裝扮選格 */
+.dtiles{display:flex;gap:10px;flex-wrap:wrap;}
+.dtile{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px;border:1px solid var(--hair);border-radius:14px;background:var(--surface);}
+.dtile.on{border-color:var(--warm);box-shadow:0 0 0 1px var(--warm);}
+.dtile .dname{font-size:10.5px;color:var(--ink-2);}
+.dprev{pointer-events:none;}
+.dprev-none{width:96px;height:64px;display:flex;align-items:center;justify-content:center;color:var(--ink-3);font-size:13px;border:1px dashed var(--hair);border-radius:14px;}
 /* v1.34 回顧變化排行 */
 .rk-list{margin-top:4px;}
 .rk-row{display:flex;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px solid var(--hair-soft);}
@@ -427,6 +485,10 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 .rk-bar{height:8px;border-radius:4px;transition:width .4s var(--ease);}
 .rk-mid{width:1.5px;height:14px;background:var(--hair);flex:0 0 auto;}
 .rk-chg{width:42px;flex:0 0 auto;text-align:right;font-family:var(--mono);font-size:14px;font-weight:700;}
+.ovchips{gap:7px;margin-top:2px;}
+.ovchip{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;font-size:12px;border:1px solid var(--hair);background:var(--surface);border-radius:20px;color:var(--ink-3);}
+.ovchip.on{color:var(--ink);background:var(--surface-hi);}
+.ovdot{width:9px;height:9px;border-radius:50%;flex:0 0 auto;}
 /* v1.32 結算畫面選時間 */
 .score-head{display:flex;align-items:center;justify-content:space-between;gap:10px;}
 .score-head h2{flex:1;min-width:0;}
@@ -568,7 +630,7 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 <div class="sheet" id="recapSheet">
   <div class="grabber"></div>
   <h2>回顧</h2>
-  <div class="seg" id="recapModeSeg" style="margin-top:14px;"><button class="on" data-rm="stats" onclick="setRecapMode('stats')">數據</button><button data-rm="rank" onclick="setRecapMode('rank')">變化排行</button></div>
+  <div class="seg" id="recapModeSeg" style="margin-top:14px;"><button class="on" data-rm="stats" onclick="setRecapMode('stats')">數據</button><button data-rm="rank" onclick="setRecapMode('rank')">變化排行</button><button data-rm="overlay" onclick="setRecapMode('overlay')">疊圖</button></div>
   <div class="seg" id="recapSpanSeg" style="margin-top:10px;"><button data-rs="7" onclick="setRecapSpan(7)">近 7 天</button><button class="on" data-rs="30" onclick="setRecapSpan(30)">近 30 天</button><button data-rs="0" onclick="setRecapSpan(0)">全部</button></div>
   <div id="recapBody" style="margin-top:6px;"></div>
   <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
@@ -610,14 +672,15 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
     </div>
     <div class="field-label">刪除</div>
     <div class="set-group"><div class="set-row tap" onclick="toggleAskDel()"><div style="flex:1;"><div class="k">刪紀錄前先詢問</div><div class="sub">關掉後,長按日誌會直接刪除</div></div><div class="sw" id="swAskDel"></div></div></div>
-    <div class="field-label">成就</div>
+    <div class="field-label">成就 · 外觀</div>
     <div class="set-group">
       <div class="set-row" data-press onclick="openAchv()"><div class="k">成就櫃</div><div class="set-val" id="achvSetCount">0 / 150</div></div>
+      <div class="set-row" data-press onclick="openGallery()"><div class="k">外觀圖鑑</div><div class="set-val">外框 / 折線 / 徽章 ›</div></div>
     </div>
     <div class="field-label">關於</div>
     <div class="set-group">
       <div class="set-row" data-press onclick="openChangelog()"><div class="k">更新紀錄</div><div class="set-val">查看 ›</div></div>
-      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.34</div></div>
+      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.35</div></div>
     </div>
     <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
   </div>
@@ -644,6 +707,13 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
   <h2 id="dressTitle">裝扮</h2>
   <div id="dressBody" style="margin-top:6px;"></div>
   <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">完成</button></div>
+</div>
+
+<div class="sheet" id="gallerySheet">
+  <div class="grabber"></div>
+  <h2>外觀圖鑑</h2>
+  <div id="galleryBody" style="margin-top:6px;"></div>
+  <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
 </div>
 
 <div class="sheet" id="dataSheet">
@@ -673,10 +743,16 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 
 <script>
 "use strict";
-const VERSION="1.34";
+const VERSION="1.35";
 const KEY="friendship-meter-v1";
 /* 更新紀錄:每次改版就在最前面加一筆(v 由大到小,設定頁「更新紀錄」會照這個順序顯示) */
 const CHANGELOG=[
+  {v:"1.35",date:"2026-08-12",items:[
+    "外觀系統大擴充:外框 27 種(純色光暈、漸層、動態旋轉、繞圈小動物…)、折線 24 種、新增徽章 16 種,全部用成就解鎖",
+    "新增「外觀圖鑑」(設定 → 成就·外觀):每一個外框 / 折線 / 徽章都能直接預覽長怎樣,還沒解鎖的會寫清楚要解哪個成就,不用解了才知道",
+    "裝扮改成預覽選格:長按好友卡片 →「裝扮外觀」,看得到縮圖再套,外框 / 折線 / 徽章各挑一個",
+    "回顧把「疊圖」做回來了,但這次每條線用不同顏色、末端直接標名字,還能挑要比較誰(最多 8 條),一眼看得出哪條是誰",
+  ]},
   {v:"1.34",date:"2026-08-12",items:[
     "自然降溫重做:改成每天(固定 09:00)自動記一筆「自動降溫」的 −N(藍色標記),打開 app 會把錯過的天補記在對的日期,最多降到 0。首頁 ❄ 標記和詳情頁現在一致,不會再首頁沒有、點進去才有",
     "結算的溫度計改大、加了 −/＋ 微調鈕和大數字,不再滑一下就跳過頭;原因 / 小故事預設收起來,要寫再點開",
@@ -923,8 +999,13 @@ function gridCellHTML(f,animate,i){
   const ci=(!ended)?coolInfo(f):{cooling:false,amt:0};              /* v1.34 降溫狀態(已記進 logs) */
   const snow=ci.cooling?`<span class="snow">❄ ${ci.amt>0?`降溫 −${ci.amt}`:"降溫中"}</span>`:"";
   const showScore=ended?0:sc, tcol=ended?"var(--ink-3)":t.color, ttitle=ended?"已結束":t.title;
-  const frameCls=(!ended&&f.frame&&FRAMES.some(x=>x.id===f.frame&&rewardOwned(x)))?` frame-${f.frame}`:"";
+  const frameItem=(!ended&&f.frame)?FRAMES.find(x=>x.id===f.frame&&cosmOwned(x)):null;
+  const frameCls=frameItem?" "+frameClasses(frameItem):"";
+  const orbitEl=frameItem&&frameItem.orbit?`<div class="orbit"><span>${frameItem.orbit}</span></div>`:"";
+  const badgeItem=(!ended&&f.badge)?BADGES.find(x=>x.id===f.badge&&cosmOwned(x)):null;
+  const badgeEl=badgeItem?`<div class="fbadge">${badgeItem.emoji}</div>`:"";
   return `<div class="friend ${animate?'anim':''}${ci.cooling?' cooling':''}${frameCls}" data-fid="${f.id}" style="--c:${tcol};animation-delay:${(i||0)*0.04}s">
+    ${orbitEl}${badgeEl}
     <div class="flame"></div>
     <div class="name">${pin}<span>${escapeHtml(f.name)}</span></div>
     <div class="gmeta"><span class="tier-title" style="color:${tcol}">${ttitle}</span>${cat}${snow||cool}</div>
@@ -995,7 +1076,33 @@ function renderRanking(){ const box=$("recapBody"); const pool=DB.friends.filter
   box.innerHTML=`<div class="hint" style="margin:10px 2px 6px;">${spanTxt}的好感度變化,由升到降排。右邊暖色 = 升溫、左邊藍色 = 降溫,點一列看那個人。</div><div class="rk-list">${list}</div>`;
   box.querySelectorAll(".rk-row").forEach(el=>el.onclick=()=>{ const id=el.dataset.fid; closeSheet(); showDetail(id); }); bindPress(); }
 const _BANDCOL={熱:colorForScore(90),暖:colorForScore(65),涼:colorForScore(25),冷:colorForScore(-15)};
+const _OVCOL=["#ff5a4a","#5b8def","#7ee08a","#ffcf6a","#c77dff","#ff9d3c","#00d2ff","#ff6fae"];
+function _ovSeries(f,since){ const evts=[{ts:f.createdAt,value:f.initial}]; let run=f.initial; [...f.logs].sort((a,b)=>a.ts-b.ts).forEach(l=>{run+=l.delta;evts.push({ts:l.ts,value:run});});
+  const start=Math.max(since||f.createdAt,f.createdAt); let base=f.initial; evts.forEach(e=>{ if(e.ts<=start)base=e.value; });
+  const pts=[{ts:start,value:base}]; evts.forEach(e=>{ if(e.ts>start&&e.ts<=Date.now())pts.push(e); }); pts.push({ts:Date.now(),value:currentScore(f)}); return pts; }
+function renderOverlay(){ const box=$("recapBody"); const pool=DB.friends.filter(f=>f.status!=="ended");
+  if(!pool.length){ box.innerHTML=`<div class="empty-state" style="padding:34px 0"><div class="small">還沒有好友</div></div>`; return; }
+  const now=Date.now(); const since=recapSpan?now-recapSpan*86400000:Math.min(...pool.map(f=>f.createdAt));
+  if(overlayIds===null){ const ranked=[...pool].sort((a,b)=>b.logs.filter(l=>l.ts>=since).length-a.logs.filter(l=>l.ts>=since).length); overlayIds=new Set(ranked.slice(0,8).map(f=>f.id)); }
+  const sel=pool.filter(f=>overlayIds.has(f.id)); const colOf=id=>_OVCOL[sel.findIndex(s=>s.id===id)%_OVCOL.length];
+  const series=sel.map(f=>({f,col:colOf(f.id),pts:_ovSeries(f,since)}));
+  let vMin=Infinity,vMax=-Infinity; series.forEach(s=>s.pts.forEach(p=>{if(p.value<vMin)vMin=p.value;if(p.value>vMax)vMax=p.value;}));
+  if(!isFinite(vMin)){vMin=0;vMax=100;} if(vMin===vMax){vMin-=5;vMax+=5;} const pd=(vMax-vMin)*0.14; vMin-=pd;vMax+=pd;
+  const W=340,H=210,padL=8,padR=56,padT=14,padB=16, sp=Math.max(1,now-since);
+  const x=ts=>padL+((ts-since)/sp)*(W-padL-padR), y=v=>padT+(vMax-v)/(vMax-vMin)*(H-padT-padB);
+  const zero=(vMin<0&&vMax>0)?`<line x1="${padL}" y1="${y(0).toFixed(1)}" x2="${W-padR}" y2="${y(0).toFixed(1)}" stroke="#8a7d6b" stroke-opacity=".3" stroke-dasharray="3 4"/>`:"";
+  const grid=[0.5].map(g=>`<line x1="${padL}" y1="${(padT+g*(H-padT-padB)).toFixed(1)}" x2="${W-padR}" y2="${(padT+g*(H-padT-padB)).toFixed(1)}" stroke="#8a7d6b" stroke-opacity=".08"/>`).join("");
+  const paths=series.map(s=>{ const d=s.pts.map((p,i)=>`${i?'L':'M'}${x(p.ts).toFixed(1)} ${y(p.value).toFixed(1)}`).join(" "); const lp=s.pts[s.pts.length-1]; const ex=x(lp.ts),ey=y(lp.value);
+    return `<path d="${d}" fill="none" stroke="${s.col}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" opacity=".95"/><circle cx="${ex.toFixed(1)}" cy="${ey.toFixed(1)}" r="3.2" fill="${s.col}"/><text x="${(ex+6).toFixed(1)}" y="${(ey+3.2).toFixed(1)}" font-size="9" font-weight="700" fill="${s.col}">${escapeHtml(s.f.name.slice(0,4))}</text>`; }).join("");
+  const chips=pool.map(f=>{ const on=overlayIds.has(f.id); const col=on?colOf(f.id):"var(--ink-3)"; return `<button class="ovchip ${on?'on':''}" data-press data-ov="${f.id}"><span class="ovdot" style="background:${col}"></span>${escapeHtml(f.name)}</button>`; }).join("");
+  box.innerHTML=`<div class="chart-wrap" style="margin-top:10px;">${series.length?`<svg viewBox="0 0 ${W} ${H}" width="100%" preserveAspectRatio="xMidYMid meet">${grid}${zero}${paths}</svg>`:`<div class="empty-state" style="padding:30px 0"><div class="small">選下面的人來比較</div></div>`}</div>
+    <div class="field-label" style="display:flex;justify-content:space-between;align-items:center;">比較誰 · 每條末端有名字<span><button class="edit-link" data-press id="ovTop">熱門</button>　<button class="edit-link" data-press id="ovNone">清空</button></span></div>
+    <div class="chips ovchips">${chips}</div>`;
+  box.querySelectorAll("[data-ov]").forEach(b=>b.onclick=()=>{ const id=b.dataset.ov; if(overlayIds.has(id))overlayIds.delete(id); else if(overlayIds.size<8)overlayIds.add(id); else toast("最多同時比較 8 條"); haptic(); renderOverlay(); });
+  $("ovTop").onclick=()=>{ overlayIds=null; haptic(); renderOverlay(); };
+  $("ovNone").onclick=()=>{ overlayIds=new Set(); haptic(); renderOverlay(); }; bindPress(); }
 function renderRecap(){
+  if(recapMode==="overlay"){ renderOverlay(); return; }
   if(recapMode==="rank"){ renderRanking(); return; }
   const pool=DB.friends.filter(f=>f.status!=="ended");
   const since=recapSpan?Date.now()-recapSpan*86400000:0;
@@ -1326,26 +1433,25 @@ function chartSVG(f){
   const zero=(vMin<0&&vMax>0)?`<line x1="${padL}" y1="${y(0).toFixed(1)}" x2="${W-padR}" y2="${y(0).toFixed(1)}" stroke="#8a7d6b" stroke-opacity=".4" stroke-width="1"/>`:"";
   const xe=x(n-1).toFixed(1), ye=y(data[n-1].value).toFixed(1), lite=_lighten(t.color);
   const grid=[0.25,0.5,0.75].map(g=>{const gy=(padT+g*(H-padT-padB)).toFixed(1); return `<line x1="${padL}" y1="${gy}" x2="${W-padR}" y2="${gy}"/>`;}).join("");
-  const _ls=(f.lineStyle&&LINES.some(x=>x.id===f.lineStyle&&rewardOwned(x)))?f.lineStyle:"";
-  const _lineStroke=_ls==="rainbow"?"url(#crainbow)":"url(#cstroke)", _lineCls="chart-line"+(_ls==="neon"?" line-neon":""), _lineFilter=_ls==="neon"?"url(#neonglow)":"url(#glow)";
+  const _lc=(f.lineStyle&&LINES.some(x=>x.id===f.lineStyle&&cosmOwned(x)))?lineRender(f.lineStyle,f.id):null;
+  const _lineStroke=_lc?_lc.stroke:"url(#cstroke)", _lineCls=_lc?_lc.cls:"chart-line", _lineFilter=_lc?_lc.filter:"url(#glow)", _lineW=_lc?_lc.width:2.6, _lineDash=_lc&&_lc.dash?` stroke-dasharray="${_lc.dash}"`:"";
   return `<svg viewBox="0 0 ${W} ${H}" width="100%" preserveAspectRatio="xMidYMid meet">
     <defs><linearGradient id="fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${t.color}" stop-opacity="0.30"/><stop offset="100%" stop-color="${t.color}" stop-opacity="0"/></linearGradient>
       <linearGradient id="cstroke" x1="0" y1="1" x2="1" y2="0"><stop offset="0%" stop-color="${t.color}"/><stop offset="100%" stop-color="${lite}"/></linearGradient>
-      <linearGradient id="crainbow" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#ff5a4a"/><stop offset="25%" stop-color="#ffcf6a"/><stop offset="50%" stop-color="#7ee08a"/><stop offset="75%" stop-color="#5b8def"/><stop offset="100%" stop-color="#c77dff"/></linearGradient>
       <filter id="glow"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-      <filter id="neonglow"><feGaussianBlur stdDeviation="4.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+      ${_lc?_lc.defs:""}</defs>
     <g class="c-grid">${grid}</g>
     ${zero}
     <path class="c-area" d="${area}" fill="url(#fill)"/>
     <g class="c-avg-g"><line x1="${padL}" y1="${yAvg}" x2="${W-padR}" y2="${yAvg}" stroke="#8a7d6b" stroke-width="1" stroke-dasharray="3 4"/><text x="${W-padR}" y="${yAvg-5}" text-anchor="end" font-family="JetBrains Mono,monospace" font-size="9" fill="#8a7d6b">平均 ${avg.toFixed(0)}</text></g>
-    <path class="${_lineCls}" d="${line}" fill="none" stroke="${_lineStroke}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" filter="${_lineFilter}"/>
+    <path class="${_lineCls}" d="${line}" fill="none" stroke="${_lineStroke}" stroke-width="${_lineW}" stroke-linecap="round" stroke-linejoin="round"${_lineDash} filter="${_lineFilter}"/>
     <circle class="c-pt mx" cx="${x(pi).toFixed(1)}" cy="${y(data[pi].value).toFixed(1)}" r="3.6" fill="var(--warm)"/><text class="c-lbl" x="${x(pi).toFixed(1)}" y="${(y(data[pi].value)-7).toFixed(1)}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="var(--warm)">${data[pi].value}</text>
     <circle class="c-pt mn" cx="${x(ti).toFixed(1)}" cy="${y(data[ti].value).toFixed(1)}" r="3.6" fill="var(--cool)"/><text class="c-lbl" x="${x(ti).toFixed(1)}" y="${(y(data[ti].value)+14).toFixed(1)}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="var(--cool)">${data[ti].value}</text>
     <circle class="c-ring" cx="${xe}" cy="${ye}" r="6" fill="none" stroke="${t.color}" stroke-width="2"/><circle class="c-end" cx="${xe}" cy="${ye}" r="4" fill="${lite}"/>
   </svg>
   <div class="chart-legend"><span><span class="dot" style="background:var(--warm)"></span>最高 ${data[pi].value}</span><span><span class="dot" style="background:var(--cool)"></span>最低 ${data[ti].value}</span><span><span class="dot" style="background:#8a7d6b"></span>平均 ${avg.toFixed(0)}</span></div>`;
 }
-function igniteChart(){ const p=document.querySelector("#detailBody .chart-line"); if(!p||!p.getTotalLength)return; const len=p.getTotalLength(); p.style.transition="none";p.style.strokeDasharray=len;p.style.strokeDashoffset=len; p.getBoundingClientRect(); p.style.transition="stroke-dashoffset .9s cubic-bezier(.32,.72,0,1)";p.style.strokeDashoffset="0"; }
+function igniteChart(){ const p=document.querySelector("#detailBody .chart-line"); if(!p||!p.getTotalLength)return; if(p.getAttribute("stroke-dasharray"))return; /* 虛線 / 跑動樣式不做描邊進場,避免蓋掉 dash */ const len=p.getTotalLength(); p.style.transition="none";p.style.strokeDasharray=len;p.style.strokeDashoffset=len; p.getBoundingClientRect(); p.style.transition="stroke-dashoffset .9s cubic-bezier(.32,.72,0,1)";p.style.strokeDashoffset="0"; }
 
 /* ============ 刪除 ============ */
 let confirmYesCb=null;
@@ -1835,24 +1941,112 @@ function renderAchvShelf(){ const box=$("achvShelf"); if(!box)return; const got=
     return `<div class="achv-group"><div class="ag-h">${escapeHtml(gr.g)} <span>${un}/${gr.items.length}</span></div><div class="achv-grid">`+
       gr.items.map(a=>`<div class="medal ${got[a.id]?'got':''}"><div class="disc">${a.ic}</div><div class="mtx"><div class="mt">${escapeHtml(a.t)}</div><div class="ms">${escapeHtml(a.d)}</div></div></div>`).join("")+`</div></div>`; }).join(""); }
 
-/* ===== v1.34 獎勵:外框 + 折線(解成就換到,套到某個好友) ===== */
-const FRAMES=[{id:"gold",ic:"🥇",name:"尊爵金框",req:"n5"},{id:"lava",ic:"🌋",name:"熔岩火焰框",req:"n21"},{id:"ice",ic:"❄️",name:"冰晶框",req:"n12"},{id:"crown",ic:"👑",name:"王者金冠",req:"n137"}];
-const LINES=[{id:"rainbow",ic:"🌈",name:"彩虹流光",req:"n11"},{id:"neon",ic:"💠",name:"霓虹脈衝",req:"n86"}];
-function rewardOwned(r){ return !!(DB.settings.achv&&DB.settings.achv[r.req]); }
-function openDress(id){ dressId=id; renderDress(); openSheet("dressSheet"); }
+/* ===== v1.35 外觀系統:外框 / 折線 / 徽章(解成就解鎖,可預覽、套到某個好友) =====
+   req 是字串 = 對應成就 id;req 是數字 = 「解鎖 N 個成就」的進度門檻。kind 決定外框畫法 */
+const FRAMES=[
+  {id:"gold",name:"尊爵金框",req:"n5",kind:"glow"},
+  {id:"ice",name:"冰晶框",req:"n12",kind:"glow"},
+  {id:"lava",name:"熔岩火焰",req:"n21",kind:"glow"},
+  {id:"crown",name:"王者金冠",req:"n137",kind:"glow"},
+  {id:"rose",name:"薔薇",req:6,kind:"glow"},
+  {id:"mint",name:"薄荷",req:8,kind:"glow"},
+  {id:"violet",name:"紫晶",req:10,kind:"glow"},
+  {id:"sky",name:"晴空",req:12,kind:"glow"},
+  {id:"sunset",name:"夕陽漸層",req:"n4",kind:"grad"},
+  {id:"ocean",name:"海洋漸層",req:14,kind:"grad"},
+  {id:"aurora",name:"極光",req:"n10",kind:"grad"},
+  {id:"candy",name:"糖果",req:16,kind:"grad"},
+  {id:"forest",name:"森林",req:18,kind:"grad"},
+  {id:"flamingo",name:"紅鶴",req:20,kind:"grad"},
+  {id:"blackgold",name:"黑金",req:22,kind:"grad"},
+  {id:"peach",name:"蜜桃",req:24,kind:"grad"},
+  {id:"rainbowspin",name:"彩虹旋轉",req:"n11",kind:"spin"},
+  {id:"emberspin",name:"餘燼旋轉",req:"n86",kind:"spin"},
+  {id:"neonspin",name:"霓虹旋轉",req:26,kind:"spin"},
+  {id:"pulsegold",name:"呼吸金",req:28,kind:"pulse"},
+  {id:"pulserose",name:"呼吸粉",req:30,kind:"pulse"},
+  {id:"orbstar",name:"流星環繞",req:32,kind:"orbit",orbit:"⭐"},
+  {id:"orbbee",name:"小蜜蜂",req:34,kind:"orbit",orbit:"🐝"},
+  {id:"orbsquirrel",name:"小松鼠",req:"n100",kind:"orbit",orbit:"🐿️"},
+  {id:"orbbutterfly",name:"蝴蝶",req:36,kind:"orbit",orbit:"🦋"},
+  {id:"orbcat",name:"小貓巡邏",req:"n85",kind:"orbit",orbit:"🐈"},
+  {id:"orbfish",name:"小魚游游",req:40,kind:"orbit",orbit:"🐟"},
+];
+const LINE_GRADS={rainbow:["#ff5a4a","#ffcf6a","#7ee08a","#5b8def","#c77dff"],sunset:["#ff4d6d","#ff9d3c","#ffd76a"],ocean:["#3a7bd5","#00d2ff","#7ee0d0"],aurora:["#7ee08a","#5b8def","#c77dff"],fire:["#c81810","#ff5a4a","#ff9d3c"],ice:["#8fd4ff","#c9f0ff","#5b8def"],forest:["#2f7a4d","#7ee08a","#d7f06a"],candy:["#ff6fae","#ffd76a","#7ee0ff"],gold:["#e08a1e","#ffd76a","#fff3cf"],violet:["#7d3cff","#c77dff","#ff6fae"],mono:["#f0f0f0","#8a8a8a","#f0f0f0"],sky:["#5b8def","#8fd4ff"]};
+const LINES=[
+  {id:"rainbow",name:"彩虹流光",req:"n11",grad:"rainbow"},
+  {id:"neon",name:"霓虹脈衝",req:"n86",solid:"#7ee0ff",glow:1,flow:1},
+  {id:"sunset",name:"夕陽",req:"n4",grad:"sunset"},
+  {id:"ocean",name:"海洋",req:14,grad:"ocean"},
+  {id:"aurora",name:"極光",req:"n10",grad:"aurora"},
+  {id:"fire",name:"火焰",req:"n21",grad:"fire",glow:1},
+  {id:"ice",name:"冰霜",req:"n12",grad:"ice"},
+  {id:"forest",name:"森林",req:16,grad:"forest"},
+  {id:"candy",name:"糖果",req:18,grad:"candy"},
+  {id:"gold",name:"流金",req:"n5",grad:"gold",glow:1},
+  {id:"violet",name:"紫電",req:20,grad:"violet"},
+  {id:"mono",name:"極簡黑白",req:22,grad:"mono"},
+  {id:"sky",name:"天空",req:24,grad:"sky"},
+  {id:"dash",name:"流動虛線",req:26,solid:"var(--warm)",dash:"7 6",flow:1},
+  {id:"dot",name:"點點",req:28,solid:"var(--cool)",dash:"1 7"},
+  {id:"thick",name:"粗筆",req:30,solid:"var(--warm)",width:4.4},
+  {id:"thin",name:"細線",req:8,solid:"var(--ink-2)",width:1.4},
+  {id:"glowline",name:"柔光",req:12,solid:"#ffd76a",glow:1},
+  {id:"pulsegold",name:"金脈衝",req:32,grad:"gold",flow:1},
+  {id:"auroraflow",name:"極光跑動",req:34,grad:"aurora",flow:1,dash:"9 7"},
+  {id:"fireflow",name:"火焰跑動",req:36,grad:"fire",flow:1,dash:"8 6"},
+  {id:"rainbowflow",name:"彩虹跑動",req:40,grad:"rainbow",flow:1,dash:"10 7"},
+  {id:"midnight",name:"午夜藍",req:"n45",solid:"#5b8def",glow:1,width:3},
+  {id:"blossom",name:"櫻粉",req:44,solid:"#ff6fae",glow:1},
+];
+const BADGES=[
+  {id:"star",name:"星星",emoji:"⭐",req:"n5"},{id:"fire",name:"火焰",emoji:"🔥",req:"n21"},{id:"heart",name:"愛心",emoji:"❤️",req:6},
+  {id:"crown",name:"皇冠",emoji:"👑",req:"n137"},{id:"snow",name:"雪花",emoji:"❄️",req:"n12"},{id:"clover",name:"幸運草",emoji:"🍀",req:10},
+  {id:"diamond",name:"鑽石",emoji:"💎",req:20},{id:"rocket",name:"火箭",emoji:"🚀",req:"n81"},{id:"ghost",name:"幽靈",emoji:"👻",req:"f2"},
+  {id:"sprout",name:"新芽",emoji:"🌱",req:"n1"},{id:"rainbow",name:"彩虹",emoji:"🌈",req:"n11"},{id:"moon",name:"月亮",emoji:"🌙",req:"n56"},
+  {id:"coffee",name:"咖啡",emoji:"☕",req:14},{id:"music",name:"音符",emoji:"🎵",req:16},{id:"paw",name:"腳印",emoji:"🐾",req:18},{id:"gem",name:"寶石",emoji:"🔮",req:26},
+];
+function cosmOwned(it){ return typeof it.req==="number" ? _achvCount()>=it.req : !!(DB.settings.achv&&DB.settings.achv[it.req]); }
+function cosmReqText(it){ if(typeof it.req==="number") return `解鎖任意 ${it.req} 個成就`; const a=ACHV.find(x=>x.id===it.req); return a?`成就「${a.t}」· ${a.d}`:"隱藏條件"; }
+function rewardOwned(r){ return cosmOwned(r); }  /* 舊名相容 */
+function frameClasses(fr){ let c="frame-"+fr.id; if(fr.kind==="grad"||fr.kind==="spin")c+=" gframe"; if(fr.kind==="spin")c+=" gspin"; if(fr.kind==="orbit")c+=" frame-fancy"; return c; }
+/* 折線:回傳 svg 需要的 defs / stroke / class / filter / dash / width */
+function lineRender(id,uid){ const it=LINES.find(x=>x.id===id); if(!it) return null; let defs="",stroke;
+  if(it.grad){ const cols=LINE_GRADS[it.grad]||["#fff"]; const gid=`lg-${id}-${uid}`;
+    defs+=`<linearGradient id="${gid}" x1="0" y1="0" x2="1" y2="0">${cols.map((c,i)=>`<stop offset="${Math.round(i/(cols.length-1)*100)}%" stop-color="${c}"/>`).join("")}</linearGradient>`; stroke=`url(#${gid})`; }
+  else stroke=it.solid||"url(#cstroke)";
+  let filter="url(#glow)"; if(it.glow){ const fid=`lgf-${id}-${uid}`; defs+=`<filter id="${fid}" x="-30%" y="-60%" width="160%" height="220%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>`; filter=`url(#${fid})`; }
+  const cls="chart-line"+(it.flow?(it.dash?" line-flow":" line-pulse"):"");
+  return {defs,stroke,filter,dash:it.dash||"",width:it.width||2.6,cls}; }
+/* 預覽 */
+function framePreviewHTML(fr){ const orbit=fr.orbit?`<span class="orbit-mini">${fr.orbit}</span>`:""; return `<div class="fprev ${frameClasses(fr)}" style="--c:${colorForScore(85)}">${orbit}<span class="fprev-n">88</span></div>`; }
+function linePreviewHTML(ln){ const lr=lineRender(ln.id,"pv-"+ln.id); return `<svg class="lprev" viewBox="0 0 122 34" preserveAspectRatio="none"><defs>${lr.defs}</defs><path class="${lr.cls}" d="M5 25 C 38 6, 74 30, 117 9" fill="none" stroke="${lr.stroke}" stroke-width="${lr.width}" stroke-linecap="round" stroke-linejoin="round" ${lr.dash?`stroke-dasharray="${lr.dash}"`:""} filter="${lr.filter}"/></svg>`; }
+/* 圖鑑:所有外觀 + 解鎖條件 + 預覽 */
+function openGallery(){ renderGallery(); openSheet("gallerySheet"); }
+function _galleryTiles(list,type){ return list.map(it=>{ const own=cosmOwned(it); const prev=type==="frame"?framePreviewHTML(it):(type==="line"?linePreviewHTML(it):`<div class="bprev">${it.emoji}</div>`);
+    return `<div class="gtile ${own?'own':'lock'}"><div class="gprev">${prev}${own?"":`<div class="glockmark">🔒</div>`}</div><div class="gname">${escapeHtml(it.name)}</div><div class="greq">${own?"已解鎖":escapeHtml(cosmReqText(it))}</div></div>`; }).join(""); }
+function renderGallery(){ const nf=FRAMES.filter(cosmOwned).length,nl=LINES.filter(cosmOwned).length,nb=BADGES.filter(cosmOwned).length;
+  $("galleryBody").innerHTML=`<div class="hint" style="margin:8px 2px 10px">解成就會拿到外框、折線、徽章。這裡看得到全部長怎樣、還沒解的要解哪個成就。已解鎖的可長按好友卡片 →「裝扮外觀」套上去。</div>
+    <div class="ag-h">外框 <span>${nf}/${FRAMES.length}</span></div><div class="gtiles">${_galleryTiles(FRAMES,"frame")}</div>
+    <div class="ag-h" style="margin-top:16px">折線 <span>${nl}/${LINES.length}</span></div><div class="gtiles">${_galleryTiles(LINES,"line")}</div>
+    <div class="ag-h" style="margin-top:16px">徽章 <span>${nb}/${BADGES.length}</span></div><div class="gtiles gtiles-badge">${_galleryTiles(BADGES,"badge")}</div>`; }
+/* 每個好友的裝扮(只顯示已解鎖的,可預覽) */
 let dressId=null;
+function openDress(id){ dressId=id; renderDress(); openSheet("dressSheet"); }
+function _dressRow(list,type,cur,setter){ const owned=list.filter(cosmOwned);
+  const none=`<button class="dtile ${!cur?'on':''}" data-press onclick="${setter}(null)"><div class="dprev dprev-none">無</div><div class="dname">無</div></button>`;
+  const tiles=owned.map(it=>{ const prev=type==="frame"?framePreviewHTML(it):(type==="line"?linePreviewHTML(it):`<div class="bprev">${it.emoji}</div>`);
+    return `<button class="dtile ${cur===it.id?'on':''}" data-press onclick="${setter}('${it.id}')"><div class="dprev">${prev}</div><div class="dname">${escapeHtml(it.name)}</div></button>`; }).join("");
+  return owned.length?none+tiles:`<div class="hint" style="margin:2px 2px 0">還沒解鎖,去圖鑑看看要解哪些成就。</div>`; }
 function renderDress(){ const f=DB.friends.find(x=>x.id===dressId); if(!f)return; $("dressTitle").textContent=`${f.name} · 裝扮`;
-  const frameChips=[`<button class="dress-chip ${!f.frame?'on':''}" data-press onclick="setFrame(null)">無外框</button>`]
-    .concat(FRAMES.map(fr=>{ const own=rewardOwned(fr); return `<button class="dress-chip ${f.frame===fr.id?'on':''} ${own?'':'locked'}" data-press onclick="${own?`setFrame('${fr.id}')`:''}">${fr.ic} ${fr.name}${own?'':' 🔒'}</button>`; })).join("");
-  const lineChips=[`<button class="dress-chip ${!f.lineStyle?'on':''}" data-press onclick="setLine(null)">預設線</button>`]
-    .concat(LINES.map(ln=>{ const own=rewardOwned(ln); return `<button class="dress-chip ${f.lineStyle===ln.id?'on':''} ${own?'':'locked'}" data-press onclick="${own?`setLine('${ln.id}')`:''}">${ln.ic} ${ln.name}${own?'':' 🔒'}</button>`; })).join("");
-  const anyOwned=FRAMES.some(rewardOwned)||LINES.some(rewardOwned);
-  $("dressBody").innerHTML=`${anyOwned?"":`<div class="hint" style="margin:2px 2px 12px">還沒解鎖任何外觀。去解成就(例如破 100、到「滾燙的朋友」、破紀錄…)就會拿到外框和特殊折線。</div>`}
-    <div class="field-label">外框(套在首頁卡片)</div><div class="chips dress-chips">${frameChips}</div>
-    <div class="field-label" style="margin-top:16px">折線樣式(套在詳情圖)</div><div class="chips dress-chips">${lineChips}</div>`;
+  $("dressBody").innerHTML=`<div class="field-label">外框</div><div class="dtiles">${_dressRow(FRAMES,"frame",f.frame,"setFrame")}</div>
+    <div class="field-label" style="margin-top:16px">折線(詳情圖)</div><div class="dtiles">${_dressRow(LINES,"line",f.lineStyle,"setLine")}</div>
+    <div class="field-label" style="margin-top:16px">徽章</div><div class="dtiles">${_dressRow(BADGES,"badge",f.badge,"setBadge")}</div>
+    <button class="reason-toggle" data-press style="margin-top:16px" onclick="openGallery()">看全部外觀圖鑑 ›</button>`;
   bindPress(); }
-function setFrame(id){ const f=DB.friends.find(x=>x.id===dressId); if(!f)return; if(id){const fr=FRAMES.find(x=>x.id===id); if(!fr||!rewardOwned(fr))return;} f.frame=id||undefined; save(DB); haptic(); renderDress(); renderHome(false); }
-function setLine(id){ const f=DB.friends.find(x=>x.id===dressId); if(!f)return; if(id){const ln=LINES.find(x=>x.id===id); if(!ln||!rewardOwned(ln))return;} f.lineStyle=id||undefined; save(DB); haptic(); renderDress(); if(currentDetailId===dressId)renderDetail(dressId,false); }
+function setFrame(id){ const f=DB.friends.find(x=>x.id===dressId); if(!f)return; if(id){const fr=FRAMES.find(x=>x.id===id); if(!fr||!cosmOwned(fr))return;} f.frame=id||undefined; save(DB); haptic(); renderDress(); renderHome(false); }
+function setLine(id){ const f=DB.friends.find(x=>x.id===dressId); if(!f)return; if(id){const ln=LINES.find(x=>x.id===id); if(!ln||!cosmOwned(ln))return;} f.lineStyle=id||undefined; save(DB); haptic(); renderDress(); if(currentDetailId===dressId)renderDetail(dressId,false); }
+function setBadge(id){ const f=DB.friends.find(x=>x.id===dressId); if(!f)return; if(id){const bd=BADGES.find(x=>x.id===id); if(!bd||!cosmOwned(bd))return;} f.badge=id||undefined; save(DB); haptic(); renderDress(); renderHome(false); }
 
 /* ---- v1.30 撤銷 / 改日期 ---- */
 let _undo=null,_undoT=null;
