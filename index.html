@@ -221,8 +221,15 @@ body.selecting .list .friend:not(.ended)::after{top:50%;left:16px;right:auto;tra
 
 /* 溫度計微調 */
 .thermo-area{display:flex;justify-content:center;padding:2px 0 0;}
-.thermo-bezel{width:108px;padding:7px;border-radius:58px;background:linear-gradient(150deg,#f0f1f3,#b7babf 32%,#dcdee1 52%,#a9acb1 78%,#e9eaec);box-shadow:0 8px 20px rgba(0,0,0,.4),inset 0 1px 2px rgba(255,255,255,.8),inset 0 -2px 4px rgba(0,0,0,.2);}
-.thermo-face{position:relative;height:clamp(196px,27vh,240px);border-radius:52px;background:linear-gradient(#fdfdf9,#f3f2ea);box-shadow:inset 0 2px 6px rgba(0,0,0,.14);overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none;}
+.thermo-bezel{width:116px;padding:7px;border-radius:58px;background:linear-gradient(150deg,#f0f1f3,#b7babf 32%,#dcdee1 52%,#a9acb1 78%,#e9eaec);box-shadow:0 8px 20px rgba(0,0,0,.4),inset 0 1px 2px rgba(255,255,255,.8),inset 0 -2px 4px rgba(0,0,0,.2);}
+.thermo-face{position:relative;height:clamp(236px,34vh,320px);border-radius:52px;background:linear-gradient(#fdfdf9,#f3f2ea);box-shadow:inset 0 2px 6px rgba(0,0,0,.14);overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none;}
+/* v1.34 精準微調:±1 鈕 + 大數字讀值,拖不準時用鈕點 */
+.thermo-nudge{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:12px;}
+.tn-btn{width:56px;height:46px;border-radius:14px;border:1px solid var(--hair);background:var(--surface);font-family:var(--mono);font-size:22px;font-weight:700;color:var(--ink);display:flex;align-items:center;justify-content:center;transition:transform .12s var(--spring),border-color .15s;}
+.tn-btn:active{transform:scale(.92);border-color:var(--warm);}
+.tn-val{font-family:var(--mono);font-size:36px;font-weight:800;min-width:84px;text-align:center;letter-spacing:-.02em;line-height:1;}
+.reason-toggle{width:100%;margin-top:14px;border:1px dashed var(--hair);background:transparent;border-radius:13px;padding:12px;color:var(--ink-2);font-size:13.5px;font-family:var(--sans);transition:border-color .2s,color .2s;}
+.reason-toggle:active{border-color:var(--warm);color:var(--ink);}
 .thermo-tube{position:absolute;left:50%;transform:translateX(-50%);top:26px;bottom:48px;width:15px;border-radius:8px;background:linear-gradient(90deg,#dedbd0,#f2f0e8,#dedbd0);box-shadow:inset 0 0 3px rgba(0,0,0,.3);pointer-events:none;}
 .thermo-fill{position:absolute;left:1px;right:1px;bottom:0;border-radius:0 0 7px 7px;background:linear-gradient(90deg,#c81810,#ff5a4a,#c81810);}
 .thermo-tip{position:absolute;left:50%;width:21px;height:21px;border-radius:50%;transform:translateX(-50%);background:radial-gradient(circle at 38% 32%,#ff7d6d,#d21b12);box-shadow:0 1px 3px rgba(0,0,0,.35);}
@@ -396,6 +403,30 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 .medal.got .disc{filter:none;background:radial-gradient(circle at 40% 35%,#fff3cf,var(--warm));box-shadow:0 0 14px -3px var(--warm);}
 .medal.got .mt{color:var(--ink);}
 .medal.got .ms{opacity:.85;}
+/* v1.34 獎勵:外框(首頁卡片)+ 折線 + 裝扮選擇 */
+.friend.frame-gold{border:1.5px solid #ffcf6a !important;box-shadow:0 0 18px -4px #ffcf6a,inset 0 0 0 1px rgba(255,207,106,.28);}
+.friend.frame-ice{border:1.5px solid #8fd4ff !important;box-shadow:0 0 18px -4px #8fd4ff,inset 0 0 0 1px rgba(143,212,255,.28);}
+.friend.frame-lava{border:1.5px solid #ff7f2a !important;box-shadow:0 0 20px -3px #ff7f2a;animation:lavaPulse 2.6s ease-in-out infinite;}
+@keyframes lavaPulse{0%,100%{box-shadow:0 0 15px -4px #ff6f1e;}50%{box-shadow:0 0 28px -2px #ff9d3c;}}
+.friend.frame-crown{border:1.5px solid #ffe08a !important;box-shadow:0 0 22px -3px #ffd76a,inset 0 0 0 2px rgba(255,215,120,.45);}
+.dress-chips{gap:8px;}
+.dress-chip{padding:9px 13px;font-size:13px;border:1px solid var(--hair);background:var(--surface);border-radius:20px;color:var(--ink-2);font-family:var(--sans);}
+.dress-chip.on{border-color:var(--warm);color:var(--ink);background:color-mix(in srgb,var(--warm) 16%,var(--surface));}
+.dress-chip.locked{opacity:.5;}
+.chart-line.line-neon{animation:neonPulse 1.7s ease-in-out infinite;}
+@keyframes neonPulse{0%,100%{opacity:.78;}50%{opacity:1;}}
+/* v1.34 回顧變化排行 */
+.rk-list{margin-top:4px;}
+.rk-row{display:flex;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px solid var(--hair-soft);}
+.rk-row:last-child{border-bottom:none;}
+.rk-name{width:90px;flex:0 0 auto;font-size:13.5px;font-weight:600;display:flex;flex-direction:column;gap:1px;overflow:hidden;}
+.rk-name>span.rk-cur{font-family:var(--mono);font-size:10.5px;font-weight:700;}
+.rk-track{flex:1;display:flex;align-items:center;height:16px;}
+.rk-half{width:50%;height:8px;display:flex;align-items:center;}
+.rk-lh{justify-content:flex-end;} .rk-rh{justify-content:flex-start;}
+.rk-bar{height:8px;border-radius:4px;transition:width .4s var(--ease);}
+.rk-mid{width:1.5px;height:14px;background:var(--hair);flex:0 0 auto;}
+.rk-chg{width:42px;flex:0 0 auto;text-align:right;font-family:var(--mono);font-size:14px;font-weight:700;}
 /* v1.32 結算畫面選時間 */
 .score-head{display:flex;align-items:center;justify-content:space-between;gap:10px;}
 .score-head h2{flex:1;min-width:0;}
@@ -484,8 +515,12 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
         <div class="thermo-nums" id="thermoNums"></div>
       </div></div>
     </div>
-    <div class="chips presets" id="cPresets" style="margin-top:14px"></div>
-    <textarea class="field field-sm" id="cNote" placeholder="今天發生了什麼?(可留白)"></textarea>
+    <div class="thermo-nudge"><button class="tn-btn" data-press onclick="nudgeThermo(-1)">−</button><div class="tn-val" id="thermoReadout">0</div><button class="tn-btn" data-press onclick="nudgeThermo(1)">＋</button></div>
+    <button class="reason-toggle" id="reasonToggle" data-press onclick="toggleReasonPane()">＋ 加原因 / 小故事</button>
+    <div id="reasonPane" style="display:none;">
+      <div class="chips presets" id="cPresets" style="margin-top:10px"></div>
+      <textarea class="field field-sm" id="cNote" placeholder="今天發生了什麼?(可留白)"></textarea>
+    </div>
   </div>
   <div class="recon-toggle compact" id="reconRow" data-press onclick="toggleReconcile()"><span class="cb" id="reconCb"></span><div class="rt-k">標記為「和好 / 破冰」</div></div>
   <div class="sheet-actions" id="scoreActions" style="margin-top:14px"><button class="btn" data-press onclick="closeSheet()">取消</button><button class="btn primary" data-press id="customSave" onclick="customScore()">記錄</button></div>
@@ -533,7 +568,7 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 <div class="sheet" id="recapSheet">
   <div class="grabber"></div>
   <h2>回顧</h2>
-  <div class="seg" id="recapModeSeg" style="margin-top:14px;"><button class="on" data-rm="stats" onclick="setRecapMode('stats')">數據</button><button data-rm="overlay" onclick="setRecapMode('overlay')">疊圖</button></div>
+  <div class="seg" id="recapModeSeg" style="margin-top:14px;"><button class="on" data-rm="stats" onclick="setRecapMode('stats')">數據</button><button data-rm="rank" onclick="setRecapMode('rank')">變化排行</button></div>
   <div class="seg" id="recapSpanSeg" style="margin-top:10px;"><button data-rs="7" onclick="setRecapSpan(7)">近 7 天</button><button class="on" data-rs="30" onclick="setRecapSpan(30)">近 30 天</button><button data-rs="0" onclick="setRecapSpan(0)">全部</button></div>
   <div id="recapBody" style="margin-top:6px;"></div>
   <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
@@ -555,12 +590,13 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
     <div class="set-group">
       <div class="set-row"><div class="k">主題</div><div class="pillseg" id="themeSeg"><button data-theme-opt="light" onclick="setTheme('light')">淺色</button><button data-theme-opt="dark" onclick="setTheme('dark')">深色</button><button data-theme-opt="system" onclick="setTheme('system')">跟隨系統</button></div></div>
     </div>
-    <div class="field-label">關係類別</div>
-    <div class="set-group" id="catManage"></div>
-    <div class="hint" style="margin:8px 2px 0;">刪除類別只是拿掉選項,已經標記的好友不受影響。</div>
-    <div class="field-label">常用原因</div>
-    <div class="set-group" id="presetManage"></div>
-    <div class="hint" style="margin:8px 2px 0;">打分時可以一點就帶入的原因標籤,自己增減。</div>
+    <div class="field-label">個人化</div>
+    <div class="set-group">
+      <div class="set-row tap" onclick="toggleManage('cat')"><div class="k">關係類別</div><div class="set-val"><span id="catCount"></span> ›</div></div>
+      <div id="catManage" style="display:none;"></div>
+      <div class="set-row tap" onclick="toggleManage('preset')"><div class="k">常用原因</div><div class="set-val"><span id="presetCount"></span> ›</div></div>
+      <div id="presetManage" style="display:none;"></div>
+    </div>
     <div class="field-label">提醒</div>
     <div class="set-group">
       <div class="set-row tap" onclick="toggleNotify('cooldown')"><div style="flex:1;"><div class="k">冷卻提醒</div><div class="sub">打開 app 時,提醒你哪些好友已超過各自的冷卻天數沒紀錄</div></div><div class="sw" id="swCooldown"></div></div>
@@ -569,9 +605,8 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
     <div class="hint" style="margin:8px 2px 0;">網頁 app 在關閉時無法主動推播,以上提醒在你打開 app 當下顯示。</div>
     <div class="field-label">餘燼</div>
     <div class="set-group">
-      <div class="set-row tap" onclick="toggleEmberDecay()"><div style="flex:1;"><div class="k">自然降溫</div><div class="sub">超過冷卻天數還沒互動,好感度會每天慢慢降(沒顧的餘燼會涼)。關掉就恢復,不會動到你的紀錄</div></div><div class="sw" id="swDecay"></div></div>
-      <div class="set-row" id="decayRateRow"><div style="flex:1;"><div class="k">降溫速度</div><div class="sub">過冷卻後大約:慢 = 每 2 天降 1 分 · 中 = 每天降 1 分 · 快 = 每天降 2 分</div></div><div class="pillseg" id="decayRateSeg"><button data-rate="0.5" onclick="setDecayRate(0.5)">慢</button><button data-rate="1" onclick="setDecayRate(1)">中</button><button data-rate="2" onclick="setDecayRate(2)">快</button></div></div>
-      <div class="set-row tap" id="decayKeepRow" onclick="toggleDecayKeep()"><div style="flex:1;"><div class="k">保留涼掉的分數</div><div class="sub">關:再加分會把涼掉的分數暖回來(原本行為)。開:涼掉的就留著,記成一筆「自然降溫」,新的加減接在涼掉後的分數上,加分不再莫名跳一大截</div></div><div class="sw" id="swDecayKeep"></div></div>
+      <div class="set-row tap" onclick="toggleEmberDecay()"><div style="flex:1;"><div class="k">自然降溫</div><div class="sub">超過冷卻天數還沒互動,系統會每天(固定 09:00)自動記一筆降溫、好感度慢慢往下,最多降到 0。打開 app 時會把錯過的天補記在對的日期。關掉就不再自動降,已記的降溫筆會留著(可長按刪)</div></div><div class="sw" id="swDecay"></div></div>
+      <div class="set-row" id="decayRateRow"><div style="flex:1;"><div class="k">降溫速度</div><div class="sub">過冷卻後:慢 = 每 2 天 −1 · 中 = 每天 −1 · 快 = 每天 −2</div></div><div class="pillseg" id="decayRateSeg"><button data-rate="0.5" onclick="setDecayRate(0.5)">慢</button><button data-rate="1" onclick="setDecayRate(1)">中</button><button data-rate="2" onclick="setDecayRate(2)">快</button></div></div>
     </div>
     <div class="field-label">刪除</div>
     <div class="set-group"><div class="set-row tap" onclick="toggleAskDel()"><div style="flex:1;"><div class="k">刪紀錄前先詢問</div><div class="sub">關掉後,長按日誌會直接刪除</div></div><div class="sw" id="swAskDel"></div></div></div>
@@ -582,7 +617,7 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
     <div class="field-label">關於</div>
     <div class="set-group">
       <div class="set-row" data-press onclick="openChangelog()"><div class="k">更新紀錄</div><div class="set-val">查看 ›</div></div>
-      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.33</div></div>
+      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.34</div></div>
     </div>
     <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
   </div>
@@ -599,9 +634,16 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 <div class="sheet" id="achvSheet">
   <div class="grabber"></div>
   <h2>成就 <span class="achv-count" id="achvCount"></span></h2>
-  <div class="hint" style="margin:2px 2px 0;">都跟「關係」有關,溫柔不刷量。達成會自動點亮。</div>
+  <div class="hint" style="margin:2px 2px 0;">都跟「關係」有關,溫柔不刷量。達成會自動點亮。解特定成就會拿到外框 / 折線,可套到某個好友(長按卡片 → 裝扮外觀)。</div>
   <div id="achvShelf" style="margin-top:8px;"></div>
   <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
+</div>
+
+<div class="sheet" id="dressSheet">
+  <div class="grabber"></div>
+  <h2 id="dressTitle">裝扮</h2>
+  <div id="dressBody" style="margin-top:6px;"></div>
+  <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">完成</button></div>
 </div>
 
 <div class="sheet" id="dataSheet">
@@ -631,10 +673,18 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 
 <script>
 "use strict";
-const VERSION="1.33";
+const VERSION="1.34";
 const KEY="friendship-meter-v1";
 /* 更新紀錄:每次改版就在最前面加一筆(v 由大到小,設定頁「更新紀錄」會照這個順序顯示) */
 const CHANGELOG=[
+  {v:"1.34",date:"2026-08-12",items:[
+    "自然降溫重做:改成每天(固定 09:00)自動記一筆「自動降溫」的 −N(藍色標記),打開 app 會把錯過的天補記在對的日期,最多降到 0。首頁 ❄ 標記和詳情頁現在一致,不會再首頁沒有、點進去才有",
+    "結算的溫度計改大、加了 −/＋ 微調鈕和大數字,不再滑一下就跳過頭;原因 / 小故事預設收起來,要寫再點開",
+    "成就整理:拿掉「用 N 天、連續登入、認識滿幾年」那種無聊的,換成好玩的(手速、深夜情緒、一見鍾情、報復性加分…)",
+    "成就獎勵上線:解特定成就會拿到外框(金框、熔岩、冰晶、王冠)和特殊折線(彩虹、霓虹),長按好友卡片 →「裝扮外觀」套到某個人身上",
+    "設定精簡:關係類別、常用原因改成收合,要加再點開,不再一長串;拿掉用不到的「保留涼掉的分數」開關",
+    "回顧重做:把看不懂的疊圖換成「變化排行」,一眼看出這段期間誰升溫誰降溫、差多少,點一列直接看那個人",
+  ]},
   {v:"1.33",date:"2026-08-11",items:[
     "新增成就系統:150 個跟「關係」有關的成就(破冰、週年、破百、和好、連續記錄…),達成會從上面滑進一張成就卡 + 火花,設定「成就 → 成就櫃」看已解鎖/未解鎖,溫柔不刷量",
     "結算畫面重排:把「和好 / 破冰」移到最下面、溫度計縮小、原因選項往上移,現在一打開就能直接拖溫度計又能直接點選項,不用再上下捲",
@@ -790,7 +840,7 @@ function nameForScore(s){
   return "形同陌路";
 }
 function tierOf(s){ return {title:nameForScore(s), color:colorForScore(s), hot:s>=100}; }
-function defaultSettings(){ return {theme:"system",notifyCooldown:false,notifyDaily:false,askBeforeDeleteLog:true,layout:"list",categories:[...DEFAULT_CATEGORIES],presets:[...DEFAULT_PRESETS],emberDecay:false,emberDecayRate:1,decayKeep:false,sortBy:"score",filterCat:"",filterCooling:false,_lastDaily:null,_lastExport:null,achv:{},_did:{}}; }
+function defaultSettings(){ return {theme:"system",notifyCooldown:false,notifyDaily:false,askBeforeDeleteLog:true,layout:"list",categories:[...DEFAULT_CATEGORIES],presets:[...DEFAULT_PRESETS],emberDecay:false,emberDecayRate:1,sortBy:"score",filterCat:"",filterCooling:false,_lastDaily:null,_lastExport:null,achv:{},_did:{}}; }
 function load(){ try{ const r=localStorage.getItem(KEY); if(!r) return {v:1,friends:[],settings:defaultSettings()};
     const d=JSON.parse(r); if(!d.friends) d.friends=[]; d.settings=Object.assign(defaultSettings(),d.settings||{});
     if(!Array.isArray(d.settings.categories)||!d.settings.categories.length) d.settings.categories=[...DEFAULT_CATEGORIES];
@@ -803,15 +853,28 @@ let DB=load();
 const $=id=>document.getElementById(id);
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 const rawScore=f=>f.initial+f.logs.reduce((s,l)=>s+l.delta,0);
-const currentScore=f=>rawScore(f)-decayOf(f);
-/* 餘燼自然降溫:超過冷卻天數還沒互動,分數每天慢慢降(可在設定開關、選速度)。非破壞:只是即時算出來的減項,關掉就沒了,最多降到 0 */
-function decayOf(f){ if(!DB.settings.emberDecay||f.status!=="normal")return 0;
-  const over=daysSince(lastActivityTs(f))-f.cooldownDays; if(over<=0)return 0;
-  const raw=rawScore(f); if(raw<=0)return 0;
-  return Math.min(Math.floor(over*(DB.settings.emberDecayRate||1)),raw); }
-const lastActivityTs=f=>f.logs.length?Math.max(...f.logs.map(l=>l.ts)):f.createdAt;
+const currentScore=f=>rawScore(f);   /* v1.34:降溫改成實際記進 logs 的每日 −N,分數就是 rawScore(含降溫筆) */
 const daysSince=ts=>Math.floor((Date.now()-ts)/86400000);
+/* 最後一次「真的互動」的時間(不含自動降溫的 log),用來判定冷卻/降溫/排序 */
+const lastActivityTs=f=>{ const u=f.logs.filter(l=>l.kind!=="decay"); return u.length?Math.max(...u.map(l=>l.ts)):f.createdAt; };
 function isCooling(f){ if(f.status!=="normal") return false; return daysSince(lastActivityTs(f))>f.cooldownDays; }
+const _sod=ts=>{ const d=new Date(ts); d.setHours(0,0,0,0); return d.getTime(); };
+/* v1.34 每日自動降溫:超過冷卻天數還沒互動,就每天(固定 09:00)自動補記一筆 −rate 的降溫,最多降到 0。App 打開/切回時把錯過的天補上,補在對的日期 */
+function catchUpDecay(){ if(!DB.settings.emberDecay) return false; const rate=DB.settings.emberDecayRate||1, nowT=Date.now(); let changed=false;
+  DB.friends.forEach(f=>{ if(f.status!=="normal") return;
+    const baseNoDecay=f.initial+f.logs.filter(l=>l.kind!=="decay").reduce((a,l)=>a+l.delta,0); const maxDecay=Math.max(0,baseNoDecay); if(maxDecay<=0) return;
+    const lastU=lastActivityTs(f); let applied=-f.logs.filter(l=>l.kind==="decay"&&l.ts>lastU).reduce((a,l)=>a+l.delta,0);
+    const start=_sod(lastU);
+    for(let k=1;k<20000;k++){ const dayTs=start+(f.cooldownDays+k)*86400000+9*3600000; if(dayTs>nowT)break;
+      const cumWant=Math.min(Math.floor(k*rate),maxDecay); if(cumWant<=applied)continue;
+      const add=cumWant-applied; f.logs.push({id:uid(),ts:dayTs,delta:-add,note:"自動降溫(太久沒聯絡)",kind:"decay"}); applied+=add; changed=true;
+      if(applied>=maxDecay)break; } });
+  if(changed) save(DB); return changed; }
+/* 這段冷卻期到目前已自動降了多少(給首頁 ❄ 標記與詳情提示用) */
+function coolInfo(f){ if(f.status!=="normal"||!DB.settings.emberDecay) return {cooling:false,amt:0,days:0};
+  const lastU=lastActivityTs(f); const days=daysSince(lastU)-f.cooldownDays; if(days<=0) return {cooling:false,amt:0,days:0};
+  const amt=-f.logs.filter(l=>l.kind==="decay"&&l.ts>lastU).reduce((a,l)=>a+l.delta,0);
+  return {cooling:true,amt,days}; }
 function fmtDate(ts){const d=new Date(ts),p=n=>String(n).padStart(2,"0");return `${d.getFullYear()}/${p(d.getMonth()+1)}/${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 let _hapT=0;
@@ -831,7 +894,7 @@ mql.addEventListener("change",()=>{ if(DB.settings.theme==="system") applyTheme(
 function setTheme(t){ DB.settings.theme=t; save(DB); applyTheme(); syncSettingsUI(); haptic(); }
 
 /* 序列(圖表共用):每一筆紀錄一個點,X 軸筆數等距 */
-function seriesOf(f){ const pts=[{ts:f.createdAt,value:f.initial}]; let run=f.initial; [...f.logs].sort((a,b)=>a.ts-b.ts).forEach(l=>{run+=l.delta;pts.push({ts:l.ts,value:run});}); const d=decayOf(f); if(d>0)pts.push({ts:Date.now(),value:run-d}); return pts; }
+function seriesOf(f){ const pts=[{ts:f.createdAt,value:f.initial}]; let run=f.initial; [...f.logs].sort((a,b)=>a.ts-b.ts).forEach(l=>{run+=l.delta;pts.push({ts:l.ts,value:run});}); return pts; }
 
 /* 迷你折線圖(格狀用),等距、無標籤 */
 function miniChartSVG(f){
@@ -857,10 +920,11 @@ function gridCellHTML(f,animate,i){
   const cool=isCooling(f)?`<span class="cool">${daysSince(lastActivityTs(f))}天</span>`:"";
   const cat=f.category?`<span class="tag ${ended?'mute':''}">${escapeHtml(f.category)}</span>`:"";
   const pin=(f.pinned&&!ended)?PINSVG:"";
-  const dec=(!ended)?decayOf(f):0;                                  /* 降溫中的即時減項,>0 就顯示指示 */
-  const snow=dec>0?`<span class="snow">❄ 降溫 −${dec}</span>`:"";
+  const ci=(!ended)?coolInfo(f):{cooling:false,amt:0};              /* v1.34 降溫狀態(已記進 logs) */
+  const snow=ci.cooling?`<span class="snow">❄ ${ci.amt>0?`降溫 −${ci.amt}`:"降溫中"}</span>`:"";
   const showScore=ended?0:sc, tcol=ended?"var(--ink-3)":t.color, ttitle=ended?"已結束":t.title;
-  return `<div class="friend ${animate?'anim':''}${dec>0?' cooling':''}" data-fid="${f.id}" style="--c:${tcol};animation-delay:${(i||0)*0.04}s">
+  const frameCls=(!ended&&f.frame&&FRAMES.some(x=>x.id===f.frame&&rewardOwned(x)))?` frame-${f.frame}`:"";
+  return `<div class="friend ${animate?'anim':''}${ci.cooling?' cooling':''}${frameCls}" data-fid="${f.id}" style="--c:${tcol};animation-delay:${(i||0)*0.04}s">
     <div class="flame"></div>
     <div class="name">${pin}<span>${escapeHtml(f.name)}</span></div>
     <div class="gmeta"><span class="tier-title" style="color:${tcol}">${ttitle}</span>${cat}${snow||cool}</div>
@@ -912,32 +976,27 @@ function openRecap(){ recapSpan=30; recapMode="stats"; overlayIds=null;
   renderRecap(); openSheet("recapSheet"); segMove($("recapSpanSeg")); segMove($("recapModeSeg")); }
 function setRecapSpan(d){ recapSpan=d; document.querySelectorAll("#recapSpanSeg button").forEach(b=>b.classList.toggle("on",+b.dataset.rs===d)); segMove($("recapSpanSeg")); haptic(); renderRecap(); }
 function setRecapMode(m){ recapMode=m; document.querySelectorAll("#recapModeSeg button").forEach(b=>b.classList.toggle("on",b.dataset.rm===m)); segMove($("recapModeSeg")); haptic(); renderRecap(); }
-/* 疊圖:把選到的好友的折線(時間軸)疊在一起 */
-function friendTimeSeries(f,since){ const now=Date.now(); const evts=[{ts:f.createdAt,value:f.initial}]; let run=f.initial;
-  [...f.logs].sort((a,b)=>a.ts-b.ts).forEach(l=>{run+=l.delta;evts.push({ts:l.ts,value:run});});
-  const start=Math.max(since,f.createdAt); let base=f.initial; evts.forEach(e=>{ if(e.ts<=start) base=e.value; });
-  const pts=[{ts:start,value:base}]; evts.forEach(e=>{ if(e.ts>start&&e.ts<=now) pts.push(e); }); pts.push({ts:now,value:currentScore(f)}); return pts; }
-function renderOverlay(){ const box=$("recapBody"); const pool=DB.friends.filter(f=>f.status!=="ended");
-  if(!overlayIds) overlayIds=new Set(pool.map(f=>f.id));
-  const sel=pool.filter(f=>overlayIds.has(f.id)); const now=Date.now();
-  let since=recapSpan?now-recapSpan*86400000:(sel.length?Math.min(...sel.map(f=>f.createdAt)):now-30*86400000);
-  const seriesList=sel.map(f=>({f,pts:friendTimeSeries(f,since)}));
-  let vMin=Infinity,vMax=-Infinity; seriesList.forEach(s=>s.pts.forEach(p=>{if(p.value<vMin)vMin=p.value;if(p.value>vMax)vMax=p.value;}));
-  if(!isFinite(vMin)){vMin=0;vMax=100;} if(vMin===vMax){vMin-=5;vMax+=5;} const pd=(vMax-vMin)*0.12; vMin-=pd; vMax+=pd;
-  const W=320,H=200,padL=8,padR=8,padT=14,padB=14, span=Math.max(1,now-since);
-  const x=ts=>padL+((ts-since)/span)*(W-padL-padR), y=v=>padT+(vMax-v)/(vMax-vMin)*(H-padT-padB);
-  const lines=seriesList.map(s=>{ const col=tierOf(currentScore(s.f)).color; const d=s.pts.map((p,i)=>`${i?'L':'M'}${x(p.ts).toFixed(1)} ${y(p.value).toFixed(1)}`).join(" "); return `<path d="${d}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" opacity="0.92" vector-effect="non-scaling-stroke"/>`; }).join("");
-  const zero=(vMin<0&&vMax>0)?`<line x1="${padL}" y1="${y(0).toFixed(1)}" x2="${W-padR}" y2="${y(0).toFixed(1)}" stroke="#8a7d6b" stroke-opacity=".35" stroke-width="1"/>`:"";
-  const chips=pool.map(f=>`<button class="chip ${overlayIds.has(f.id)?'on':''}" data-press data-ov="${f.id}" style="${overlayIds.has(f.id)?`border-color:${tierOf(currentScore(f)).color};background:color-mix(in srgb,${tierOf(currentScore(f)).color} 22%,var(--surface));color:var(--ink)`:''}">${escapeHtml(f.name)}</button>`).join("");
-  box.innerHTML=`<div class="chart-wrap" style="margin-top:12px;">${seriesList.length?`<svg viewBox="0 0 ${W} ${H}" width="100%" preserveAspectRatio="xMidYMid meet">${zero}${lines}</svg>`:`<div class="empty-state" style="padding:34px 0"><div class="small">選下面的人來疊圖</div></div>`}</div>
-    <div class="field-label" style="display:flex;justify-content:space-between;align-items:center;">要疊哪些人<span><button class="edit-link" data-press id="ovAll">全部</button>　<button class="edit-link" data-press id="ovNone">清空</button></span></div>
-    <div class="chips">${chips}</div>`;
-  box.querySelectorAll("[data-ov]").forEach(b=>b.onclick=()=>{ const id=b.dataset.ov; if(overlayIds.has(id))overlayIds.delete(id); else overlayIds.add(id); haptic(); renderOverlay(); });
-  $("ovAll").onclick=()=>{ overlayIds=new Set(pool.map(f=>f.id)); haptic(); renderOverlay(); };
-  $("ovNone").onclick=()=>{ overlayIds=new Set(); haptic(); renderOverlay(); }; bindPress(); }
+/* v1.34 變化排行:這段期間每個人升/降了多少,由升到降排序,發散長條一眼看懂 */
+function scoreAtTime(f,ts){ if(!ts) return f.initial; let run=f.initial; [...f.logs].sort((a,b)=>a.ts-b.ts).forEach(l=>{ if(l.ts<=ts) run+=l.delta; }); return run; }
+function renderRanking(){ const box=$("recapBody"); const pool=DB.friends.filter(f=>f.status!=="ended");
+  const since=recapSpan?Date.now()-recapSpan*86400000:0;
+  const rows=pool.map(f=>({f,cur:currentScore(f),chg:currentScore(f)-scoreAtTime(f,since)})).sort((a,b)=>b.chg-a.chg);
+  const maxAbs=Math.max(1,...rows.map(r=>Math.abs(r.chg)));
+  const spanTxt=recapSpan?`近 ${recapSpan} 天`:"全部";
+  const list=rows.length?rows.map(r=>{ const pct=Math.round(Math.abs(r.chg)/maxAbs*100); const up=r.chg>0;
+    const col=up?"var(--warm)":(r.chg<0?"var(--cool)":"var(--ink-3)");
+    const barL=r.chg<0?`<div class="rk-bar" style="width:${pct}%;background:${col}"></div>`:"";
+    const barR=up?`<div class="rk-bar" style="width:${pct}%;background:${col}"></div>`:"";
+    return `<div class="rk-row" data-fid="${r.f.id}" data-press>
+      <div class="rk-name">${escapeHtml(r.f.name)}<span class="rk-cur" style="color:${tierOf(r.cur).color}">${r.cur}</span></div>
+      <div class="rk-track"><div class="rk-half rk-lh">${barL}</div><div class="rk-mid"></div><div class="rk-half rk-rh">${barR}</div></div>
+      <div class="rk-chg" style="color:${col}">${up?'+':''}${r.chg}</div></div>`; }).join("")
+   :`<div class="empty-state" style="padding:34px 0"><div class="small">這段期間還沒有好友</div></div>`;
+  box.innerHTML=`<div class="hint" style="margin:10px 2px 6px;">${spanTxt}的好感度變化,由升到降排。右邊暖色 = 升溫、左邊藍色 = 降溫,點一列看那個人。</div><div class="rk-list">${list}</div>`;
+  box.querySelectorAll(".rk-row").forEach(el=>el.onclick=()=>{ const id=el.dataset.fid; closeSheet(); showDetail(id); }); bindPress(); }
 const _BANDCOL={熱:colorForScore(90),暖:colorForScore(65),涼:colorForScore(25),冷:colorForScore(-15)};
 function renderRecap(){
-  if(recapMode==="overlay"){ renderOverlay(); return; }
+  if(recapMode==="rank"){ renderRanking(); return; }
   const pool=DB.friends.filter(f=>f.status!=="ended");
   const since=recapSpan?Date.now()-recapSpan*86400000:0;
   let totalLogs=0, mostF=null, mostN=-1;
@@ -1041,7 +1100,7 @@ function applyBatchCool(){ const d=parseInt($("batchCoolInp").value,10); if(!Num
 function batchStatus(st,label){ const ids=[...selectedIds]; ids.forEach(id=>{const f=DB.friends.find(x=>x.id===id); if(!f)return; if(st==="ended"){f.status="ended";f.pinned=false;} else f.status=st;}); save(DB); haptic(); closeSheet(); exitSelectMode(); toast(`已將 ${ids.length} 人${label}`); }
 function askBatchEnd(){ const ids=[...selectedIds]; closeSheet(); askConfirm(`把選取的 ${ids.length} 人都結束好友關係?`,null,()=>{ ids.forEach(id=>{const f=DB.friends.find(x=>x.id===id); if(f){f.status="ended";f.pinned=false;}}); save(DB); haptic(); exitSelectMode(); toast(`已結束 ${ids.length} 人`); }); }
 function askBatchDelete(){ const ids=[...selectedIds]; closeSheet(); askConfirm(`刪除選取的 ${ids.length} 人與全部紀錄?無法復原。`,null,()=>{ DB.friends=DB.friends.filter(x=>!ids.includes(x.id)); save(DB); haptic(); exitSelectMode(); toast(`已刪除 ${ids.length} 人`); }); }
-function openBatchScore(){ if(!selectedIds.size)return; batchIds=[...selectedIds]; $("scoreTitle").textContent=`批次打分 · ${batchIds.length} 人`; $("cNote").value="";$("qNote").value=""; renderPresets("q");renderPresets("c"); thermoValue=0; reconcileFlag=false; syncReconcileUI(); openSheet("scoreSheet"); resetScoreTime(); switchMode("custom"); }
+function openBatchScore(){ if(!selectedIds.size)return; batchIds=[...selectedIds]; $("scoreTitle").textContent=`批次打分 · ${batchIds.length} 人`; $("cNote").value="";$("qNote").value=""; renderPresets("q");renderPresets("c"); thermoValue=0; reconcileFlag=false; syncReconcileUI(); openSheet("scoreSheet"); resetScoreTime(); collapseReason(); switchMode("custom"); }
 
 /* 長按選單 */
 function openContext(id){
@@ -1052,6 +1111,8 @@ function openContext(id){
   if(!ended) items+=`<div class="menu-item" data-press onclick="closeSheet();openScore('${id}')"><div class="mi-k">今日結算</div><div class="mi-sub">直接幫這位打分</div></div>`;
   items+=`<div class="menu-item" data-press onclick="togglePin('${id}')"><div class="mi-k">${f.pinned?"取消釘選":"釘選到最上面"}</div></div>
     <div class="menu-item" data-press onclick="closeSheet();openEditFriend('${id}')"><div class="mi-k">編輯資料</div><div class="mi-sub">改名字、標籤、初始值(不動紀錄)</div></div>`;
+  if(!ended){ const owned=FRAMES.filter(x=>rewardOwned(x)).length+LINES.filter(x=>rewardOwned(x)).length;
+    items+=`<div class="menu-item" data-press onclick="closeSheet();openDress('${id}')"><div class="mi-k">裝扮外觀 ✨</div><div class="mi-sub">${owned?`套用解鎖的外框 / 折線(已解鎖 ${owned} 個)`:"解成就換外框 / 特殊折線,套到這位身上"}</div></div>`; }
   if(!ended){
     if(f.status!=="dormant") items+=`<div class="menu-item" data-press onclick="setDormant('${id}')"><div class="mi-k">不熟了</div><div class="mi-sub">分數停在原地,不再提醒紀錄</div></div>`;
     else items+=`<div class="menu-item" data-press onclick="restoreNormal('${id}')"><div class="mi-k">取消不熟了</div><div class="mi-sub">恢復成一般好友,重新提醒冷卻</div></div>`;
@@ -1106,7 +1167,7 @@ let scoringId=null,reconcileFlag=false;
 /* 和好 / 破冰:這一筆打分標記成「後來和好了」,時間軸會高亮(log.kind="reconcile",舊 log 沒這欄位、不受影響) */
 function toggleReconcile(){ reconcileFlag=!reconcileFlag; syncReconcileUI(); haptic(); }
 function syncReconcileUI(){ const cb=$("reconCb"); if(cb) cb.classList.toggle("on",reconcileFlag); }
-function openScore(id){ const f=DB.friends.find(x=>x.id===id); if(!f||f.status==="ended")return; batchIds=null; scoringId=id; $("scoreTitle").textContent=`${f.name} · 今日結算`; $("cNote").value="";$("qNote").value=""; renderPresets("q");renderPresets("c"); thermoValue=0; reconcileFlag=false; syncReconcileUI(); openSheet("scoreSheet"); resetScoreTime(); switchMode("custom"); }
+function openScore(id){ const f=DB.friends.find(x=>x.id===id); if(!f||f.status==="ended")return; batchIds=null; scoringId=id; $("scoreTitle").textContent=`${f.name} · 今日結算`; $("cNote").value="";$("qNote").value=""; renderPresets("q");renderPresets("c"); thermoValue=0; reconcileFlag=false; syncReconcileUI(); openSheet("scoreSheet"); resetScoreTime(); collapseReason(); switchMode("custom"); }
 /* 常用原因範本:點一下把標籤加進備註,再點一下拿掉 */
 function noteEl(which){ return which==="q"?$("qNote"):$("cNote"); }
 function renderPresets(which){ const box=$(which==="q"?"qPresets":"cPresets"); if(!box)return; const tags=noteEl(which).value.split("、").map(s=>s.trim());
@@ -1140,8 +1201,6 @@ function switchMode(m){ document.querySelectorAll("#modeSeg button").forEach(b=>
   const acts=$("scoreActions"); if(acts) acts.style.display=m==="custom"?"flex":"none";
   if(m==="custom"){ bindThermo(); setThermo(thermoValue); } }
 function addLog(id,delta,note,kind,ts){ const f=DB.friends.find(x=>x.id===id);
-  /* 「保留涼掉的分數」:加分前先把目前累積的自然降溫記成一筆,之後這次互動會重置降溫時鐘,涼掉的就不會暖回來 */
-  if(DB.settings.emberDecay&&DB.settings.decayKeep&&f.status==="normal"){ const d=decayOf(f); if(d>0) f.logs.push({id:uid(),ts:Date.now()-1,delta:-d,note:"自然降溫(太久沒聯絡)",kind:"decay"}); }
   const l={id:uid(),ts:ts||Date.now(),delta,note:(note||"").trim()}; if(kind)l.kind=kind; f.logs.push(l); save(DB); }
 /* 這筆要記在哪個時間(null = 現在);結算畫面標題右邊的時間鈕控制,可補記到過去 */
 let scoreTs=null;
@@ -1150,7 +1209,7 @@ function updateScoreTimeLabel(){ const lab=$("scoreTimeLabel"),chip=$("scoreTime
   if(scoreTs){ lab.textContent=_shortDT(scoreTs); chip.classList.add("set"); } else { lab.textContent="現在"; chip.classList.remove("set"); } }
 function resetScoreTime(e){ if(e&&e.stopPropagation)e.stopPropagation(); scoreTs=null; const di=$("scoreDate"); if(di){ di.value=""; di.max=_toLocalInput(Date.now()); } updateScoreTimeLabel(); if(e)haptic(); }
 
-function commitScore(delta,note){ haptic(); const kind=reconcileFlag?"reconcile":null; const ds=(delta>0?"+"+delta:""+delta);
+function commitScore(delta,note){ haptic(); catchUpDecay(); const kind=reconcileFlag?"reconcile":null; const ds=(delta>0?"+"+delta:""+delta);
   if(batchIds&&batchIds.length){ const ids=batchIds.slice(); batchIds=null; const snap=ids.map(id=>({id,logs:_cloneLogs(id)}));
     ids.forEach(id=>addLog(id,delta,note,kind,scoreTs)); closeSheet(); exitSelectMode();
     offerUndo(`已為 ${ids.length} 人記錄 ${ds}`, ()=>{ snap.forEach(s=>_restoreLogs(s.id,s.logs)); save(DB); renderHome(false); }); evalAchievements(); return; }
@@ -1179,8 +1238,14 @@ function buildThermo(){ const nums=$("thermoNums"),ticks=$("thermoTicks"); if(!n
 function setThermo(v){ v=Math.max(T_MIN,Math.min(T_MAX,Math.round(v))); thermoValue=v; const f=(v-T_MIN)/T_SPAN;
   const fill=$("thermoFill"),tip=$("thermoTip"); if(fill) fill.style.height=(f*100)+"%"; if(tip) tip.style.bottom="calc("+(f*100)+"% - 10.5px)";
   document.querySelectorAll("#thermoNums .thermo-num").forEach(el=>el.classList.toggle("on",+el.dataset.v===v));
+  const rd=$("thermoReadout"); if(rd){ rd.textContent=(v>0?'+'+v:v); rd.style.color=v>0?"var(--warm)":(v<0?"var(--cool)":"var(--ink-2)"); }
   const b=$("customSave"); if(b) b.textContent="記錄 "+(v>0?'+'+v:v);
 }
+function nudgeThermo(d){ setThermo(thermoValue+d); haptic(); }
+function toggleManage(which){ const el=$(which==="cat"?"catManage":"presetManage"); if(!el)return; el.style.display=(el.style.display==="none")?"block":"none"; haptic(); }
+function toggleReasonPane(){ const p=$("reasonPane"),t=$("reasonToggle"); if(!p)return; const open=p.style.display==="none";
+  p.style.display=open?"block":"none"; if(t)t.textContent=open?"− 收起原因":"＋ 加原因 / 小故事"; haptic(); }
+function collapseReason(){ const p=$("reasonPane"),t=$("reasonToggle"); if(p)p.style.display="none"; if(t)t.textContent="＋ 加原因 / 小故事"; }
 function bindThermo(){ buildThermo(); const face=$("thermoFace"); if(!face||face._t)return; face._t=true;
   let active=false;
   const upd=cy=>{ const r=face.getBoundingClientRect(); const top=r.top+26,bot=r.bottom-48;
@@ -1229,7 +1294,7 @@ function renderDetail(id,animateScore){
     return `<div class="log-item${recon?' reconcile':''}${decayL?' decay':''}" data-lid="${l.id}"><div class="log-delta ${cls}">${sign}${l.delta}</div><div class="log-body"><div class="log-date">${fmtDate(l.ts)}</div><div class="log-note ${(l.note||recon||decayL)?'':'none'}">${badge}${noteTxt}</div><div class="log-after">→ ${upto}</div></div></div>`;
   }).join("")||`<div class="empty-state" style="padding:30px 0"><div class="small">還沒有紀錄,點「今日結算」開始</div></div>`;
   const statusNote=f.status==="dormant"?`<div class="d-sub" style="color:var(--warm)">已設為「不熟了」,不再提醒紀錄</div>`:(ended?`<div class="d-sub" style="color:var(--ink-3)">已結束的好友,分數以 0 呈現;可長按卡片恢復</div>`:"");
-  const dec=(!ended)?decayOf(f):0; const decayNote=dec>0?`<div class="d-sub" style="color:var(--cool)">餘燼降溫中,已涼 −${dec}(過冷卻 ${daysSince(lastActivityTs(f))-f.cooldownDays} 天)</div>`:"";
+  const _ci=(!ended)?coolInfo(f):{cooling:false,amt:0,days:0}; const decayNote=_ci.cooling?`<div class="d-sub" style="color:var(--cool)">餘燼降溫中,已自動降 −${_ci.amt}(過冷卻 ${_ci.days} 天,每天 −${DB.settings.emberDecayRate||1})</div>`:"";
   $("detailBody").innerHTML=`
     <div class="detail-head" style="--c:${dColor}"><div><div class="d-name">${escapeHtml(f.name)}</div><div class="d-tier" style="color:${dColor}">${dTitle}${f.category?" · "+escapeHtml(f.category):""}</div><div class="d-sub">冷卻設定 ${f.cooldownDays} 天${cool}</div>${statusNote}${decayNote}</div><div class="d-score" id="dScore" style="color:${dColor}">${dScore}</div></div>
     <div class="seg" style="margin-top:14px">${spanBtns}</div>
@@ -1261,15 +1326,19 @@ function chartSVG(f){
   const zero=(vMin<0&&vMax>0)?`<line x1="${padL}" y1="${y(0).toFixed(1)}" x2="${W-padR}" y2="${y(0).toFixed(1)}" stroke="#8a7d6b" stroke-opacity=".4" stroke-width="1"/>`:"";
   const xe=x(n-1).toFixed(1), ye=y(data[n-1].value).toFixed(1), lite=_lighten(t.color);
   const grid=[0.25,0.5,0.75].map(g=>{const gy=(padT+g*(H-padT-padB)).toFixed(1); return `<line x1="${padL}" y1="${gy}" x2="${W-padR}" y2="${gy}"/>`;}).join("");
+  const _ls=(f.lineStyle&&LINES.some(x=>x.id===f.lineStyle&&rewardOwned(x)))?f.lineStyle:"";
+  const _lineStroke=_ls==="rainbow"?"url(#crainbow)":"url(#cstroke)", _lineCls="chart-line"+(_ls==="neon"?" line-neon":""), _lineFilter=_ls==="neon"?"url(#neonglow)":"url(#glow)";
   return `<svg viewBox="0 0 ${W} ${H}" width="100%" preserveAspectRatio="xMidYMid meet">
     <defs><linearGradient id="fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${t.color}" stop-opacity="0.30"/><stop offset="100%" stop-color="${t.color}" stop-opacity="0"/></linearGradient>
       <linearGradient id="cstroke" x1="0" y1="1" x2="1" y2="0"><stop offset="0%" stop-color="${t.color}"/><stop offset="100%" stop-color="${lite}"/></linearGradient>
-      <filter id="glow"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+      <linearGradient id="crainbow" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#ff5a4a"/><stop offset="25%" stop-color="#ffcf6a"/><stop offset="50%" stop-color="#7ee08a"/><stop offset="75%" stop-color="#5b8def"/><stop offset="100%" stop-color="#c77dff"/></linearGradient>
+      <filter id="glow"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      <filter id="neonglow"><feGaussianBlur stdDeviation="4.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
     <g class="c-grid">${grid}</g>
     ${zero}
     <path class="c-area" d="${area}" fill="url(#fill)"/>
     <g class="c-avg-g"><line x1="${padL}" y1="${yAvg}" x2="${W-padR}" y2="${yAvg}" stroke="#8a7d6b" stroke-width="1" stroke-dasharray="3 4"/><text x="${W-padR}" y="${yAvg-5}" text-anchor="end" font-family="JetBrains Mono,monospace" font-size="9" fill="#8a7d6b">平均 ${avg.toFixed(0)}</text></g>
-    <path class="chart-line" d="${line}" fill="none" stroke="url(#cstroke)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+    <path class="${_lineCls}" d="${line}" fill="none" stroke="${_lineStroke}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" filter="${_lineFilter}"/>
     <circle class="c-pt mx" cx="${x(pi).toFixed(1)}" cy="${y(data[pi].value).toFixed(1)}" r="3.6" fill="var(--warm)"/><text class="c-lbl" x="${x(pi).toFixed(1)}" y="${(y(data[pi].value)-7).toFixed(1)}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="var(--warm)">${data[pi].value}</text>
     <circle class="c-pt mn" cx="${x(ti).toFixed(1)}" cy="${y(data[ti].value).toFixed(1)}" r="3.6" fill="var(--cool)"/><text class="c-lbl" x="${x(ti).toFixed(1)}" y="${(y(data[ti].value)+14).toFixed(1)}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="var(--cool)">${data[ti].value}</text>
     <circle class="c-ring" cx="${xe}" cy="${ye}" r="6" fill="none" stroke="${t.color}" stroke-width="2"/><circle class="c-end" cx="${xe}" cy="${ye}" r="4" fill="${lite}"/>
@@ -1336,19 +1405,17 @@ function openChangelog(){ renderChangelog(); closeSheet(); openSheet("changelogS
 function syncSettingsUI(){ $("verText").textContent=VERSION;
   document.querySelectorAll("#themeSeg button").forEach(b=>b.classList.toggle("on",b.dataset.themeOpt===DB.settings.theme));
   segMove($("themeSeg")); renderCatManage(); renderPresetManage();
+  { const cc=$("catCount"); if(cc)cc.textContent=(DB.settings.categories||[]).length+" 個"; const pc=$("presetCount"); if(pc)pc.textContent=(DB.settings.presets||[]).length+" 個"; }
   $("swCooldown").classList.toggle("on",!!DB.settings.notifyCooldown);
   $("swDaily").classList.toggle("on",!!DB.settings.notifyDaily);
   $("swAskDel").classList.toggle("on",DB.settings.askBeforeDeleteLog!==false);
   $("swDecay").classList.toggle("on",!!DB.settings.emberDecay);
   $("decayRateRow").style.display=DB.settings.emberDecay?"flex":"none";
-  $("decayKeepRow").style.display=DB.settings.emberDecay?"flex":"none";
-  $("swDecayKeep").classList.toggle("on",!!DB.settings.decayKeep);
   document.querySelectorAll("#decayRateSeg button").forEach(b=>b.classList.toggle("on",+b.dataset.rate===(DB.settings.emberDecayRate||1)));
   segMove($("decayRateSeg"));
 }
-function toggleEmberDecay(){ DB.settings.emberDecay=!DB.settings.emberDecay; save(DB); syncSettingsUI(); haptic(); if(currentDetailId)renderDetail(currentDetailId,false); else renderHome(false); }
-function setDecayRate(r){ DB.settings.emberDecayRate=r; save(DB); syncSettingsUI(); haptic(); if(currentDetailId)renderDetail(currentDetailId,false); else renderHome(false); }
-function toggleDecayKeep(){ DB.settings.decayKeep=!DB.settings.decayKeep; save(DB); syncSettingsUI(); haptic(); }
+function toggleEmberDecay(){ DB.settings.emberDecay=!DB.settings.emberDecay; save(DB); catchUpDecay(); evalAchievements(); syncSettingsUI(); haptic(); if(currentDetailId)renderDetail(currentDetailId,false); else renderHome(false); }
+function setDecayRate(r){ DB.settings.emberDecayRate=r; save(DB); catchUpDecay(); syncSettingsUI(); haptic(); if(currentDetailId)renderDetail(currentDetailId,false); else renderHome(false); }
 function toggleNotify(kind){ const key=kind==="cooldown"?"notifyCooldown":"notifyDaily"; const next=!DB.settings[key];
   if(next&&"Notification"in window&&Notification.permission==="default"){ try{Notification.requestPermission();}catch(e){} }
   DB.settings[key]=next; save(DB); syncSettingsUI(); haptic(); }
@@ -1660,10 +1727,8 @@ const ACHV=[
  {id:"n110",ic:"📜",g:_G[3],t:"長篇",d:"單筆備註超過 100 字",c:()=>_aLogs(true).some(x=>(x.l.note||"").length>100)},
  {id:"n109",ic:"🖊️",g:_G[3],t:"小作家",d:"累積 50 則備註",c:()=>_aLogs(true).filter(x=>(x.l.note||"").trim()).length>=50},
  {id:"n38",ic:"🤫",g:_G[3],t:"盡在不言中",d:"20 筆沒寫備註",c:()=>_aLogs(true).filter(x=>!(x.l.note||"").trim()).length>=20},
- {id:"n39",ic:"3️⃣",g:_G[4],t:"三連",d:"連續記錄 3 天",c:()=>_aStreak()>=3},
- {id:"n40",ic:"🗓️",g:_G[4],t:"一週不斷",d:"連續記錄 7 天",c:()=>_aStreak()>=7},
- {id:"n41",ic:"📆",g:_G[4],t:"一個月",d:"連續記錄 30 天",c:()=>_aStreak()>=30},
- {id:"n111",ic:"💠",g:_G[4],t:"連續百天",d:"連續記錄 100 天",c:()=>_aStreak()>=100},
+ {id:"f1",ic:"⚡",g:_G[4],t:"手速",d:"一分鐘內記了 3 個人",c:()=>_aBucketMax(60000)>=3},
+ {id:"f2",ic:"🌛",g:_G[4],t:"深夜情緒",d:"半夜 0–4 點記了一筆負分",c:()=>_aLogs(true).some(x=>{const d=new Date(x.l.ts);return d.getHours()<=4&&x.l.delta<0;})},
  {id:"n42",ic:"🖐️",g:_G[4],t:"一口氣",d:"一天顧了 5 個人",c:()=>_aPerDayMax()>=5},
  {id:"n43",ic:"🙌",g:_G[4],t:"全員集合",d:"一天顧了 10 個人",c:()=>_aPerDayMax()>=10},
  {id:"n112",ic:"🌊",g:_G[4],t:"一波流",d:"一小時內顧了 5 個人",c:()=>_aBucketMax(3600000)>=5},
@@ -1691,10 +1756,8 @@ const ACHV=[
  {id:"n60",ic:"♨️",g:_G[6],t:"冷暖自知",d:"同時有正分和負分的好友",c:()=>_AA().some(f=>currentScore(f)>0)&&_AA().some(f=>currentScore(f)<0)},
  {id:"n61",ic:"🍵",g:_G[6],t:"一碗水端平",d:"有 5 人分數在 ±5 內",c:()=>_aWithin(5,10)},
  {id:"n62",ic:"🌶️",g:_G[6],t:"火辣人脈",d:"同時 3 人破 100",c:()=>_AA().filter(f=>currentScore(f)>=100).length>=3},
- {id:"n63",ic:"🌿",g:_G[7],t:"落地生根",d:"使用滿 7 天",c:()=>_aUseDays()>=7},
- {id:"n64",ic:"🏠",g:_G[7],t:"常客",d:"使用滿 30 天",c:()=>_aUseDays()>=30},
- {id:"n65",ic:"🎖️",g:_G[7],t:"老用戶",d:"使用滿 100 天",c:()=>_aUseDays()>=100},
- {id:"n66",ic:"🕰️",g:_G[7],t:"一年之火",d:"使用滿 365 天",c:()=>_aUseDays()>=365},
+ {id:"f3",ic:"💘",g:_G[7],t:"一見鍾情",d:"新朋友第一筆就 +8 以上",c:()=>DB.friends.some(f=>{const ls=_aSorted(f);return ls.length&&ls[0].delta>=8;})},
+ {id:"f4",ic:"🎡",g:_G[7],t:"海王",d:"同時有 10 個人都是正分",c:()=>_AA().filter(f=>currentScore(f)>0).length>=10},
  {id:"n67",ic:"💽",g:_G[7],t:"有備無患",d:"第一次備份",c:()=>(DB.settings._did&&DB.settings._did.backups>=1)||!!DB.settings._lastExport},
  {id:"n68",ic:"🗄️",g:_G[7],t:"未雨綢繆",d:"備份 5 次",c:()=>(DB.settings._did&&DB.settings._did.backups>=5)},
  {id:"n69",ic:"📦",g:_G[7],t:"搬家",d:"匯入過備份",c:()=>_did("import")},
@@ -1706,17 +1769,9 @@ const ACHV=[
  {id:"n118",ic:"🌑",g:_G[7],t:"深色控",d:"用深色主題",c:()=>DB.settings.theme==="dark"},
  {id:"n119",ic:"🌕",g:_G[7],t:"淺色控",d:"用淺色主題",c:()=>DB.settings.theme==="light"},
  {id:"n120",ic:"🥶",g:_G[7],t:"冷處理",d:"打開自然降溫",c:()=>DB.settings.emberDecay===true},
- {id:"n121",ic:"🧊",g:_G[7],t:"保留派",d:"打開「保留涼掉的分數」",c:()=>DB.settings.decayKeep===true},
- {id:"n75",ic:"🎂",g:_G[8],t:"一週年",d:"和某人認識滿 1 年",c:()=>DB.friends.some(f=>daysSince(f.createdAt)>=365)},
- {id:"n122",ic:"🎂",g:_G[8],t:"兩週年",d:"認識滿 2 年",c:()=>DB.friends.some(f=>daysSince(f.createdAt)>=730)},
- {id:"n76",ic:"🎉",g:_G[8],t:"三週年",d:"認識滿 3 年",c:()=>DB.friends.some(f=>daysSince(f.createdAt)>=1095)},
- {id:"n77",ic:"🥂",g:_G[8],t:"五週年",d:"認識滿 5 年",c:()=>DB.friends.some(f=>daysSince(f.createdAt)>=1825)},
- {id:"n123",ic:"🏅",g:_G[8],t:"七年",d:"認識滿 7 年",c:()=>DB.friends.some(f=>daysSince(f.createdAt)>=2555)},
- {id:"n78",ic:"🕯️",g:_G[8],t:"十年知己",d:"認識滿 10 年",c:()=>DB.friends.some(f=>daysSince(f.createdAt)>=3650)},
- {id:"n124",ic:"🗿",g:_G[8],t:"二十年",d:"認識滿 20 年",c:()=>DB.friends.some(f=>daysSince(f.createdAt)>=7300)},
- {id:"n79",ic:"🌳",g:_G[8],t:"老朋友",d:"認識超過 1000 天",c:()=>DB.friends.some(f=>daysSince(f.createdAt)>1000)},
- {id:"n80",ic:"🌊",g:_G[8],t:"細水長流",d:"有 5 位都認識超過 1 年",c:()=>DB.friends.filter(f=>daysSince(f.createdAt)>=365).length>=5},
- {id:"n80b",ic:"🔭",g:_G[8],t:"久別重逢",d:"超過 60 天沒記,又記了一筆",c:()=>DB.friends.some(f=>{const ls=_aSorted(f);for(let i=1;i<ls.length;i++)if(ls[i].ts-ls[i-1].ts>60*86400000)return true;return false;})},
+ {id:"n80b",ic:"🔭",g:_G[8],t:"久別重逢",d:"超過 60 天沒聯絡,又記了一筆",c:()=>DB.friends.some(f=>{const ls=_aSorted(f);for(let i=1;i<ls.length;i++)if(ls[i].ts-ls[i-1].ts>60*86400000)return true;return false;})},
+ {id:"f5",ic:"🎯",g:_G[8],t:"始終如一",d:"對同一人連 5 筆都記一樣的分數",c:()=>DB.friends.some(f=>{const ls=_aSorted(f);let r=1;for(let i=1;i<ls.length;i++){r=(ls[i].delta===ls[i-1].delta)?r+1:1;if(r>=5)return true;}return false;})},
+ {id:"f6",ic:"🥊",g:_G[8],t:"報復性加分",d:"同一人一天內先扣後加",c:()=>DB.friends.some(f=>{const m={};for(const l of _aSorted(f)){const k=_aDayKey(l.ts);const o=m[k]=m[k]||{neg:false};if(l.delta<0)o.neg=true;else if(l.delta>0&&o.neg)return true;}return false;})},
  {id:"n81",ic:"🚀",g:_G[9],t:"一飛沖天",d:"單筆加超過 +8",c:()=>_aLogs(true).some(x=>x.l.delta>8)},
  {id:"n82",ic:"💥",g:_G[9],t:"重摔",d:"單筆扣超過 −8",c:()=>_aLogs(true).some(x=>x.l.delta<-8)},
  {id:"n83",ic:"📈",g:_G[9],t:"大躍進",d:"某人一個月升超過 +30",c:()=>_aMonthGainMax()>30},
@@ -1754,15 +1809,13 @@ const ACHV=[
  {id:"n139",ic:"🔱",g:_G[12],t:"兩極",d:"同時有 130 和 −30",c:()=>_AA().some(f=>currentScore(f)>=130)&&_AA().some(f=>currentScore(f)<=-30)},
  {id:"n140",ic:"🪜",g:_G[12],t:"步步高升",d:"對同一人連 5 筆加分",c:()=>DB.friends.some(f=>_aConsecUp(f,5))},
  {id:"n141",ic:"🧲",g:_G[12],t:"磁場",d:"同類別 5 人都正分",c:()=>_aCatAllPos(5)},
- {id:"n146",ic:"🏹",g:_G[13],t:"成就獵人",d:"解鎖 25 個成就",c:()=>_achvCount()>=25},
- {id:"n147",ic:"🎗️",g:_G[13],t:"半百",d:"解鎖 50 個成就",c:()=>_achvCount()>=50},
- {id:"n148",ic:"🔥",g:_G[13],t:"百鍊",d:"解鎖 100 個成就",c:()=>_achvCount()>=100},
- {id:"n149",ic:"💎",g:_G[13],t:"收藏狂",d:"解鎖 125 個成就",c:()=>_achvCount()>=125},
- {id:"n142",ic:"🖼️",g:_G[13],t:"初獲外框",d:"解鎖 10 個成就(獎勵之後開放)",c:()=>_achvCount()>=10},
- {id:"n143",ic:"🎴",g:_G[13],t:"外框收藏家",d:"解鎖 30 個成就(獎勵之後開放)",c:()=>_achvCount()>=30},
- {id:"n144",ic:"✨",g:_G[13],t:"點亮線條",d:"解鎖 20 個成就(獎勵之後開放)",c:()=>_achvCount()>=20},
- {id:"n145",ic:"🌟",g:_G[13],t:"線條大師",d:"解鎖 60 個成就(獎勵之後開放)",c:()=>_achvCount()>=60},
- {id:"n150",ic:"🏆",g:_G[13],t:"圓滿",d:"解鎖其他所有成就",c:()=>_achvCount()>=149},
+ {id:"r1",ic:"🥇",g:_G[13],t:"加冕",d:"有人破 100 → 解鎖「尊爵金框」,可套到某個好友卡片",c:()=>!!DB.settings.achv.n5},
+ {id:"r2",ic:"🌋",g:_G[13],t:"熔岩之心",d:"有人到「滾燙的朋友」→ 解鎖「熔岩火焰框」",c:()=>!!DB.settings.achv.n21},
+ {id:"r3",ic:"❄️",g:_G[13],t:"寒霜",d:"有人到冰點 → 解鎖「冰晶框」",c:()=>!!DB.settings.achv.n12},
+ {id:"r4",ic:"👑",g:_G[13],t:"唯我獨尊",d:"「唯一的第一」→ 解鎖「王者金冠框」",c:()=>!!DB.settings.achv.n137},
+ {id:"r5",ic:"🌈",g:_G[13],t:"命定之線",d:"「命定的靈魂伴侶」→ 解鎖「彩虹流光」折線",c:()=>!!DB.settings.achv.n11},
+ {id:"r6",ic:"💠",g:_G[13],t:"霓虹",d:"創下新高溫 → 解鎖「霓虹脈衝」折線",c:()=>!!DB.settings.achv.n86},
+ {id:"n150",ic:"🏆",g:_G[13],t:"圓滿",d:"解鎖其他所有成就",c:()=>_achvCount()>=ACHV.length-1},
 ];
 let _abQueue=[],_abBusy=false,_achvReady=false;
 function evalAchievements(silent){ if(!DB.settings.achv)DB.settings.achv={}; const got=DB.settings.achv, newly=[]; let changed=true,guard=0;
@@ -1782,6 +1835,25 @@ function renderAchvShelf(){ const box=$("achvShelf"); if(!box)return; const got=
     return `<div class="achv-group"><div class="ag-h">${escapeHtml(gr.g)} <span>${un}/${gr.items.length}</span></div><div class="achv-grid">`+
       gr.items.map(a=>`<div class="medal ${got[a.id]?'got':''}"><div class="disc">${a.ic}</div><div class="mtx"><div class="mt">${escapeHtml(a.t)}</div><div class="ms">${escapeHtml(a.d)}</div></div></div>`).join("")+`</div></div>`; }).join(""); }
 
+/* ===== v1.34 獎勵:外框 + 折線(解成就換到,套到某個好友) ===== */
+const FRAMES=[{id:"gold",ic:"🥇",name:"尊爵金框",req:"n5"},{id:"lava",ic:"🌋",name:"熔岩火焰框",req:"n21"},{id:"ice",ic:"❄️",name:"冰晶框",req:"n12"},{id:"crown",ic:"👑",name:"王者金冠",req:"n137"}];
+const LINES=[{id:"rainbow",ic:"🌈",name:"彩虹流光",req:"n11"},{id:"neon",ic:"💠",name:"霓虹脈衝",req:"n86"}];
+function rewardOwned(r){ return !!(DB.settings.achv&&DB.settings.achv[r.req]); }
+function openDress(id){ dressId=id; renderDress(); openSheet("dressSheet"); }
+let dressId=null;
+function renderDress(){ const f=DB.friends.find(x=>x.id===dressId); if(!f)return; $("dressTitle").textContent=`${f.name} · 裝扮`;
+  const frameChips=[`<button class="dress-chip ${!f.frame?'on':''}" data-press onclick="setFrame(null)">無外框</button>`]
+    .concat(FRAMES.map(fr=>{ const own=rewardOwned(fr); return `<button class="dress-chip ${f.frame===fr.id?'on':''} ${own?'':'locked'}" data-press onclick="${own?`setFrame('${fr.id}')`:''}">${fr.ic} ${fr.name}${own?'':' 🔒'}</button>`; })).join("");
+  const lineChips=[`<button class="dress-chip ${!f.lineStyle?'on':''}" data-press onclick="setLine(null)">預設線</button>`]
+    .concat(LINES.map(ln=>{ const own=rewardOwned(ln); return `<button class="dress-chip ${f.lineStyle===ln.id?'on':''} ${own?'':'locked'}" data-press onclick="${own?`setLine('${ln.id}')`:''}">${ln.ic} ${ln.name}${own?'':' 🔒'}</button>`; })).join("");
+  const anyOwned=FRAMES.some(rewardOwned)||LINES.some(rewardOwned);
+  $("dressBody").innerHTML=`${anyOwned?"":`<div class="hint" style="margin:2px 2px 12px">還沒解鎖任何外觀。去解成就(例如破 100、到「滾燙的朋友」、破紀錄…)就會拿到外框和特殊折線。</div>`}
+    <div class="field-label">外框(套在首頁卡片)</div><div class="chips dress-chips">${frameChips}</div>
+    <div class="field-label" style="margin-top:16px">折線樣式(套在詳情圖)</div><div class="chips dress-chips">${lineChips}</div>`;
+  bindPress(); }
+function setFrame(id){ const f=DB.friends.find(x=>x.id===dressId); if(!f)return; if(id){const fr=FRAMES.find(x=>x.id===id); if(!fr||!rewardOwned(fr))return;} f.frame=id||undefined; save(DB); haptic(); renderDress(); renderHome(false); }
+function setLine(id){ const f=DB.friends.find(x=>x.id===dressId); if(!f)return; if(id){const ln=LINES.find(x=>x.id===id); if(!ln||!rewardOwned(ln))return;} f.lineStyle=id||undefined; save(DB); haptic(); renderDress(); if(currentDetailId===dressId)renderDetail(dressId,false); }
+
 /* ---- v1.30 撤銷 / 改日期 ---- */
 let _undo=null,_undoT=null;
 function _cloneLogs(id){ const f=DB.friends.find(x=>x.id===id); return f?JSON.parse(JSON.stringify(f.logs)):null; }
@@ -1795,10 +1867,11 @@ function _toLocalInput(ts){ const d=new Date(ts),p=n=>String(n).padStart(2,"0");
 _emCv=$("emberCanvas"); if(_emCv){ _emCtx=_emCv.getContext("2d"); _emSize(); }
 _fxCv=$("fxCanvas"); if(_fxCv){ _fxCtx=_fxCv.getContext("2d"); _fxSize(); }
 { const di=$("scoreDate"); if(di) di.addEventListener("change",()=>{ const v=di.value; if(v){ const ts=new Date(v).getTime(); scoreTs=Number.isFinite(ts)?Math.min(ts,Date.now()):null; } else scoreTs=null; updateScoreTimeLabel(); haptic(); }); }
+catchUpDecay();
 applyTheme(); renderHome(true); addSheetHeaders(); syncSettingsUI(); bindPress(); bindSheetDrag(); bindHomeSwipe(); bindDetailSwipe(); bindSelectDrag(); segMoveAll(); runReminders();
 evalAchievements(true); _achvReady=true; refreshAchvCountUI();
 window.addEventListener("resize",()=>{ if(_emCv&&_emRaf)_emSize(); if(_fxCv)_fxSize(); });
-document.addEventListener("visibilitychange",()=>emberBg(true));
+document.addEventListener("visibilitychange",()=>{ emberBg(true); if(!document.hidden&&catchUpDecay()){ if(currentDetailId)renderDetail(currentDetailId,false); else renderHome(false); } });
 </script>
 </body>
 </html>
