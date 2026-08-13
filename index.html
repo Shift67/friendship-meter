@@ -446,6 +446,26 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 .pet-track .ptrail-2{animation-delay:-.36s;opacity:.34;width:6px;height:6px;}
 .pet-track .ptrail-3{animation-delay:-.24s;opacity:.18;width:5px;height:5px;}
 @keyframes petPath{0%{top:0;left:0}25%{top:0;left:100%}50%{top:100%;left:100%}75%{top:100%;left:0}100%{top:0;left:0}}
+.pet-track .pet .petpix,.pet .petpix{width:16px;height:16px;display:block;filter:drop-shadow(0 1px 1px rgba(0,0,0,.5));}
+/* v1.38 SVG 手刻裝飾框:四角/邊緣,允許外溢(.view 已鎖水平捲動) */
+.friend.frame-art{overflow:visible !important;}
+.friend.frame-art .flame{top:6px;bottom:6px;border-radius:3px;}
+.fart{position:absolute;inset:0;pointer-events:none;z-index:5;}
+.fart .fp{position:absolute;line-height:0;}
+.fart .fp svg{display:block;}
+.fart .fp.flip{transform:scaleX(-1);}
+.fart .fp.tl{top:-8px;left:-8px;} .fart .fp.tr{top:-8px;right:-8px;} .fart .fp.bl{bottom:-8px;left:-8px;} .fart .fp.br{bottom:-8px;right:-8px;}
+.fart .fp.tl svg,.fart .fp.tr svg,.fart .fp.bl svg,.fart .fp.br svg{width:26px;height:26px;}
+.fart-artstars .fp.tr svg{width:30px;height:30px;}
+.fart-artcat .fp.tl,.fart-artcat .fp.tr{top:-14px;} .fart-artcat .fp svg{width:30px;height:26px;}
+.fart .fp.left{top:3px;bottom:3px;left:-4px;width:12px;} .fart .fp.right{top:3px;bottom:3px;right:-4px;width:12px;}
+.fart .fp.left svg,.fart .fp.right svg{width:100%;height:100%;}
+.fart .fp.bottom{left:1px;right:1px;bottom:-3px;} .fart .fp.bottom svg{width:100%;height:22px;}
+.fart .firepix{width:100%;height:22px;}
+/* 預覽裡的裝飾框允許外溢 */
+.fprev.frame-art{overflow:visible;}
+.gtile .fprev,.dtile .fprev{overflow:hidden;}
+.gtile .fprev.frame-art,.dtile .fprev.frame-art{overflow:visible;}
 /* 折線動態 */
 .chart-line.line-pulse{animation:neonPulse 1.7s ease-in-out infinite;}
 @keyframes neonPulse{0%,100%{opacity:.78;}50%{opacity:1;}}
@@ -728,7 +748,7 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
     <div class="field-label">關於</div>
     <div class="set-group">
       <div class="set-row" data-press onclick="openChangelog()"><div class="k">更新紀錄</div><div class="set-val">查看 ›</div></div>
-      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.37</div></div>
+      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.38</div></div>
     </div>
     <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
   </div>
@@ -791,10 +811,15 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 
 <script>
 "use strict";
-const VERSION="1.37";
+const VERSION="1.38";
 const KEY="friendship-meter-v1";
 /* 更新紀錄:每次改版就在最前面加一筆(v 由大到小,設定頁「更新紀錄」會照這個順序顯示) */
 const CHANGELOG=[
+  {v:"1.38",date:"2026-08-13",items:[
+    "寵物改成手刻像素小動物(不再用 emoji):小貓、小狗、小鳥、小魚、兔子、小幽靈,沿卡片方框走 + 拖彩色尾巴",
+    "新增 SVG 手刻裝飾外框(參考 Steam 頭像框風格):櫻花、貓耳、愛心、像素火焰、閃電、雪花、星月、藤蔓,裝飾在卡片四角/邊緣",
+    "全部純內嵌(SVG / CSS 畫的),沒有用到任何外部圖檔;一樣用造型成就解鎖",
+  ]},
   {v:"1.37",date:"2026-08-13",items:[
     "造型解鎖大改:造型不再是隨便解成就就一次全拿。改由「造型成就」解鎖 —— 都是真的有在記錄才拿得到的(在很多不同的日子記錄、真的把某人養高、把負分救回來、締造新高溫…),不是特定日期或狂刷次數就能拿",
     "新增「重新開始造型旅程」(設定 → 成就·外觀):造型成就從 0 重來、清掉已套用的造型,讓你從頭體驗一個個解鎖的感覺;好友與紀錄完全不受影響",
@@ -1067,9 +1092,10 @@ function gridCellHTML(f,animate,i){
   const showScore=ended?0:sc, tcol=ended?"var(--ink-3)":t.color, ttitle=ended?"已結束":t.title;
   const frameItem=(!ended&&f.frame)?FRAMES.find(x=>x.id===f.frame&&cosmOwned(x)):null;
   const frameCls=frameItem?" "+frameClasses(frameItem):"";
+  const artEl=(frameItem&&frameItem.kind==="art")?frameArtHTML(frameItem.id):"";
   const petEl=(!ended&&f.pet)?petHTML(f.pet):"";
   return `<div class="friend ${animate?'anim':''}${ci.cooling?' cooling':''}${frameCls}" data-fid="${f.id}" style="--c:${tcol};animation-delay:${(i||0)*0.04}s">
-    ${petEl}
+    ${artEl}${petEl}
     <div class="flame"></div>
     <div class="name">${pin}<span>${escapeHtml(f.name)}</span></div>
     <div class="gmeta"><span class="tier-title" style="color:${tcol}">${ttitle}</span>${cat}${snow||cool}</div>
@@ -2083,6 +2109,14 @@ const FRAMES=[
   {id:"pulsegold",name:"呼吸金",req:"F14",kind:"pulse"},
   {id:"pulserose",name:"呼吸粉",req:"F11",kind:"pulse"},
   {id:"s67",name:"67 專屬",req:"fortune67",kind:"spin"},
+  {id:"artsakura",name:"櫻花框",req:"F4",kind:"art"},
+  {id:"artcat",name:"貓耳",req:"F15",kind:"art"},
+  {id:"arthearts",name:"愛心",req:"F7",kind:"art"},
+  {id:"artfire",name:"像素火焰",req:"F14",kind:"art"},
+  {id:"artbolt",name:"閃電",req:"F8",kind:"art"},
+  {id:"artsnow",name:"雪花",req:"F5",kind:"art"},
+  {id:"artstars",name:"星月",req:"F2",kind:"art"},
+  {id:"artvine",name:"藤蔓",req:"F9",kind:"art"},
 ];
 /* 背景:點進某位好友的詳情時整個畫面的氛圍(CSS,低耗效、不影響閱讀)。friend.bg */
 const BGS=[
@@ -2092,14 +2126,12 @@ const BGS=[
 ];
 /* 寵物:繞著卡片方框走 + 拖彩色尾巴,和任何外框都能併用(friend.pet) */
 const PETS=[
-  {id:"star",name:"流星",emoji:"⭐",tc:"#ffd76a",req:"F2"},
-  {id:"bee",name:"小蜜蜂",emoji:"🐝",tc:"#ffcf6a",req:"F9"},
-  {id:"squirrel",name:"小松鼠",emoji:"🐿️",tc:"#ff9d3c",req:"F13"},
-  {id:"butterfly",name:"蝴蝶",emoji:"🦋",tc:"#c77dff",req:"F12"},
-  {id:"cat",name:"小貓",emoji:"🐈",tc:"#ff8f5a",req:"F15"},
-  {id:"fish",name:"小魚",emoji:"🐟",tc:"#5bd0ef",req:"F7"},
-  {id:"ghost",name:"小幽靈",emoji:"👻",tc:"#a9c8ff",req:"F4"},
-  {id:"dog",name:"小狗",emoji:"🐕",tc:"#e0b070",req:"F6"},
+  {id:"cat",name:"小貓",spr:"cat",tc:"#ff9d3c",req:"F15"},
+  {id:"dog",name:"小狗",spr:"dog",tc:"#e0b070",req:"F6"},
+  {id:"bird",name:"小鳥",spr:"bird",tc:"#5b8def",req:"F9"},
+  {id:"fish",name:"小魚",spr:"fish",tc:"#3fc8e8",req:"F7"},
+  {id:"bunny",name:"兔子",spr:"bunny",tc:"#ff8fbf",req:"F4"},
+  {id:"ghost",name:"小幽靈",spr:"ghost",tc:"#a9c8ff",req:"F12"},
 ];
 const LINE_GRADS={rainbow:["#ff5a4a","#ffcf6a","#7ee08a","#5b8def","#c77dff"],sunset:["#ff4d6d","#ff9d3c","#ffd76a"],ocean:["#3a7bd5","#00d2ff","#7ee0d0"],aurora:["#7ee08a","#5b8def","#c77dff"],fire:["#c81810","#ff5a4a","#ff9d3c"],ice:["#8fd4ff","#c9f0ff","#5b8def"],forest:["#2f7a4d","#7ee08a","#d7f06a"],candy:["#ff6fae","#ffd76a","#7ee0ff"],gold:["#e08a1e","#ffd76a","#fff3cf"],violet:["#7d3cff","#c77dff","#ff6fae"],mono:["#f0f0f0","#8a8a8a","#f0f0f0"],sky:["#5b8def","#8fd4ff"]};
 const LINES=[
@@ -2133,8 +2165,43 @@ function cosmOwned(it){ if(it.req==="fortune67") return (DB.settings._fortuneTap
 function cosmReqText(it){ if(it.req==="fortune67") return `點「今日運勢」67 次(目前 ${DB.settings._fortuneTaps||0} 次)`;
   if(typeof it.req==="number") return `解鎖任意 ${it.req} 個成就`; const a=_achvDef(it.req); return a?`造型成就「${a.t}」· ${a.d}`:"隱藏條件"; }
 function rewardOwned(r){ return cosmOwned(r); }  /* 舊名相容 */
-function frameClasses(fr){ let c="frame-"+fr.id; if(fr.kind==="grad"||fr.kind==="spin")c+=" gframe"; if(fr.kind==="spin")c+=" gspin"; return c; }
-function petHTML(petId){ const p=PETS.find(x=>x.id===petId&&cosmOwned(x)); if(!p)return ""; return `<div class="pet-track" style="--tc:${p.tc}"><i class="ptrail ptrail-1"></i><i class="ptrail ptrail-2"></i><i class="ptrail ptrail-3"></i><span class="pet">${p.emoji}</span></div>`; }
+function frameClasses(fr){ let c="frame-"+fr.id; if(fr.kind==="grad"||fr.kind==="spin")c+=" gframe"; if(fr.kind==="spin")c+=" gspin"; if(fr.kind==="art")c+=" frame-art"; return c; }
+/* ===== v1.38 像素精靈:用 SVG rect 手刻,無 emoji ===== */
+function pixelSVG(rows,pal,cls){ const w=rows[0].length,h=rows.length; let r="";
+  for(let y=0;y<h;y++)for(let x=0;x<rows[y].length;x++){ const ch=rows[y][x]; if(ch===" "||ch===".")continue; const col=pal[ch]; if(!col)continue; r+=`<rect x="${x}" y="${y}" width="1.03" height="1.03" fill="${col}"/>`; }
+  return `<svg class="${cls||"pix"}" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet" shape-rendering="crispEdges">${r}</svg>`; }
+const PET_SPR={
+ cat:{rows:["..B...B..","..BB.BB..",".BBBBBBB.",".BBBBBBB.",".BWBBBWB.",".BBBPBBB.",".BBBBBBB.","..BB.BB.."],pal:{B:"#e8862e",W:"#fff",P:"#ff8fae"}},
+ dog:{rows:["DD.....DD","DDD...DDD",".DDDDDDD.",".DDDDDDD.",".DWDDDWD.",".DDDNDDD.",".DDDDDDD.","..DD.DD.."],pal:{D:"#b06b30",W:"#fff",N:"#3a2a1a"}},
+ bird:{rows:["...BBB...","..BBBBB..",".BBBBBBBY",".BWBBBBB.",".BBBBBBB.","..BBBBB..","...L.L..."],pal:{B:"#4f9be8",W:"#fff",Y:"#ffc24b",L:"#ffb000"}},
+ fish:{rows:["....FFFF.","..FFFFFFF","F.FWFFFFF","FFFFFFFF.","F.FFFFFF.","...FFFF.."],pal:{F:"#3fc8e8",W:"#fff"}},
+ bunny:{rows:["..U...U..","..U...U..","..UU.UU..","..UUUUU..","..UWUWU..","..UUPUU..","..UUUUU..","...UUU..."],pal:{U:"#f3e6ec",W:"#c77dff",P:"#ff8fae"}},
+ ghost:{rows:["..GGGGG..",".GGGGGGG.","GGGGGGGGG","GGWGGGWGG","GGGGGGGGG","GGGGGGGGG","G.GG.GG.G"],pal:{G:"#c7d4ff",W:"#3a3a5a"}},
+};
+function _petSpr(p){ const s=PET_SPR[p.spr]; return s?pixelSVG(s.rows,s.pal,"petpix"):""; }
+function petHTML(petId){ const p=PETS.find(x=>x.id===petId&&cosmOwned(x)); if(!p)return ""; return `<div class="pet-track" style="--tc:${p.tc}"><i class="ptrail ptrail-1"></i><i class="ptrail ptrail-2"></i><i class="ptrail ptrail-3"></i><span class="pet">${_petSpr(p)}</span></div>`; }
+/* ===== v1.38 SVG 手刻裝飾框(四角 / 邊緣;無外部圖檔)===== */
+const _A_FLOWER=`<svg viewBox="0 0 22 22"><g fill="#ff9ec4"><ellipse cx="11" cy="4.5" rx="3.6" ry="4.4"/><ellipse cx="17.6" cy="9" rx="4.4" ry="3.6"/><ellipse cx="15" cy="16.6" rx="3.6" ry="4.4" transform="rotate(34 15 16.6)"/><ellipse cx="7" cy="16.6" rx="3.6" ry="4.4" transform="rotate(-34 7 16.6)"/><ellipse cx="4.4" cy="9" rx="4.4" ry="3.6"/></g><circle cx="11" cy="10.4" r="2.6" fill="#ffe08a"/></svg>`;
+const _A_HEART=`<svg viewBox="0 0 20 18"><path d="M10 17C4 12 1 9 1 6a5 5 0 0 1 9-2 5 5 0 0 1 9 2c0 3-3 6-9 11z" fill="#ff6fae" stroke="#ffd0e4" stroke-width="0.8"/></svg>`;
+const _A_SNOW=`<svg viewBox="0 0 20 20" stroke="#bfe6ff" stroke-width="1.5" stroke-linecap="round" fill="none"><path d="M10 2v16M2.5 10h15M4.2 4.2l11.6 11.6M15.8 4.2L4.2 15.8"/><path d="M10 5l-2-2M10 5l2-2M10 15l-2 2M10 15l2 2"/></svg>`;
+const _A_SPK=`<svg viewBox="0 0 16 16"><path d="M8 0l1.7 6.3L16 8l-6.3 1.7L8 16l-1.7-6.3L0 8l6.3-1.7z" fill="#fff0b0"/></svg>`;
+const _A_MOON=`<svg viewBox="0 0 26 26"><path d="M20.5 13.5a9 9 0 1 1-9.5-9 7.2 7.2 0 0 0 9.5 9z" fill="#ffe9a8"/></svg>`;
+const _A_EAR=`<svg viewBox="0 0 30 26"><path d="M4 25 L9.5 3 L23 21 Z" fill="#f4f4f4" stroke="#d7d7d7" stroke-width="0.6"/><path d="M8.5 20 L11 9 L17.5 18 Z" fill="#ffb6cf"/></svg>`;
+const _A_BOLT=`<svg viewBox="0 0 14 100" preserveAspectRatio="none"><path d="M9 0 L3 44 L8 44 L2 100 L12 40 L6.5 40 Z" fill="#ffda3a" stroke="#ff9d00" stroke-width="0.7"/></svg>`;
+const _A_VINE=`<svg viewBox="0 0 16 100" preserveAspectRatio="none"><path d="M8 0 Q2 18 8 38 Q14 58 8 78 Q3 96 8 100" fill="none" stroke="#4f9e4f" stroke-width="2.4"/><g fill="#79c879"><ellipse cx="4" cy="18" rx="4.2" ry="2.4" transform="rotate(-30 4 18)"/><ellipse cx="12" cy="40" rx="4.2" ry="2.4" transform="rotate(30 12 40)"/><ellipse cx="4" cy="60" rx="4.2" ry="2.4" transform="rotate(-30 4 60)"/><ellipse cx="12" cy="82" rx="4.2" ry="2.4" transform="rotate(30 12 82)"/></g></svg>`;
+const _A_FIRE=pixelSVG(["..........................",".....Y......YY......Y.....","....YOY....YOOY....YOY....","...YOOOY..YOOOOY..YOOOY...","..YOOOOOYYOOOOOOYYOOOOOY..",".ROOOOOOOOOOOOOOOOOOOOOOR.","ROOOOOOOOOOOOOOOOOOOOOOOOR","RRRRRRRRRRRRRRRRRRRRRRRRRR"],{Y:"#ffe14a",O:"#ff8a1e",R:"#d63a12"},"firepix");
+function _fp(svg,pos){ return `<span class="fp ${pos}">${svg}</span>`; }
+const _ART={
+ artsakura:_fp(_A_FLOWER,"tl")+_fp(_A_FLOWER,"tr")+_fp(_A_FLOWER,"bl")+_fp(_A_FLOWER,"br"),
+ arthearts:_fp(_A_HEART,"tl")+_fp(_A_HEART,"tr")+_fp(_A_HEART,"bl")+_fp(_A_HEART,"br"),
+ artsnow:_fp(_A_SNOW,"tl")+_fp(_A_SNOW,"tr")+_fp(_A_SNOW,"bl")+_fp(_A_SNOW,"br"),
+ artcat:_fp(_A_EAR,"tl")+_fp(_A_EAR,"tr flip"),
+ artstars:_fp(_A_MOON,"tr")+_fp(_A_SPK,"tl")+_fp(_A_SPK,"bl")+_fp(_A_SPK,"br"),
+ artbolt:_fp(_A_BOLT,"left")+_fp(_A_BOLT,"right flip"),
+ artvine:_fp(_A_VINE,"left")+_fp(_A_VINE,"right flip"),
+ artfire:_fp(_A_FIRE,"bottom"),
+};
+function frameArtHTML(id){ return _ART[id]?`<div class="fart fart-${id}">${_ART[id]}</div>`:""; }
 /* 折線:回傳 svg 需要的 defs / stroke / class / filter / dash / width */
 function lineRender(id,uid){ const it=LINES.find(x=>x.id===id); if(!it) return null; let defs="",stroke;
   if(it.grad){ const cols=LINE_GRADS[it.grad]||["#fff"]; const gid=`lg-${id}-${uid}`;
@@ -2144,8 +2211,8 @@ function lineRender(id,uid){ const it=LINES.find(x=>x.id===id); if(!it) return n
   const cls="chart-line"+(it.flow?(it.dash?" line-flow":" line-pulse"):"");
   return {defs,stroke,filter,dash:it.dash||"",width:it.width||2.6,cls}; }
 /* 預覽 */
-function framePreviewHTML(fr){ return `<div class="fprev ${frameClasses(fr)}" style="--c:${colorForScore(85)}"><span class="fprev-n">88</span></div>`; }
-function petPreviewHTML(p){ return `<div class="fprev" style="--c:${colorForScore(70)}"><div class="pet-track" style="--tc:${p.tc}"><i class="ptrail ptrail-1"></i><i class="ptrail ptrail-2"></i><i class="ptrail ptrail-3"></i><span class="pet">${p.emoji}</span></div><span class="fprev-n">88</span></div>`; }
+function framePreviewHTML(fr){ const art=fr.kind==="art"?frameArtHTML(fr.id):""; return `<div class="fprev ${frameClasses(fr)}" style="--c:${colorForScore(85)}">${art}<span class="fprev-n">88</span></div>`; }
+function petPreviewHTML(p){ return `<div class="fprev" style="--c:${colorForScore(70)}"><div class="pet-track" style="--tc:${p.tc}"><i class="ptrail ptrail-1"></i><i class="ptrail ptrail-2"></i><i class="ptrail ptrail-3"></i><span class="pet">${_petSpr(p)}</span></div><span class="fprev-n">88</span></div>`; }
 function linePreviewHTML(ln){ const lr=lineRender(ln.id,"pv-"+ln.id); return `<svg class="lprev" viewBox="0 0 122 34"><defs>${lr.defs}</defs><path class="${lr.cls}" d="M5 25 C 38 6, 74 30, 117 9" fill="none" stroke="${lr.stroke}" stroke-width="${lr.width}" stroke-linecap="round" stroke-linejoin="round" ${lr.dash?`stroke-dasharray="${lr.dash}"`:""} filter="${lr.filter}"/></svg>`; }
 function bgPreviewHTML(bg){ return `<div class="fprev bg-${bg.id} on"><span class="fprev-n" style="color:#fff;opacity:.9">88</span></div>`; }
 function cosmPreviewHTML(it,type){ return type==="frame"?framePreviewHTML(it):(type==="line"?linePreviewHTML(it):(type==="pet"?petPreviewHTML(it):bgPreviewHTML(it))); }
