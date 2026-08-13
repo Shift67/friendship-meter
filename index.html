@@ -38,7 +38,7 @@ input,textarea{-webkit-user-select:text;user-select:text;-webkit-touch-callout:d
 body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(120% 80% at 50% -10%,var(--amb1),transparent 60%),radial-gradient(90% 60% at 100% 110%,var(--amb2),transparent 60%);}
 button{font-family:inherit;cursor:pointer;color:inherit;border:none;background:none;}
 input,select,textarea{font-family:inherit;font-size:16px;}
-.view{height:100dvh;overflow-y:auto;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;padding-bottom:calc(104px + env(safe-area-inset-bottom));touch-action:pan-y;}
+.view{height:100dvh;overflow-y:auto;overflow-x:hidden;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;padding-bottom:calc(104px + env(safe-area-inset-bottom));touch-action:pan-y;}
 #homeView{transition:transform .34s var(--ease);}
 #detailView{position:fixed;inset:0;z-index:32;background:var(--canvas);transform:translateX(100%);transition:transform .34s var(--ease);box-shadow:-16px 0 50px rgba(0,0,0,.4);}
 #detailView.on{transform:translateX(0);}
@@ -434,31 +434,33 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 .frame-flamingo{--g:linear-gradient(135deg,#ff6fae,#ff9d3c);}
 .frame-blackgold{--g:linear-gradient(135deg,#3a3222,#ffd76a,#3a3222);}
 .frame-peach{--g:linear-gradient(135deg,#ffb0a0,#ffd7b0);}
-/* 繞圈小動物:卡片 overflow 放開,一個元素沿橢圓繞行 */
-.frame-fancy{overflow:visible !important;}
-.frame-fancy .flame{top:7px;bottom:7px;border-radius:3px;}
-.friend.frame-fancy{border-color:color-mix(in srgb,var(--c) 55%,var(--hair)) !important;box-shadow:0 0 14px -6px var(--c);}
-.orbit{position:absolute;inset:-7px;pointer-events:none;z-index:6;animation:orbitSpin 5.5s linear infinite;}
-.orbit>span{position:absolute;top:-9px;left:50%;transform:translateX(-50%);font-size:16px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.5));}
-@keyframes orbitSpin{to{transform:rotate(360deg);}}
-/* 徽章:卡片右上角 */
-.fbadge{position:absolute;top:7px;right:8px;font-size:16px;z-index:5;filter:drop-shadow(0 1px 2px rgba(0,0,0,.5));}
+/* 67 專屬框:金彩虹旋轉 + 角落 67 */
+.frame-s67{--gc:conic-gradient(from 0deg,#ffd76a,#ff9d3c,#ff6fae,#c77dff,#ffd76a);}
+.frame-s67::after{content:"67";position:absolute;top:5px;right:8px;font-family:var(--mono);font-weight:800;font-size:11px;color:#ffd76a;z-index:5;text-shadow:0 1px 2px rgba(0,0,0,.5);}
+/* 寵物:沿方框內側走 + 拖一條彩色尾巴,和外框可併用,卡片維持 overflow:hidden(不外溢) */
+.pet-track{position:absolute;inset:9px;pointer-events:none;z-index:6;}
+.pet-track .pet,.pet-track .ptrail{position:absolute;top:0;left:0;transform:translate(-50%,-50%);animation:petPath 5.5s linear infinite;}
+.pet-track .pet{font-size:15px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.55));}
+.pet-track .ptrail{width:7px;height:7px;border-radius:50%;background:var(--tc,#ffcf6a);box-shadow:0 0 6px var(--tc,#ffcf6a);}
+.pet-track .ptrail-1{animation-delay:-.16s;opacity:.55;}
+.pet-track .ptrail-2{animation-delay:-.32s;opacity:.34;width:6px;height:6px;}
+.pet-track .ptrail-3{animation-delay:-.48s;opacity:.18;width:5px;height:5px;}
+@keyframes petPath{0%{top:0;left:0}25%{top:0;left:100%}50%{top:100%;left:100%}75%{top:100%;left:0}100%{top:0;left:0}}
 /* 折線動態 */
 .chart-line.line-pulse{animation:neonPulse 1.7s ease-in-out infinite;}
 @keyframes neonPulse{0%,100%{opacity:.78;}50%{opacity:1;}}
 .chart-line.line-flow{animation:lineFlow 1.1s linear infinite;}
 @keyframes lineFlow{to{stroke-dashoffset:-34;}}
-/* 預覽:小卡片 / 小折線 / 徽章 */
+/* 預覽:小卡片 / 小折線 */
 .fprev{position:relative;width:96px;height:64px;border-radius:14px;border:1.5px solid var(--hair);background:radial-gradient(120% 120% at 100% 0,color-mix(in srgb,var(--c) 16%,transparent),transparent 60%),var(--surface);display:flex;align-items:flex-end;justify-content:flex-end;padding:8px;overflow:hidden;}
-.fprev.frame-fancy{overflow:visible;}
 .fprev-n{font-family:var(--mono);font-size:22px;font-weight:800;color:var(--c);}
-.orbit-mini{position:absolute;top:-8px;left:50%;transform:translateX(-50%);font-size:15px;animation:orbMini 4s linear infinite;}
-@keyframes orbMini{from{transform:rotate(0) translateY(-30px) rotate(0);}to{transform:rotate(360deg) translateY(-30px) rotate(-360deg);}}
 .lprev{width:112px;height:34px;display:block;}
-.bprev{width:96px;height:64px;display:flex;align-items:center;justify-content:center;font-size:34px;border-radius:14px;border:1px solid var(--hair);background:var(--surface);}
+/* 裝扮即時預覽(用本人的卡片) */
+.dress-live{margin:2px 0 14px;}
+.dl-cap{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin:0 2px 6px;}
+.dl-grid{grid-template-columns:1fr !important;max-width:200px;margin:0 auto;padding:0 !important;}
 /* 圖鑑 */
 .gtiles{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
-.gtiles-badge{grid-template-columns:1fr 1fr 1fr 1fr;}
 .gtile{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;}
 .gprev{position:relative;display:flex;align-items:center;justify-content:center;}
 .gtile.lock .gprev{opacity:.4;filter:grayscale(.7);}
@@ -473,6 +475,12 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 .dtile .dname{font-size:10.5px;color:var(--ink-2);}
 .dprev{pointer-events:none;}
 .dprev-none{width:96px;height:64px;display:flex;align-items:center;justify-content:center;color:var(--ink-3);font-size:13px;border:1px dashed var(--hair);border-radius:14px;}
+/* 今日運勢 */
+.fortune-card{display:flex;align-items:center;gap:14px;border:1px solid var(--hair);background:radial-gradient(130% 130% at 100% 0,color-mix(in srgb,var(--warm) 12%,transparent),transparent 55%),var(--surface);border-radius:16px;padding:15px 16px;margin-top:2px;}
+.fortune-emoji{font-size:30px;flex:0 0 auto;line-height:1;}
+.fortune-text{font-size:14.5px;font-weight:600;line-height:1.4;}
+.fortune-sub{font-size:11px;color:var(--ink-3);margin-top:3px;}
+@keyframes fortuneSpin{0%{transform:rotate(-18deg) scale(.8);}100%{transform:none;}}
 /* v1.34 回顧變化排行 */
 .rk-list{margin-top:4px;}
 .rk-row{display:flex;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px solid var(--hair-soft);}
@@ -675,12 +683,17 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
     <div class="field-label">成就 · 外觀</div>
     <div class="set-group">
       <div class="set-row" data-press onclick="openAchv()"><div class="k">成就櫃</div><div class="set-val" id="achvSetCount">0 / 150</div></div>
-      <div class="set-row" data-press onclick="openGallery()"><div class="k">外觀圖鑑</div><div class="set-val">外框 / 折線 / 徽章 ›</div></div>
+      <div class="set-row" data-press onclick="openGallery()"><div class="k">外觀圖鑑</div><div class="set-val">外框 / 折線 / 寵物 ›</div></div>
+    </div>
+    <div class="field-label">今日運勢</div>
+    <div class="fortune-card" data-press onclick="rollFortune()">
+      <div class="fortune-emoji" id="fortuneEmoji">🔮</div>
+      <div style="flex:1;"><div class="fortune-text" id="fortuneText">點一下,抽今天的運勢</div><div class="fortune-sub" id="fortuneSub">點越多次好像會有事發生…</div></div>
     </div>
     <div class="field-label">關於</div>
     <div class="set-group">
       <div class="set-row" data-press onclick="openChangelog()"><div class="k">更新紀錄</div><div class="set-val">查看 ›</div></div>
-      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.35</div></div>
+      <div class="set-row"><div class="k">版本</div><div class="set-val" id="verText">1.36</div></div>
     </div>
     <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
   </div>
@@ -743,10 +756,19 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 
 <script>
 "use strict";
-const VERSION="1.35";
+const VERSION="1.36";
 const KEY="friendship-meter-v1";
 /* 更新紀錄:每次改版就在最前面加一筆(v 由大到小,設定頁「更新紀錄」會照這個順序顯示) */
 const CHANGELOG=[
+  {v:"1.36",date:"2026-08-12",items:[
+    "修:往左右滑會滑出空白畫面(卡片外框溢出造成的水平捲動,已鎖住)",
+    "修:有些折線在預覽看不到(用了 CSS 變數當顏色,SVG 讀不到,改成實色)",
+    "繞圈動物大改:改成沿卡片方框內側走、後面拖一條會淡掉的彩色尾巴;而且獨立成「寵物」,可以和任何外框併用(以前只能二選一)",
+    "裝扮預覽升級:打開「裝扮外觀」上面直接用「他本人的卡片」即時預覽,套上去長怎樣一目了然",
+    "刪掉沒用的徽章;外框/折線的解鎖多綁在具體成就上,解到新造型會跳提示",
+    "設定新增「今日運勢」:點一下抽一則;連點 67 次解鎖專屬「67」外框(彩蛋)",
+    "成就再整理:拿掉肝的(五百/千/兩千筆、單人百筆),換成更多有趣 + 彩蛋(數字迷信、海王本王、社交過載、凌晨三點、念舊、情人劫…)",
+  ]},
   {v:"1.35",date:"2026-08-12",items:[
     "外觀系統大擴充:外框 27 種(純色光暈、漸層、動態旋轉、繞圈小動物…)、折線 24 種、新增徽章 16 種,全部用成就解鎖",
     "新增「外觀圖鑑」(設定 → 成就·外觀):每一個外框 / 折線 / 徽章都能直接預覽長怎樣,還沒解鎖的會寫清楚要解哪個成就,不用解了才知道",
@@ -916,7 +938,7 @@ function nameForScore(s){
   return "形同陌路";
 }
 function tierOf(s){ return {title:nameForScore(s), color:colorForScore(s), hot:s>=100}; }
-function defaultSettings(){ return {theme:"system",notifyCooldown:false,notifyDaily:false,askBeforeDeleteLog:true,layout:"list",categories:[...DEFAULT_CATEGORIES],presets:[...DEFAULT_PRESETS],emberDecay:false,emberDecayRate:1,sortBy:"score",filterCat:"",filterCooling:false,_lastDaily:null,_lastExport:null,achv:{},_did:{}}; }
+function defaultSettings(){ return {theme:"system",notifyCooldown:false,notifyDaily:false,askBeforeDeleteLog:true,layout:"list",categories:[...DEFAULT_CATEGORIES],presets:[...DEFAULT_PRESETS],emberDecay:false,emberDecayRate:1,sortBy:"score",filterCat:"",filterCooling:false,_lastDaily:null,_lastExport:null,achv:{},_did:{},_fortuneTaps:0}; }
 function load(){ try{ const r=localStorage.getItem(KEY); if(!r) return {v:1,friends:[],settings:defaultSettings()};
     const d=JSON.parse(r); if(!d.friends) d.friends=[]; d.settings=Object.assign(defaultSettings(),d.settings||{});
     if(!Array.isArray(d.settings.categories)||!d.settings.categories.length) d.settings.categories=[...DEFAULT_CATEGORIES];
@@ -1001,11 +1023,9 @@ function gridCellHTML(f,animate,i){
   const showScore=ended?0:sc, tcol=ended?"var(--ink-3)":t.color, ttitle=ended?"已結束":t.title;
   const frameItem=(!ended&&f.frame)?FRAMES.find(x=>x.id===f.frame&&cosmOwned(x)):null;
   const frameCls=frameItem?" "+frameClasses(frameItem):"";
-  const orbitEl=frameItem&&frameItem.orbit?`<div class="orbit"><span>${frameItem.orbit}</span></div>`:"";
-  const badgeItem=(!ended&&f.badge)?BADGES.find(x=>x.id===f.badge&&cosmOwned(x)):null;
-  const badgeEl=badgeItem?`<div class="fbadge">${badgeItem.emoji}</div>`:"";
+  const petEl=(!ended&&f.pet)?petHTML(f.pet):"";
   return `<div class="friend ${animate?'anim':''}${ci.cooling?' cooling':''}${frameCls}" data-fid="${f.id}" style="--c:${tcol};animation-delay:${(i||0)*0.04}s">
-    ${orbitEl}${badgeEl}
+    ${petEl}
     <div class="flame"></div>
     <div class="name">${pin}<span>${escapeHtml(f.name)}</span></div>
     <div class="gmeta"><span class="tier-title" style="color:${tcol}">${ttitle}</span>${cat}${snow||cool}</div>
@@ -1512,6 +1532,7 @@ function syncSettingsUI(){ $("verText").textContent=VERSION;
   document.querySelectorAll("#themeSeg button").forEach(b=>b.classList.toggle("on",b.dataset.themeOpt===DB.settings.theme));
   segMove($("themeSeg")); renderCatManage(); renderPresetManage();
   { const cc=$("catCount"); if(cc)cc.textContent=(DB.settings.categories||[]).length+" 個"; const pc=$("presetCount"); if(pc)pc.textContent=(DB.settings.presets||[]).length+" 個"; }
+  { const t=DB.settings._fortuneTaps||0, fo=_fortuneOfDay(), fe=$("fortuneEmoji"),ft=$("fortuneText"),fs=$("fortuneSub"); if(fe)fe.textContent=fo.e; if(ft)ft.textContent=fo.t; if(fs)fs.textContent=t>=67?"🎉 67 專屬造型已解鎖":(t>0?`已點 ${t} 次`:"點越多次好像會有事發生…"); }
   $("swCooldown").classList.toggle("on",!!DB.settings.notifyCooldown);
   $("swDaily").classList.toggle("on",!!DB.settings.notifyDaily);
   $("swAskDel").classList.toggle("on",DB.settings.askBeforeDeleteLog!==false);
@@ -1824,11 +1845,12 @@ const ACHV=[
  {id:"n30",ic:"🔟",g:_G[3],t:"十筆",d:"累積 10 筆",c:()=>_aLogs(true).length>=10},
  {id:"n31",ic:"💾",g:_G[3],t:"百筆",d:"累積 100 筆",c:()=>_aLogs(true).length>=100},
  {id:"n107",ic:"📚",g:_G[3],t:"兩百筆",d:"累積 200 筆",c:()=>_aLogs(true).length>=200},
- {id:"n32",ic:"🗂️",g:_G[3],t:"五百筆",d:"累積 500 筆",c:()=>_aLogs(true).length>=500},
- {id:"n33",ic:"🏔️",g:_G[3],t:"千筆",d:"累積 1000 筆",c:()=>_aLogs(true).length>=1000},
- {id:"n108",ic:"🗿",g:_G[3],t:"兩千筆",d:"累積 2000 筆",c:()=>_aLogs(true).length>=2000},
+ {id:"f7",ic:"🔢",g:_G[10],t:"數字迷信",d:"有人分數剛好 66、67 或 88",c:()=>_AA().some(f=>{const s=currentScore(f);return s===66||s===67||s===88;})},
+ {id:"f8",ic:"🎡",g:_G[6],t:"海王本王",d:"同時 8 人都 60 以上",c:()=>_AA().filter(f=>currentScore(f)>=60).length>=8},
+ {id:"f9",ic:"🍬",g:_G[6],t:"全糖世界",d:"4 人以上而且全部正分",c:()=>_AA().length>=4&&_AA().every(f=>currentScore(f)>0)},
+ {id:"f10",ic:"🤯",g:_G[4],t:"社交過載",d:"一天記了 8 個不同的人",c:()=>_aPerDayMax()>=8},
  {id:"n34",ic:"🪴",g:_G[3],t:"用心經營",d:"單一好友 25 筆",c:()=>DB.friends.some(f=>f.logs.filter(l=>l.kind!=="decay").length>=25)},
- {id:"n35",ic:"📖",g:_G[3],t:"一本傳記",d:"單一好友 100 筆",c:()=>DB.friends.some(f=>f.logs.filter(l=>l.kind!=="decay").length>=100)},
+ {id:"f11",ic:"🕒",g:_G[10],t:"凌晨三點",d:"在 3:00–3:05 之間記錄",c:()=>_aLogs(true).some(x=>{const d=new Date(x.l.ts);return d.getHours()===3&&d.getMinutes()<5;})},
  {id:"n37",ic:"✍️",g:_G[3],t:"有話直說",d:"單筆備註超過 50 字",c:()=>_aLogs(true).some(x=>(x.l.note||"").length>50)},
  {id:"n110",ic:"📜",g:_G[3],t:"長篇",d:"單筆備註超過 100 字",c:()=>_aLogs(true).some(x=>(x.l.note||"").length>100)},
  {id:"n109",ic:"🖊️",g:_G[3],t:"小作家",d:"累積 50 則備註",c:()=>_aLogs(true).filter(x=>(x.l.note||"").trim()).length>=50},
@@ -1902,6 +1924,8 @@ const ACHV=[
  {id:"n98",ic:"😌",g:_G[10],t:"佛系",d:"連 5 筆都記 0",c:()=>DB.friends.some(f=>_aConsecZero(f,5))},
  {id:"n99",ic:"🎭",g:_G[10],t:"兩面手法",d:"同天給某人 +5 又 −5",c:()=>DB.friends.some(f=>_aDayHas(f,5,-5))},
  {id:"n100",ic:"🔥",g:_G[10],t:"餘溫永存",d:"每個好友都至少記過一筆",c:()=>DB.friends.length>0&&DB.friends.every(f=>f.logs.some(l=>l.kind!=="decay"))},
+ {id:"f12",ic:"🧓",g:_G[10],t:"念舊",d:"對認識最久的好友加分",c:()=>{const o=DB.friends.slice().sort((a,b)=>a.createdAt-b.createdAt)[0];return !!(o&&o.logs.some(l=>l.kind!=="decay"&&l.delta>0));}},
+ {id:"f13",ic:"💘",g:_G[10],t:"情人劫",d:"情人節記了一筆負分",c:()=>_aLogs(true).some(x=>{const d=new Date(x.l.ts);return d.getMonth()===1&&d.getDate()===14&&x.l.delta<0;})},
  {id:"n129",ic:"🎆",g:_G[11],t:"跨年夜",d:"在 12/31 記錄",c:()=>_aDateAny(d=>d.getMonth()===11&&d.getDate()===31)},
  {id:"n130",ic:"🧧",g:_G[11],t:"大年初一",d:"在 1/1 記錄",c:()=>_aDateAny(d=>d.getMonth()===0&&d.getDate()===1)},
  {id:"n131",ic:"💘",g:_G[11],t:"情人節",d:"在 2/14 記錄",c:()=>_aDateAny(d=>d.getMonth()===1&&d.getDate()===14)},
@@ -1924,9 +1948,12 @@ const ACHV=[
  {id:"n150",ic:"🏆",g:_G[13],t:"圓滿",d:"解鎖其他所有成就",c:()=>_achvCount()>=ACHV.length-1},
 ];
 let _abQueue=[],_abBusy=false,_achvReady=false;
+function _ownedCosmCount(){ try{ return FRAMES.filter(cosmOwned).length+LINES.filter(cosmOwned).length+PETS.filter(cosmOwned).length; }catch(e){ return 0; } }
 function evalAchievements(silent){ if(!DB.settings.achv)DB.settings.achv={}; const got=DB.settings.achv, newly=[]; let changed=true,guard=0;
+  const cosmBefore=(!silent&&_achvReady)?_ownedCosmCount():0;
   while(changed&&guard++<8){ changed=false; for(const a of ACHV){ if(got[a.id])continue; let ok=false; try{ ok=!!a.c(); }catch(e){ ok=false; } if(ok){ got[a.id]=Date.now(); newly.push(a); changed=true; } } }
-  if(newly.length){ save(DB); refreshAchvCountUI(); if(!silent&&_achvReady){ newly.forEach(a=>_abQueue.push(a)); if(!_abBusy)_abNext(); } }
+  if(newly.length){ save(DB); refreshAchvCountUI(); if(!silent&&_achvReady){ newly.forEach(a=>_abQueue.push(a)); if(!_abBusy)_abNext();
+    const gain=_ownedCosmCount()-cosmBefore; if(gain>0) setTimeout(()=>toast(`✨ 順便解鎖 ${gain} 個新造型`), 2900*Math.min(newly.length,3)+300); } }
   return newly; }
 function _abNext(){ if(!_abQueue.length){_abBusy=false;return;} _abBusy=true; const a=_abQueue.shift(); showAchvBanner(a); setTimeout(_abNext,2900); }
 function showAchvBanner(a){ const b=$("achvBanner"); if(!b)return; $("abDisc").textContent=a.ic||"🏅"; $("abTitle").textContent=a.t; $("abSub").textContent=a.d;
@@ -1948,68 +1975,70 @@ const FRAMES=[
   {id:"ice",name:"冰晶框",req:"n12",kind:"glow"},
   {id:"lava",name:"熔岩火焰",req:"n21",kind:"glow"},
   {id:"crown",name:"王者金冠",req:"n137",kind:"glow"},
-  {id:"rose",name:"薔薇",req:6,kind:"glow"},
-  {id:"mint",name:"薄荷",req:8,kind:"glow"},
-  {id:"violet",name:"紫晶",req:10,kind:"glow"},
-  {id:"sky",name:"晴空",req:12,kind:"glow"},
+  {id:"rose",name:"薔薇",req:"n49",kind:"glow"},
+  {id:"mint",name:"薄荷",req:"n57",kind:"glow"},
+  {id:"violet",name:"紫晶",req:"n50",kind:"glow"},
+  {id:"sky",name:"晴空",req:"n2",kind:"glow"},
   {id:"sunset",name:"夕陽漸層",req:"n4",kind:"grad"},
-  {id:"ocean",name:"海洋漸層",req:14,kind:"grad"},
+  {id:"ocean",name:"海洋漸層",req:"n88",kind:"grad"},
   {id:"aurora",name:"極光",req:"n10",kind:"grad"},
-  {id:"candy",name:"糖果",req:16,kind:"grad"},
-  {id:"forest",name:"森林",req:18,kind:"grad"},
-  {id:"flamingo",name:"紅鶴",req:20,kind:"grad"},
-  {id:"blackgold",name:"黑金",req:22,kind:"grad"},
-  {id:"peach",name:"蜜桃",req:24,kind:"grad"},
+  {id:"candy",name:"糖果",req:"n89",kind:"grad"},
+  {id:"forest",name:"森林",req:"n141",kind:"grad"},
+  {id:"flamingo",name:"紅鶴",req:"n62",kind:"grad"},
+  {id:"blackgold",name:"黑金",req:"n85",kind:"grad"},
+  {id:"peach",name:"蜜桃",req:"n93",kind:"grad"},
   {id:"rainbowspin",name:"彩虹旋轉",req:"n11",kind:"spin"},
   {id:"emberspin",name:"餘燼旋轉",req:"n86",kind:"spin"},
-  {id:"neonspin",name:"霓虹旋轉",req:26,kind:"spin"},
-  {id:"pulsegold",name:"呼吸金",req:28,kind:"pulse"},
-  {id:"pulserose",name:"呼吸粉",req:30,kind:"pulse"},
-  {id:"orbstar",name:"流星環繞",req:32,kind:"orbit",orbit:"⭐"},
-  {id:"orbbee",name:"小蜜蜂",req:34,kind:"orbit",orbit:"🐝"},
-  {id:"orbsquirrel",name:"小松鼠",req:"n100",kind:"orbit",orbit:"🐿️"},
-  {id:"orbbutterfly",name:"蝴蝶",req:36,kind:"orbit",orbit:"🦋"},
-  {id:"orbcat",name:"小貓巡邏",req:"n85",kind:"orbit",orbit:"🐈"},
-  {id:"orbfish",name:"小魚游游",req:40,kind:"orbit",orbit:"🐟"},
+  {id:"neonspin",name:"霓虹旋轉",req:40,kind:"spin"},
+  {id:"pulsegold",name:"呼吸金",req:"n84",kind:"pulse"},
+  {id:"pulserose",name:"呼吸粉",req:"n51",kind:"pulse"},
+  {id:"s67",name:"67 專屬",req:"fortune67",kind:"spin"},
+];
+/* 寵物:繞著卡片方框走 + 拖彩色尾巴,和任何外框都能併用(friend.pet) */
+const PETS=[
+  {id:"star",name:"流星",emoji:"⭐",tc:"#ffd76a",req:"n45"},
+  {id:"bee",name:"小蜜蜂",emoji:"🐝",tc:"#ffcf6a",req:"n43"},
+  {id:"squirrel",name:"小松鼠",emoji:"🐿️",tc:"#ff9d3c",req:"n100"},
+  {id:"butterfly",name:"蝴蝶",emoji:"🦋",tc:"#c77dff",req:"n133"},
+  {id:"cat",name:"小貓",emoji:"🐈",tc:"#ff8f5a",req:"n85"},
+  {id:"fish",name:"小魚",emoji:"🐟",tc:"#5bd0ef",req:"n60"},
+  {id:"ghost",name:"小幽靈",emoji:"👻",tc:"#a9c8ff",req:"f2"},
+  {id:"dog",name:"小狗",emoji:"🐕",tc:"#e0b070",req:"n48"},
 ];
 const LINE_GRADS={rainbow:["#ff5a4a","#ffcf6a","#7ee08a","#5b8def","#c77dff"],sunset:["#ff4d6d","#ff9d3c","#ffd76a"],ocean:["#3a7bd5","#00d2ff","#7ee0d0"],aurora:["#7ee08a","#5b8def","#c77dff"],fire:["#c81810","#ff5a4a","#ff9d3c"],ice:["#8fd4ff","#c9f0ff","#5b8def"],forest:["#2f7a4d","#7ee08a","#d7f06a"],candy:["#ff6fae","#ffd76a","#7ee0ff"],gold:["#e08a1e","#ffd76a","#fff3cf"],violet:["#7d3cff","#c77dff","#ff6fae"],mono:["#f0f0f0","#8a8a8a","#f0f0f0"],sky:["#5b8def","#8fd4ff"]};
 const LINES=[
   {id:"rainbow",name:"彩虹流光",req:"n11",grad:"rainbow"},
   {id:"neon",name:"霓虹脈衝",req:"n86",solid:"#7ee0ff",glow:1,flow:1},
   {id:"sunset",name:"夕陽",req:"n4",grad:"sunset"},
-  {id:"ocean",name:"海洋",req:14,grad:"ocean"},
+  {id:"ocean",name:"海洋",req:"n83",grad:"ocean"},
   {id:"aurora",name:"極光",req:"n10",grad:"aurora"},
   {id:"fire",name:"火焰",req:"n21",grad:"fire",glow:1},
   {id:"ice",name:"冰霜",req:"n12",grad:"ice"},
-  {id:"forest",name:"森林",req:16,grad:"forest"},
-  {id:"candy",name:"糖果",req:18,grad:"candy"},
+  {id:"forest",name:"森林",req:"n141",grad:"forest"},
+  {id:"candy",name:"糖果",req:"n95",grad:"candy"},
   {id:"gold",name:"流金",req:"n5",grad:"gold",glow:1},
-  {id:"violet",name:"紫電",req:20,grad:"violet"},
-  {id:"mono",name:"極簡黑白",req:22,grad:"mono"},
-  {id:"sky",name:"天空",req:24,grad:"sky"},
-  {id:"dash",name:"流動虛線",req:26,solid:"var(--warm)",dash:"7 6",flow:1},
-  {id:"dot",name:"點點",req:28,solid:"var(--cool)",dash:"1 7"},
-  {id:"thick",name:"粗筆",req:30,solid:"var(--warm)",width:4.4},
-  {id:"thin",name:"細線",req:8,solid:"var(--ink-2)",width:1.4},
-  {id:"glowline",name:"柔光",req:12,solid:"#ffd76a",glow:1},
-  {id:"pulsegold",name:"金脈衝",req:32,grad:"gold",flow:1},
-  {id:"auroraflow",name:"極光跑動",req:34,grad:"aurora",flow:1,dash:"9 7"},
-  {id:"fireflow",name:"火焰跑動",req:36,grad:"fire",flow:1,dash:"8 6"},
-  {id:"rainbowflow",name:"彩虹跑動",req:40,grad:"rainbow",flow:1,dash:"10 7"},
-  {id:"midnight",name:"午夜藍",req:"n45",solid:"#5b8def",glow:1,width:3},
-  {id:"blossom",name:"櫻粉",req:44,solid:"#ff6fae",glow:1},
+  {id:"violet",name:"紫電",req:"n90",grad:"violet"},
+  {id:"mono",name:"極簡黑白",req:"n98",grad:"mono"},
+  {id:"sky",name:"天空",req:"n87",grad:"sky"},
+  {id:"dash",name:"流動虛線",req:"n114",solid:"#ff9d3c",dash:"7 6",flow:1},
+  {id:"dot",name:"點點",req:"n48",solid:"#5b8def",dash:"1 7"},
+  {id:"thick",name:"粗筆",req:"n81",solid:"#ff9d3c",width:4.4},
+  {id:"thin",name:"細線",req:"n38",solid:"#b3a691",width:1.4},
+  {id:"glowline",name:"柔光",req:"n84",solid:"#ffd76a",glow:1},
+  {id:"pulsegold",name:"金脈衝",req:"n55",grad:"gold",flow:1},
+  {id:"auroraflow",name:"極光跑動",req:"n112",grad:"aurora",flow:1,dash:"9 7"},
+  {id:"fireflow",name:"火焰跑動",req:"n125",grad:"fire",flow:1,dash:"8 6"},
+  {id:"rainbowflow",name:"彩虹跑動",req:60,grad:"rainbow",flow:1,dash:"10 7"},
+  {id:"midnight",name:"午夜藍",req:"n91",solid:"#5b8def",glow:1,width:3},
+  {id:"blossom",name:"櫻粉",req:"n131",solid:"#ff6fae",glow:1},
 ];
-const BADGES=[
-  {id:"star",name:"星星",emoji:"⭐",req:"n5"},{id:"fire",name:"火焰",emoji:"🔥",req:"n21"},{id:"heart",name:"愛心",emoji:"❤️",req:6},
-  {id:"crown",name:"皇冠",emoji:"👑",req:"n137"},{id:"snow",name:"雪花",emoji:"❄️",req:"n12"},{id:"clover",name:"幸運草",emoji:"🍀",req:10},
-  {id:"diamond",name:"鑽石",emoji:"💎",req:20},{id:"rocket",name:"火箭",emoji:"🚀",req:"n81"},{id:"ghost",name:"幽靈",emoji:"👻",req:"f2"},
-  {id:"sprout",name:"新芽",emoji:"🌱",req:"n1"},{id:"rainbow",name:"彩虹",emoji:"🌈",req:"n11"},{id:"moon",name:"月亮",emoji:"🌙",req:"n56"},
-  {id:"coffee",name:"咖啡",emoji:"☕",req:14},{id:"music",name:"音符",emoji:"🎵",req:16},{id:"paw",name:"腳印",emoji:"🐾",req:18},{id:"gem",name:"寶石",emoji:"🔮",req:26},
-];
-function cosmOwned(it){ return typeof it.req==="number" ? _achvCount()>=it.req : !!(DB.settings.achv&&DB.settings.achv[it.req]); }
-function cosmReqText(it){ if(typeof it.req==="number") return `解鎖任意 ${it.req} 個成就`; const a=ACHV.find(x=>x.id===it.req); return a?`成就「${a.t}」· ${a.d}`:"隱藏條件"; }
+function cosmOwned(it){ if(it.req==="fortune67") return (DB.settings._fortuneTaps||0)>=67;
+  return typeof it.req==="number" ? _achvCount()>=it.req : !!(DB.settings.achv&&DB.settings.achv[it.req]); }
+function cosmReqText(it){ if(it.req==="fortune67") return `點「今日運勢」67 次(目前 ${DB.settings._fortuneTaps||0} 次)`;
+  if(typeof it.req==="number") return `解鎖任意 ${it.req} 個成就`; const a=ACHV.find(x=>x.id===it.req); return a?`成就「${a.t}」· ${a.d}`:"隱藏條件"; }
 function rewardOwned(r){ return cosmOwned(r); }  /* 舊名相容 */
-function frameClasses(fr){ let c="frame-"+fr.id; if(fr.kind==="grad"||fr.kind==="spin")c+=" gframe"; if(fr.kind==="spin")c+=" gspin"; if(fr.kind==="orbit")c+=" frame-fancy"; return c; }
+function frameClasses(fr){ let c="frame-"+fr.id; if(fr.kind==="grad"||fr.kind==="spin")c+=" gframe"; if(fr.kind==="spin")c+=" gspin"; return c; }
+function petHTML(petId){ const p=PETS.find(x=>x.id===petId&&cosmOwned(x)); if(!p)return ""; return `<div class="pet-track" style="--tc:${p.tc}"><i class="ptrail ptrail-1"></i><i class="ptrail ptrail-2"></i><i class="ptrail ptrail-3"></i><span class="pet">${p.emoji}</span></div>`; }
 /* 折線:回傳 svg 需要的 defs / stroke / class / filter / dash / width */
 function lineRender(id,uid){ const it=LINES.find(x=>x.id===id); if(!it) return null; let defs="",stroke;
   if(it.grad){ const cols=LINE_GRADS[it.grad]||["#fff"]; const gid=`lg-${id}-${uid}`;
@@ -2019,34 +2048,60 @@ function lineRender(id,uid){ const it=LINES.find(x=>x.id===id); if(!it) return n
   const cls="chart-line"+(it.flow?(it.dash?" line-flow":" line-pulse"):"");
   return {defs,stroke,filter,dash:it.dash||"",width:it.width||2.6,cls}; }
 /* 預覽 */
-function framePreviewHTML(fr){ const orbit=fr.orbit?`<span class="orbit-mini">${fr.orbit}</span>`:""; return `<div class="fprev ${frameClasses(fr)}" style="--c:${colorForScore(85)}">${orbit}<span class="fprev-n">88</span></div>`; }
-function linePreviewHTML(ln){ const lr=lineRender(ln.id,"pv-"+ln.id); return `<svg class="lprev" viewBox="0 0 122 34" preserveAspectRatio="none"><defs>${lr.defs}</defs><path class="${lr.cls}" d="M5 25 C 38 6, 74 30, 117 9" fill="none" stroke="${lr.stroke}" stroke-width="${lr.width}" stroke-linecap="round" stroke-linejoin="round" ${lr.dash?`stroke-dasharray="${lr.dash}"`:""} filter="${lr.filter}"/></svg>`; }
+function framePreviewHTML(fr){ return `<div class="fprev ${frameClasses(fr)}" style="--c:${colorForScore(85)}"><span class="fprev-n">88</span></div>`; }
+function petPreviewHTML(p){ return `<div class="fprev" style="--c:${colorForScore(70)}"><div class="pet-track" style="--tc:${p.tc}"><i class="ptrail ptrail-1"></i><i class="ptrail ptrail-2"></i><i class="ptrail ptrail-3"></i><span class="pet">${p.emoji}</span></div><span class="fprev-n">88</span></div>`; }
+function linePreviewHTML(ln){ const lr=lineRender(ln.id,"pv-"+ln.id); return `<svg class="lprev" viewBox="0 0 122 34"><defs>${lr.defs}</defs><path class="${lr.cls}" d="M5 25 C 38 6, 74 30, 117 9" fill="none" stroke="${lr.stroke}" stroke-width="${lr.width}" stroke-linecap="round" stroke-linejoin="round" ${lr.dash?`stroke-dasharray="${lr.dash}"`:""} filter="${lr.filter}"/></svg>`; }
+function cosmPreviewHTML(it,type){ return type==="frame"?framePreviewHTML(it):(type==="line"?linePreviewHTML(it):petPreviewHTML(it)); }
 /* 圖鑑:所有外觀 + 解鎖條件 + 預覽 */
 function openGallery(){ renderGallery(); openSheet("gallerySheet"); }
-function _galleryTiles(list,type){ return list.map(it=>{ const own=cosmOwned(it); const prev=type==="frame"?framePreviewHTML(it):(type==="line"?linePreviewHTML(it):`<div class="bprev">${it.emoji}</div>`);
-    return `<div class="gtile ${own?'own':'lock'}"><div class="gprev">${prev}${own?"":`<div class="glockmark">🔒</div>`}</div><div class="gname">${escapeHtml(it.name)}</div><div class="greq">${own?"已解鎖":escapeHtml(cosmReqText(it))}</div></div>`; }).join(""); }
-function renderGallery(){ const nf=FRAMES.filter(cosmOwned).length,nl=LINES.filter(cosmOwned).length,nb=BADGES.filter(cosmOwned).length;
-  $("galleryBody").innerHTML=`<div class="hint" style="margin:8px 2px 10px">解成就會拿到外框、折線、徽章。這裡看得到全部長怎樣、還沒解的要解哪個成就。已解鎖的可長按好友卡片 →「裝扮外觀」套上去。</div>
+function _galleryTiles(list,type){ return list.map(it=>{ const own=cosmOwned(it);
+    return `<div class="gtile ${own?'own':'lock'}"><div class="gprev">${cosmPreviewHTML(it,type)}${own?"":`<div class="glockmark">🔒</div>`}</div><div class="gname">${escapeHtml(it.name)}</div><div class="greq">${own?"已解鎖":escapeHtml(cosmReqText(it))}</div></div>`; }).join(""); }
+function renderGallery(){ const nf=FRAMES.filter(cosmOwned).length,nl=LINES.filter(cosmOwned).length,np=PETS.filter(cosmOwned).length;
+  $("galleryBody").innerHTML=`<div class="hint" style="margin:8px 2px 10px">解成就會拿到外框、折線、寵物。這裡看得到全部長怎樣、還沒解的要解哪個成就。已解鎖的可長按好友卡片 →「裝扮外觀」套上去(寵物可和外框併用)。</div>
     <div class="ag-h">外框 <span>${nf}/${FRAMES.length}</span></div><div class="gtiles">${_galleryTiles(FRAMES,"frame")}</div>
-    <div class="ag-h" style="margin-top:16px">折線 <span>${nl}/${LINES.length}</span></div><div class="gtiles">${_galleryTiles(LINES,"line")}</div>
-    <div class="ag-h" style="margin-top:16px">徽章 <span>${nb}/${BADGES.length}</span></div><div class="gtiles gtiles-badge">${_galleryTiles(BADGES,"badge")}</div>`; }
-/* 每個好友的裝扮(只顯示已解鎖的,可預覽) */
+    <div class="ag-h" style="margin-top:16px">寵物(繞著卡片走) <span>${np}/${PETS.length}</span></div><div class="gtiles">${_galleryTiles(PETS,"pet")}</div>
+    <div class="ag-h" style="margin-top:16px">折線 <span>${nl}/${LINES.length}</span></div><div class="gtiles">${_galleryTiles(LINES,"line")}</div>`; }
+/* 每個好友的裝扮:上面用「他本人的卡片」即時預覽,下面選已解鎖的 */
 let dressId=null;
 function openDress(id){ dressId=id; renderDress(); openSheet("dressSheet"); }
 function _dressRow(list,type,cur,setter){ const owned=list.filter(cosmOwned);
   const none=`<button class="dtile ${!cur?'on':''}" data-press onclick="${setter}(null)"><div class="dprev dprev-none">無</div><div class="dname">無</div></button>`;
-  const tiles=owned.map(it=>{ const prev=type==="frame"?framePreviewHTML(it):(type==="line"?linePreviewHTML(it):`<div class="bprev">${it.emoji}</div>`);
-    return `<button class="dtile ${cur===it.id?'on':''}" data-press onclick="${setter}('${it.id}')"><div class="dprev">${prev}</div><div class="dname">${escapeHtml(it.name)}</div></button>`; }).join("");
+  const tiles=owned.map(it=>`<button class="dtile ${cur===it.id?'on':''}" data-press onclick="${setter}('${it.id}')"><div class="dprev">${cosmPreviewHTML(it,type)}</div><div class="dname">${escapeHtml(it.name)}</div></button>`).join("");
   return owned.length?none+tiles:`<div class="hint" style="margin:2px 2px 0">還沒解鎖,去圖鑑看看要解哪些成就。</div>`; }
 function renderDress(){ const f=DB.friends.find(x=>x.id===dressId); if(!f)return; $("dressTitle").textContent=`${f.name} · 裝扮`;
-  $("dressBody").innerHTML=`<div class="field-label">外框</div><div class="dtiles">${_dressRow(FRAMES,"frame",f.frame,"setFrame")}</div>
+  const live=`<div class="dress-live"><div class="dl-cap">套上去的樣子</div><div class="grid dl-grid">${gridCellHTML(f,false,0)}</div></div>`;
+  $("dressBody").innerHTML=`${live}
+    <div class="field-label">外框</div><div class="dtiles">${_dressRow(FRAMES,"frame",f.frame,"setFrame")}</div>
+    <div class="field-label" style="margin-top:16px">寵物(可和外框併用)</div><div class="dtiles">${_dressRow(PETS,"pet",f.pet,"setPet")}</div>
     <div class="field-label" style="margin-top:16px">折線(詳情圖)</div><div class="dtiles">${_dressRow(LINES,"line",f.lineStyle,"setLine")}</div>
-    <div class="field-label" style="margin-top:16px">徽章</div><div class="dtiles">${_dressRow(BADGES,"badge",f.badge,"setBadge")}</div>
     <button class="reason-toggle" data-press style="margin-top:16px" onclick="openGallery()">看全部外觀圖鑑 ›</button>`;
   bindPress(); }
 function setFrame(id){ const f=DB.friends.find(x=>x.id===dressId); if(!f)return; if(id){const fr=FRAMES.find(x=>x.id===id); if(!fr||!cosmOwned(fr))return;} f.frame=id||undefined; save(DB); haptic(); renderDress(); renderHome(false); }
+function setPet(id){ const f=DB.friends.find(x=>x.id===dressId); if(!f)return; if(id){const p=PETS.find(x=>x.id===id); if(!p||!cosmOwned(p))return;} f.pet=id||undefined; save(DB); haptic(); renderDress(); renderHome(false); }
 function setLine(id){ const f=DB.friends.find(x=>x.id===dressId); if(!f)return; if(id){const ln=LINES.find(x=>x.id===id); if(!ln||!cosmOwned(ln))return;} f.lineStyle=id||undefined; save(DB); haptic(); renderDress(); if(currentDetailId===dressId)renderDetail(dressId,false); }
-function setBadge(id){ const f=DB.friends.find(x=>x.id===dressId); if(!f)return; if(id){const bd=BADGES.find(x=>x.id===id); if(!bd||!cosmOwned(bd))return;} f.badge=id||undefined; save(DB); haptic(); renderDress(); renderHome(false); }
+/* ===== v1.36 今日運勢(點 67 次解鎖專屬框)===== */
+const FORTUNES=[
+ {e:"🌟",t:"今天很適合主動找久沒聯絡的人聊聊"},{e:"☕",t:"有人正想著要不要傳訊息給你,回得慢也沒關係"},
+ {e:"🔥",t:"把心裡想講的話講出來,今天氣氛站在你這邊"},{e:"🌧️",t:"如果被已讀不回,別放心上,不是你的問題"},
+ {e:"🍀",t:"一個不經意的舉動,會讓某段關係回溫"},{e:"🌊",t:"順其自然的一天,不用勉強維繫誰"},
+ {e:"💌",t:"適合傳一句「最近好嗎」,收穫會超出預期"},{e:"🧊",t:"有段關係在降溫,今天是止血的好時機"},
+ {e:"🎯",t:"想約的人就今天約,拖下去會不了了之"},{e:"🌙",t:"深夜的訊息力量很大,但也要小心誤會"},
+ {e:"🌈",t:"雨過天青,和好從一句道歉開始"},{e:"🍜",t:"一起吃頓飯能解決的事,別用訊息解決"},
+ {e:"⚡",t:"今天講話容易衝,先深呼吸再送出"},{e:"🕊️",t:"放下一段執念,你會輕鬆很多"},
+ {e:"🎁",t:"別人的好意記得收下,也記得回禮"},{e:"🧭",t:"不確定要不要聯絡?那就聯絡吧"},
+ {e:"🌻",t:"你今天的能量很暖,適合當那個先伸手的人"},{e:"🎲",t:"隨緣,但別忘了主動也是一種緣分"},
+ {e:"🫧",t:"有些關係涼掉是正常的,不必自責"},{e:"🔮",t:"今天遇到的巧合,可能是老朋友的訊號"},
+ {e:"🐾",t:"慢慢走,重要的人不會因為你慢而走掉"},{e:"✨",t:"你在別人心裡的份量,比你想的重"},
+ {e:"🌱",t:"新認識的人值得多聊兩句"},{e:"🎈",t:"今天適合報喜,好消息要跟在乎的人分享"},
+];
+function _fortuneOfDay(){ const d=new Date(); const seed=(d.getFullYear()*372+d.getMonth()*31+d.getDate()); return FORTUNES[seed%FORTUNES.length]; }
+function rollFortune(){ const before=DB.settings._fortuneTaps||0; DB.settings._fortuneTaps=before+1; const taps=before+1;
+  const fo=FORTUNES[Math.floor(Math.random()*FORTUNES.length)]; const fe=$("fortuneEmoji"),ft=$("fortuneText"),fs=$("fortuneSub");
+  if(fe){ fe.textContent=fo.e; fe.style.animation="none"; void fe.offsetWidth; fe.style.animation="fortuneSpin .5s var(--spring)"; }
+  if(ft)ft.textContent=fo.t; if(fs)fs.textContent = taps>=67?"🎉 67 專屬造型已解鎖":`已點 ${taps} 次${taps>=60&&taps<67?`(再 ${67-taps} 次…)`:""}`;
+  save(DB); haptic();
+  if(before<67&&taps>=67){ toast("🎉 解鎖「67 專屬」外框!去長按好友卡片 → 裝扮外觀套套看"); if(!_reduce())fxBurst(innerWidth/2,140,{n:44,pal:_FX_GOLD,spd:4.6,up:1.4,life:84,sz:3.1}); }
+}
 
 /* ---- v1.30 撤銷 / 改日期 ---- */
 let _undo=null,_undoT=null;
