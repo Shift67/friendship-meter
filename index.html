@@ -403,40 +403,29 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 .medal.got .disc{filter:none;background:radial-gradient(circle at 40% 35%,#fff3cf,var(--warm));box-shadow:0 0 14px -3px var(--warm);}
 .medal.got .mt{color:var(--ink);}
 .medal.got .ms{opacity:.85;}
-/* v1.35 外觀系統:外框 / 折線 / 徽章 + 圖鑑 + 預覽 */
-/* 光暈系:邊框色 + box-shadow(不會被 overflow 裁切) */
-.frame-gold{border-color:#ffcf6a !important;box-shadow:0 0 17px -4px #ffcf6a,inset 0 0 0 1px rgba(255,207,106,.28);}
-.frame-ice{border-color:#8fd4ff !important;box-shadow:0 0 17px -4px #8fd4ff,inset 0 0 0 1px rgba(143,212,255,.28);}
-.frame-crown{border-color:#ffe08a !important;box-shadow:0 0 20px -3px #ffd76a,inset 0 0 0 2px rgba(255,215,120,.45);}
-.frame-rose{border-color:#ff8fbf !important;box-shadow:0 0 16px -4px #ff8fbf,inset 0 0 0 1px rgba(255,143,191,.25);}
-.frame-mint{border-color:#7ee0c0 !important;box-shadow:0 0 16px -4px #7ee0c0;}
-.frame-violet{border-color:#c77dff !important;box-shadow:0 0 16px -4px #c77dff;}
-.frame-sky{border-color:#8fbaff !important;box-shadow:0 0 16px -4px #8fbaff;}
-.frame-lava{border-color:#ff7f2a !important;box-shadow:0 0 20px -3px #ff7f2a;animation:lavaPulse 2.6s ease-in-out infinite;}
-@keyframes lavaPulse{0%,100%{box-shadow:0 0 15px -4px #ff6f1e;}50%{box-shadow:0 0 28px -2px #ff9d3c;}}
-.frame-pulsegold{border-color:#ffcf6a !important;animation:pulseGold 2.4s ease-in-out infinite;}
-@keyframes pulseGold{0%,100%{box-shadow:0 0 10px -4px #ffcf6a;}50%{box-shadow:0 0 26px -1px #ffe08a;}}
-.frame-pulserose{border-color:#ff8fbf !important;animation:pulseRose 2.4s ease-in-out infinite;}
-@keyframes pulseRose{0%,100%{box-shadow:0 0 10px -4px #ff8fbf;}50%{box-shadow:0 0 26px -1px #ffb0d4;}}
-/* 漸層邊(mask 技法,尊重圓角,不裁切) */
-.gframe{border-color:transparent !important;}
-.gframe::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:2px;background:var(--g,linear-gradient(135deg,#fff,#888));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;z-index:4;}
-.gframe.gspin::before{background:var(--gc,conic-gradient(from 0deg,#ff5a4a,#ffcf6a,#7ee08a,#5b8def,#c77dff,#ff5a4a));animation:hueSpin 4.5s linear infinite;}
+/* v1.39 外框:完整一圈的頭像框,覆蓋層 .fov(金屬寶石環 ring / 像素themed pix) */
+.friend.hasframe{overflow:visible;}
+.friend.hasframe .flame{top:7px;bottom:7px;left:1px;border-radius:3px;}
+.fov{position:absolute;pointer-events:none;z-index:5;}
+/* 金屬寶石環:金屬光澤邊 + 四角寶石 + 反光掃過 */
+.fov.ring{inset:-3px;border-radius:21px;filter:drop-shadow(0 0 5px var(--glow));}
+.fov.ring::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:3.5px;background:var(--band);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;}
+.fov.ring::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:3.5px;
+  background:linear-gradient(120deg,transparent 42%,rgba(255,255,255,.6) 50%,transparent 58%);background-size:260% 260%;
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:glint 5s ease-in-out infinite;}
+@keyframes glint{0%{background-position:130% 0;}55%,100%{background-position:-45% 0;}}
+.grid .fov.ring::after{animation:none;opacity:0;}   /* 首頁多卡片時關掉反光掃動,省效能 */
+.fov.ring.spin::before{animation:hueSpin 4.5s linear infinite;}
 @keyframes hueSpin{to{filter:hue-rotate(360deg);}}
-.frame-rainbowspin{--gc:conic-gradient(from 0deg,#ff5a4a,#ffcf6a,#7ee08a,#5b8def,#c77dff,#ff5a4a);}
-.frame-emberspin{--gc:conic-gradient(from 0deg,#c81810,#ff5a4a,#ff9d3c,#ffd76a,#ff5a4a,#c81810);}
-.frame-neonspin{--gc:conic-gradient(from 0deg,#7ee0ff,#c77dff,#7ee0ff);}
-.frame-sunset{--g:linear-gradient(135deg,#ff5a4a,#ffd76a);}
-.frame-ocean{--g:linear-gradient(135deg,#3a7bd5,#00d2ff,#7ee0d0);}
-.frame-aurora{--g:linear-gradient(135deg,#7ee08a,#5b8def,#c77dff);}
-.frame-candy{--g:linear-gradient(135deg,#ff6fae,#ffd76a,#7ee0ff);}
-.frame-forest{--g:linear-gradient(135deg,#2f7a4d,#7ee08a,#d7f06a);}
-.frame-flamingo{--g:linear-gradient(135deg,#ff6fae,#ff9d3c);}
-.frame-blackgold{--g:linear-gradient(135deg,#3a3222,#ffd76a,#3a3222);}
-.frame-peach{--g:linear-gradient(135deg,#ffb0a0,#ffd7b0);}
-/* 67 專屬框:金彩虹旋轉 + 角落 67 */
-.frame-s67{--gc:conic-gradient(from 0deg,#ffd76a,#ff9d3c,#ff6fae,#c77dff,#ffd76a);}
-.frame-s67::after{content:"67";position:absolute;top:5px;right:8px;font-family:var(--mono);font-weight:800;font-size:11px;color:#ffd76a;z-index:5;text-shadow:0 1px 2px rgba(0,0,0,.5);}
+.fov.ring.pulse{animation:fovPulse 2.4s ease-in-out infinite;}
+@keyframes fovPulse{0%,100%{filter:drop-shadow(0 0 4px var(--glow));}50%{filter:drop-shadow(0 0 13px var(--glow));}}
+.fov .gem{position:absolute;width:8px;height:8px;transform:rotate(45deg);border-radius:1.5px;z-index:2;
+  background:linear-gradient(135deg,#fff,var(--gem) 52%,color-mix(in srgb,var(--gem) 50%,#000));box-shadow:0 0 5px var(--glow);}
+.fov .gem.tl{top:-1.5px;left:-1.5px;}.fov .gem.tr{top:-1.5px;right:-1.5px;}.fov .gem.bl{bottom:-1.5px;left:-1.5px;}.fov .gem.br{bottom:-1.5px;right:-1.5px;}
+.fov .crown{position:absolute;top:-13px;left:50%;transform:translateX(-50%);z-index:3;line-height:0;filter:drop-shadow(0 1px 2px rgba(0,0,0,.55));}
+.fov .fbadge{position:absolute;top:3px;right:8px;font-family:var(--mono);font-weight:800;font-size:11px;color:var(--gem);z-index:3;text-shadow:0 1px 2px rgba(0,0,0,.5);}
+@media (prefers-reduced-motion:reduce){.fov.ring::after,.fov.ring.spin::before,.fov.ring.pulse{animation:none;}}
 /* 寵物:沿方框內側走 + 拖一條彩色尾巴,和外框可併用,卡片維持 overflow:hidden(不外溢) */
 .pet-track{position:absolute;inset:9px;pointer-events:none;z-index:6;}
 .pet-track .pet,.pet-track .ptrail{position:absolute;top:0;left:0;transform:translate(-50%,-50%);animation:petPath 5.5s linear infinite;}
@@ -447,25 +436,20 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 .pet-track .ptrail-3{animation-delay:-.24s;opacity:.18;width:5px;height:5px;}
 @keyframes petPath{0%{top:0;left:0}25%{top:0;left:100%}50%{top:100%;left:100%}75%{top:100%;left:0}100%{top:0;left:0}}
 .pet-track .pet .petpix,.pet .petpix{width:16px;height:16px;display:block;filter:drop-shadow(0 1px 1px rgba(0,0,0,.5));}
-/* v1.38 SVG 手刻裝飾框:四角/邊緣,允許外溢(.view 已鎖水平捲動) */
-.friend.frame-art{overflow:visible !important;}
-.friend.frame-art .flame{top:6px;bottom:6px;border-radius:3px;}
-.fart{position:absolute;inset:0;pointer-events:none;z-index:5;}
-.fart .fp{position:absolute;line-height:0;}
-.fart .fp svg{display:block;}
-.fart .fp.flip{transform:scaleX(-1);}
-.fart .fp.tl{top:-8px;left:-8px;} .fart .fp.tr{top:-8px;right:-8px;} .fart .fp.bl{bottom:-8px;left:-8px;} .fart .fp.br{bottom:-8px;right:-8px;}
-.fart .fp.tl svg,.fart .fp.tr svg,.fart .fp.bl svg,.fart .fp.br svg{width:26px;height:26px;}
-.fart-artstars .fp.tr svg{width:30px;height:30px;}
-.fart-artcat .fp.tl,.fart-artcat .fp.tr{top:-14px;} .fart-artcat .fp svg{width:30px;height:26px;}
-.fart .fp.left{top:3px;bottom:3px;left:-4px;width:12px;} .fart .fp.right{top:3px;bottom:3px;right:-4px;width:12px;}
-.fart .fp.left svg,.fart .fp.right svg{width:100%;height:100%;}
-.fart .fp.bottom{left:1px;right:1px;bottom:-3px;} .fart .fp.bottom svg{width:100%;height:22px;}
-.fart .firepix{width:100%;height:22px;}
-/* 預覽裡的裝飾框允許外溢 */
-.fprev.frame-art{overflow:visible;}
-.gtile .fprev,.dtile .fprev{overflow:hidden;}
-.gtile .fprev.frame-art,.dtile .fprev.frame-art{overflow:visible;}
+/* v1.39 像素themed框:9-slice(四角 + 四邊像素重複),整圈包滿,允許外溢(.view 已鎖水平捲動) */
+.fov.pix{inset:-6px;filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.5));}
+.fov.pix .pe{position:absolute;image-rendering:pixelated;}
+.fov.pix .pe-t{top:0;background-repeat:repeat-x;}
+.fov.pix .pe-b{bottom:0;background-repeat:repeat-x;}
+.fov.pix .pe-l{left:0;background-repeat:repeat-y;}
+.fov.pix .pe-r{right:0;background-repeat:repeat-y;}
+.fov.pix .pc{position:absolute;background-size:100% 100%;background-repeat:no-repeat;image-rendering:pixelated;}
+.fov.pix .pc-tl{top:0;left:0;}.fov.pix .pc-tr{top:0;right:0;}.fov.pix .pc-bl{bottom:0;left:0;}.fov.pix .pc-br{bottom:0;right:0;}
+.fov.pix .orn{position:absolute;image-rendering:pixelated;background-size:100% 100%;background-repeat:no-repeat;z-index:2;}
+/* 預覽:外框貼齊預覽框內緣(inset:0),寵物/背景/折線維持裁切 */
+.fprev.hasframe{overflow:visible;}
+.fprev .fov.ring{inset:0;border-radius:inherit;}
+.fprev .fov.pix{inset:0;}
 /* 折線動態 */
 .chart-line.line-pulse{animation:neonPulse 1.7s ease-in-out infinite;}
 @keyframes neonPulse{0%,100%{opacity:.78;}50%{opacity:1;}}
@@ -510,30 +494,14 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 .fa-t{font-size:13px;font-weight:700;color:var(--ink-2);}
 .fa-row.got .fa-t{color:var(--ink);}
 .fa-d{font-size:10.5px;color:var(--ink-3);margin-top:1px;line-height:1.3;}
-/* v1.37 詳情背景(低耗效、在內容後面、都偏暗保持可讀性) */
+/* v1.39 詳情背景:完整像素風場景(SVG 注入 #detailBg),在內容後面、偏暗保持可讀性 */
 .detail-bg{position:fixed;inset:0;z-index:0;opacity:0;transition:opacity .45s ease;pointer-events:none;overflow:hidden;}
 .detail-bg.on{opacity:1;}
-.bg-neon{background:radial-gradient(120% 90% at 0 0,rgba(255,60,180,.20),transparent 55%),radial-gradient(120% 90% at 100% 100%,rgba(70,220,255,.18),transparent 55%),#0d0b12;}
-.bg-neon::before{content:"";position:absolute;inset:-20%;background:radial-gradient(40% 30% at 30% 30%,rgba(255,60,180,.22),transparent 60%),radial-gradient(40% 30% at 70% 70%,rgba(70,220,255,.2),transparent 60%);animation:bgFloat 12s ease-in-out infinite;}
-.bg-sakura{background:radial-gradient(120% 100% at 50% 0,rgba(255,170,205,.16),transparent 60%),#150f13;}
-.bg-sakura::before{content:"";position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,180,210,.9) 45%,transparent 46%);background-size:24px 24px;opacity:.12;animation:bgRain 9s linear infinite;}
-.bg-aurora{background:linear-gradient(160deg,#0a1418,#0d1a16);}
-.bg-aurora::before{content:"";position:absolute;inset:-20%;background:radial-gradient(50% 40% at 30% 20%,rgba(120,224,138,.2),transparent 60%),radial-gradient(50% 40% at 70% 40%,rgba(91,141,239,.18),transparent 60%),radial-gradient(40% 40% at 50% 75%,rgba(199,125,255,.16),transparent 60%);animation:bgFloat 14s ease-in-out infinite;}
-.bg-ember{background:radial-gradient(120% 100% at 50% 110%,rgba(255,120,40,.22),transparent 60%),#140f0a;}
-.bg-ember::before{content:"";position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,150,60,.85) 40%,transparent 42%);background-size:28px 28px;opacity:.1;animation:bgRise 10s linear infinite;}
-.bg-ocean{background:linear-gradient(180deg,#08131f,#0a1a2a);}
-.bg-ocean::before{content:"";position:absolute;inset:-20%;background:radial-gradient(60% 40% at 40% 30%,rgba(0,210,255,.15),transparent 60%),radial-gradient(50% 40% at 70% 70%,rgba(90,208,239,.13),transparent 60%);animation:bgFloat 13s ease-in-out infinite;}
-.bg-night{background:#0a0c16;}
-.bg-night::before{content:"";position:absolute;inset:0;background-image:radial-gradient(1.4px 1.4px at 20% 30%,#fff,transparent),radial-gradient(1.4px 1.4px at 70% 60%,#cdd,transparent),radial-gradient(1.2px 1.2px at 45% 80%,#fff,transparent),radial-gradient(1.2px 1.2px at 85% 25%,#fff,transparent),radial-gradient(1.2px 1.2px at 12% 68%,#dde,transparent);opacity:.5;animation:bgTwinkle 4s ease-in-out infinite;}
-.bg-maya{background:linear-gradient(180deg,#17110a,#1c1108);}
-.bg-maya::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(224,180,90,.10) 0 6px,transparent 6px 14px),repeating-linear-gradient(45deg,rgba(224,180,90,.06) 0 6px,transparent 6px 14px);}
-.bg-matrix{background:#06100a;}
-.bg-matrix::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(90,240,140,.12) 0 2px,transparent 2px 5px);background-size:100% 42px;animation:bgMatrix 8s linear infinite;opacity:.5;}
-@keyframes bgFloat{0%,100%{transform:translate3d(0,0,0);}50%{transform:translate3d(0,-4%,0);}}
-@keyframes bgRain{to{background-position:0 24px;}}
-@keyframes bgRise{to{background-position:0 -28px;}}
-@keyframes bgTwinkle{0%,100%{opacity:.35;}50%{opacity:.6;}}
-@keyframes bgMatrix{to{background-position:0 42px;}}
+.bgscene{position:absolute;inset:0;}
+.bgscene svg{width:100%;height:100%;display:block;}
+.bgveil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,7,4,.5),rgba(10,7,4,.05) 32%,rgba(10,7,4,.42));}
+.bgscene .twk{animation:bgTwk 3.6s ease-in-out infinite;}
+@keyframes bgTwk{0%,100%{opacity:.28;}50%{opacity:.95;}}
 /* v1.34 回顧變化排行 */
 .rk-list{margin-top:4px;}
 .rk-row{display:flex;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px solid var(--hair-soft);}
@@ -811,10 +779,17 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 
 <script>
 "use strict";
-const VERSION="1.38";
+const VERSION="1.39";
 const KEY="friendship-meter-v1";
 /* 更新紀錄:每次改版就在最前面加一筆(v 由大到小,設定頁「更新紀錄」會照這個順序顯示) */
 const CHANGELOG=[
+  {v:"1.39",date:"2026-08-14",items:[
+    "外框整個重畫:不再是「四個角貼裝飾」或只是換個邊框顏色。現在每個外框都是完整一圈包起來的頭像框",
+    "22 個金屬寶石環框(金、海洋、極光、彩虹旋轉…):有金屬光澤、四角寶石、光線掃過的反光;旋轉/呼吸款照舊會動",
+    "8 個像素themed框(火焰、藤蔓、冰霜、閃電、愛心、星月、櫻花、貓耳):整圈都是像素裝飾,貓耳款還有耳朵跟尾巴",
+    "背景也整個重畫:不再是幾個點幾條線。改成完整的像素風場景 —— 星夜、深海、餘燼、櫻花、極光、霓虹、馬雅、數位雨,都偏暗保證看得清內容",
+    "一樣純內嵌(SVG / CSS 畫的),無外部圖檔;造型解鎖條件不變",
+  ]},
   {v:"1.38",date:"2026-08-13",items:[
     "寵物改成手刻像素小動物(不再用 emoji):小貓、小狗、小鳥、小魚、兔子、小幽靈,沿卡片方框走 + 拖彩色尾巴",
     "新增 SVG 手刻裝飾外框(參考 Steam 頭像框風格):櫻花、貓耳、愛心、像素火焰、閃電、雪花、星月、藤蔓,裝飾在卡片四角/邊緣",
@@ -1090,12 +1065,12 @@ function gridCellHTML(f,animate,i){
   const ci=(!ended)?coolInfo(f):{cooling:false,amt:0};              /* v1.34 降溫狀態(已記進 logs) */
   const snow=ci.cooling?`<span class="snow">❄ ${ci.amt>0?`降溫 −${ci.amt}`:"降溫中"}</span>`:"";
   const showScore=ended?0:sc, tcol=ended?"var(--ink-3)":t.color, ttitle=ended?"已結束":t.title;
-  const frameItem=(!ended&&f.frame)?FRAMES.find(x=>x.id===f.frame&&cosmOwned(x)):null;
-  const frameCls=frameItem?" "+frameClasses(frameItem):"";
-  const artEl=(frameItem&&frameItem.kind==="art")?frameArtHTML(frameItem.id):"";
+  const frameOwned=(!ended&&f.frame&&FRAMES.find(x=>x.id===f.frame&&cosmOwned(x)))?f.frame:null;
+  const frameCls=(frameOwned&&FRAME_STYLE[frameOwned])?" hasframe":"";
+  const frameEl=frameOwned?frameCosmHTML(frameOwned):"";
   const petEl=(!ended&&f.pet)?petHTML(f.pet):"";
   return `<div class="friend ${animate?'anim':''}${ci.cooling?' cooling':''}${frameCls}" data-fid="${f.id}" style="--c:${tcol};animation-delay:${(i||0)*0.04}s">
-    ${artEl}${petEl}
+    ${frameEl}${petEl}
     <div class="flame"></div>
     <div class="name">${pin}<span>${escapeHtml(f.name)}</span></div>
     <div class="gmeta"><span class="tier-title" style="color:${tcol}">${ttitle}</span>${cat}${snow||cool}</div>
@@ -1477,7 +1452,8 @@ function seriesInSpan(f){ const all=seriesOf(f); if(spanDays===0) return all; co
 
 function renderDetail(id,animateScore){
   const f=DB.friends.find(x=>x.id===id); if(!f){showHome();return;}
-  const bgItem=(f.bg&&BGS.find(x=>x.id===f.bg&&cosmOwned(x)))?f.bg:""; const bgEl=$("detailBg"); if(bgEl) bgEl.className="detail-bg"+(bgItem?` bg-${bgItem} on`:"");
+  const bgItem=(f.bg&&BGS.find(x=>x.id===f.bg&&cosmOwned(x)))?f.bg:""; const bgEl=$("detailBg");
+  if(bgEl){ if(bgItem){ if(bgEl.dataset.bg!==bgItem){ bgEl.innerHTML=bgSceneHTML(bgItem); bgEl.dataset.bg=bgItem; } bgEl.className="detail-bg on"; } else { if(bgEl.dataset.bg){ bgEl.innerHTML=""; bgEl.dataset.bg=""; } bgEl.className="detail-bg"; } }
   const ended=f.status==="ended";
   const sc=currentScore(f),t=tierOf(sc);
   const dScore=ended?0:sc, dColor=ended?"var(--ink-3)":t.color, dTitle=ended?"已經不是好友了":t.title;
@@ -2165,7 +2141,97 @@ function cosmOwned(it){ if(it.req==="fortune67") return (DB.settings._fortuneTap
 function cosmReqText(it){ if(it.req==="fortune67") return `點「今日運勢」67 次(目前 ${DB.settings._fortuneTaps||0} 次)`;
   if(typeof it.req==="number") return `解鎖任意 ${it.req} 個成就`; const a=_achvDef(it.req); return a?`造型成就「${a.t}」· ${a.d}`:"隱藏條件"; }
 function rewardOwned(r){ return cosmOwned(r); }  /* 舊名相容 */
-function frameClasses(fr){ let c="frame-"+fr.id; if(fr.kind==="grad"||fr.kind==="spin")c+=" gframe"; if(fr.kind==="spin")c+=" gspin"; if(fr.kind==="art")c+=" frame-art"; return c; }
+/* ===== v1.39 外框:完整包邊頭像框(金屬寶石環 ring + 像素themed 9-slice)===== */
+function _flipH(rows){return rows.map(r=>[...r].reverse().join(""));}
+function _flipV(rows){return [...rows].reverse();}
+function _rotCW(rows){const H=rows.length,W=rows[0].length,o=[];for(let x=0;x<W;x++){let s="";for(let y=H-1;y>=0;y--)s+=rows[y][x];o.push(s);}return o;}
+function _rotCCW(rows){const H=rows.length,W=rows[0].length,o=[];for(let x=W-1;x>=0;x--){let s="";for(let y=0;y<H;y++)s+=rows[y][x];o.push(s);}return o;}
+function _pxURI(rows,pal){const w=rows[0].length,h=rows.length;let r="";
+  for(let y=0;y<h;y++)for(let x=0;x<rows[y].length;x++){const c=rows[y][x];if(c==="."||c===" ")continue;const col=pal[c];if(!col)continue;r+=`<rect x="${x}" y="${y}" width="1" height="1" fill="${col}"/>`;}
+  return "data:image/svg+xml,"+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" shape-rendering="crispEdges">${r}</svg>`);}
+function _railCorner(base,hi){const C=6,M=2,rows=[];
+  for(let y=0;y<C;y++){let s="";for(let x=0;x<C;x++){const inC=(y>=M&&x>=M),yr=(y>=M&&y<M+2),xr=(x>=M&&x<M+2);let ch=".";if(inC&&(yr||xr))ch=(y===M||x===M)?"B":"H";s+=ch;}rows.push(s);}return rows;}
+const _FPX=3;   /* 像素框每格對應的螢幕 px */
+const PIX_FRAME={
+ fire:{base:"#b0350f",hi:"#ff8a1e",pal:{Y:"#ffe14a",O:"#ff8a1e"},dec:["Y.O.Y.O.","OYOYOYOY"]},
+ vine:{base:"#3f7a3a",hi:"#79c879",pal:{L:"#9ce06a",G:"#5aa84a"},dec:[".L...L..","GLG.GLG."]},
+ snow:{base:"#4f9fd0",hi:"#bfe6ff",pal:{C:"#8fd4ff",W:"#eaf7ff"},dec:["C.W.C.W.",".CWC.CWC"]},
+ bolt:{base:"#b8901a",hi:"#ffe14a",pal:{Z:"#ffda3a",W:"#fff6c0"},dec:["..Z...Z.",".ZWZ.ZWZ"]},
+ hearts:{base:"#b8446f",hi:"#ff9ec4",pal:{P:"#ff6fae"},dec:["P.P..P.P","PPP..PPP"]},
+ stars:{base:"#3a4a80",hi:"#8fa8e8",pal:{S:"#ffffff",s:"#c9d6ff"},dec:["..S...s.",".s...S.."],orn:"moon"},
+ sakura:{base:"#8a5a4a",hi:"#c98a6a",pal:{p:"#ff9ec4",y:"#ffe08a"},dec:[".p..p...","p.y..p.y"],orn:"blossom"},
+ cat:{base:"#8a5a2e",hi:"#e8a24e",pal:{d:"#ffd9b0"},dec:["........",".d....d."],orn:"cat"},
+};
+function pixFrameHTML(theme){const t=PIX_FRAME[theme];if(!t)return"";const base=t.base,hi=t.hi;
+  const edge=t.dec.concat(["B".repeat(t.dec[0].length),"H".repeat(t.dec[0].length)]);
+  const palE=Object.assign({B:base,H:hi},t.pal);
+  const W=edge[0].length,TH=edge.length,S=_FPX;
+  const top=_pxURI(edge,palE),bot=_pxURI(_flipV(edge),palE),left=_pxURI(_rotCCW(edge),palE),right=_pxURI(_rotCW(edge),palE);
+  const cr=_railCorner(base,hi),cp={B:base,H:hi};
+  const cTL=_pxURI(cr,cp),cTR=_pxURI(_flipH(cr),cp),cBL=_pxURI(_flipV(cr),cp),cBR=_pxURI(_flipH(_flipV(cr)),cp);
+  const bw=W*S,ET=TH*S,CS=6*S,EI=CS-S;
+  let orn="";
+  if(t.orn==="cat"){
+    const ear=_pxURI(["..E..",".EEE.","EEPEE","EEEEE"],{E:hi,P:"#ff9ec4"});
+    const tail=_pxURI(["..EE",".EE.","EE..","EE..",".EE.","..EE"],{E:hi});
+    orn=`<i class="orn" style="width:${5*S}px;height:${4*S}px;top:-${Math.round(3.5*S)}px;left:${3*S}px;background-image:url('${ear}')"></i>`
+      +`<i class="orn" style="width:${5*S}px;height:${4*S}px;top:-${Math.round(3.5*S)}px;right:${3*S}px;transform:scaleX(-1);background-image:url('${ear}')"></i>`
+      +`<i class="orn" style="width:${4*S}px;height:${6*S}px;bottom:-${2*S}px;right:-${2*S}px;background-image:url('${tail}')"></i>`;
+  } else if(t.orn==="moon"){
+    const moon=_pxURI(["..MMM.",".MMMMM","MMM...","MM....","MMM...",".MMMMM","..MMM."],{M:"#ffe9a8"});
+    orn=`<i class="orn" style="width:${6*S}px;height:${7*S}px;top:-${4*S}px;right:${Math.round(3.5*S)}px;background-image:url('${moon}')"></i>`;
+  } else if(t.orn==="blossom"){
+    const bl=_pxURI([".p.p.","ppppp","pyyyp","ppppp",".p.p."],{p:"#ff9ec4",y:"#ffe08a"});
+    orn=`<i class="orn" style="width:${5*S}px;height:${5*S}px;top:-${3*S}px;left:${Math.round(3.5*S)}px;background-image:url('${bl}')"></i>`;
+  }
+  return `<div class="fov pix">`
+    +`<i class="pe pe-t" style="left:${EI}px;right:${EI}px;height:${ET}px;background-image:url('${top}');background-size:${bw}px ${ET}px"></i>`
+    +`<i class="pe pe-b" style="left:${EI}px;right:${EI}px;height:${ET}px;background-image:url('${bot}');background-size:${bw}px ${ET}px"></i>`
+    +`<i class="pe pe-l" style="top:${EI}px;bottom:${EI}px;width:${ET}px;background-image:url('${left}');background-size:${ET}px ${bw}px"></i>`
+    +`<i class="pe pe-r" style="top:${EI}px;bottom:${EI}px;width:${ET}px;background-image:url('${right}');background-size:${ET}px ${bw}px"></i>`
+    +`<i class="pc pc-tl" style="width:${CS}px;height:${CS}px;background-image:url('${cTL}')"></i>`
+    +`<i class="pc pc-tr" style="width:${CS}px;height:${CS}px;background-image:url('${cTR}')"></i>`
+    +`<i class="pc pc-bl" style="width:${CS}px;height:${CS}px;background-image:url('${cBL}')"></i>`
+    +`<i class="pc pc-br" style="width:${CS}px;height:${CS}px;background-image:url('${cBR}')"></i>`
+    +orn+`</div>`;
+}
+const _CROWN=`<svg width="28" height="15" viewBox="0 0 28 15"><path d="M2 13 L1 4 L7 8 L14 1 L21 8 L27 4 L26 13 Z" fill="#ffd76a" stroke="#b8860b" stroke-width="0.8"/><circle cx="14" cy="4" r="1.6" fill="#ff5a4a"/><circle cx="4" cy="6" r="1.1" fill="#7ee0ff"/><circle cx="24" cy="6" r="1.1" fill="#7ee0ff"/></svg>`;
+const FRAME_STYLE={
+ gold:{type:"ring",base:"#e6b53c",hi:"#fff3c0",lo:"#a9781a",glow:"#ffcf6a",gem:"#ffe08a"},
+ sky:{type:"ring",base:"#6ba0ef",hi:"#dbe9ff",lo:"#3a63b0",glow:"#8fbaff",gem:"#cfe0ff"},
+ mint:{type:"ring",base:"#5fc7a8",hi:"#d6fff0",lo:"#2f8467",glow:"#7ee0c0",gem:"#c9fff0"},
+ rose:{type:"ring",base:"#ef86b6",hi:"#ffd9ea",lo:"#b04a78",glow:"#ff8fbf",gem:"#ffcfe4"},
+ ice:{type:"ring",base:"#7fc6ef",hi:"#e6f7ff",lo:"#3f7fb0",glow:"#8fd4ff",gem:"#d9f2ff"},
+ violet:{type:"ring",base:"#b06fef",hi:"#e9d4ff",lo:"#6a35b0",glow:"#c77dff",gem:"#e0c8ff"},
+ crown:{type:"ring",base:"#e6b53c",hi:"#fff3c0",lo:"#a9781a",glow:"#ffcf6a",gem:"#ffe08a",crown:1},
+ lava:{type:"ring",base:"#ff7f2a",hi:"#ffd28a",lo:"#a83810",glow:"#ff7f2a",gem:"#ffb060",pulse:1},
+ sunset:{type:"ring",band:"linear-gradient(135deg,#ff5a4a,#ffd76a)",glow:"#ff8a5a",gem:"#ffb877"},
+ ocean:{type:"ring",band:"linear-gradient(135deg,#3a7bd5,#00d2ff,#7ee0d0)",glow:"#00d2ff",gem:"#7ee0d0"},
+ aurora:{type:"ring",band:"linear-gradient(135deg,#7ee08a,#5b8def,#c77dff)",glow:"#8fd4b0",gem:"#c7ffe0"},
+ candy:{type:"ring",band:"linear-gradient(135deg,#ff6fae,#ffd76a,#7ee0ff)",glow:"#ff9ec4",gem:"#ffe0f0"},
+ forest:{type:"ring",band:"linear-gradient(135deg,#2f7a4d,#7ee08a,#d7f06a)",glow:"#7ee08a",gem:"#d7f06a"},
+ flamingo:{type:"ring",band:"linear-gradient(135deg,#ff6fae,#ff9d3c)",glow:"#ff8fae",gem:"#ffc0a0"},
+ blackgold:{type:"ring",band:"linear-gradient(135deg,#2a2418,#ffd76a,#2a2418)",glow:"#ffd76a",gem:"#ffe8a8"},
+ peach:{type:"ring",band:"linear-gradient(135deg,#ffb0a0,#ffd7b0)",glow:"#ffc0a8",gem:"#ffe8d0"},
+ rainbowspin:{type:"ring",band:"conic-gradient(from 0deg,#ff5a4a,#ffcf6a,#7ee08a,#5b8def,#c77dff,#ff5a4a)",glow:"#ffd76a",gem:"#ffffff",spin:1},
+ emberspin:{type:"ring",band:"conic-gradient(from 0deg,#c81810,#ff5a4a,#ff9d3c,#ffd76a,#ff5a4a,#c81810)",glow:"#ff9d3c",gem:"#ffd76a",spin:1},
+ neonspin:{type:"ring",band:"conic-gradient(from 0deg,#7ee0ff,#c77dff,#7ee0ff)",glow:"#9ee8ff",gem:"#d0f4ff",spin:1},
+ pulsegold:{type:"ring",base:"#e6b53c",hi:"#fff3c0",lo:"#a9781a",glow:"#ffe08a",gem:"#ffe08a",pulse:1},
+ pulserose:{type:"ring",base:"#ef86b6",hi:"#ffd9ea",lo:"#b04a78",glow:"#ffb0d4",gem:"#ffcfe4",pulse:1},
+ s67:{type:"ring",band:"conic-gradient(from 0deg,#ffd76a,#ff9d3c,#ff6fae,#c77dff,#ffd76a)",glow:"#ffd76a",gem:"#ffd76a",spin:1,badge:1},
+ artsakura:{type:"pix",theme:"sakura"}, artcat:{type:"pix",theme:"cat"}, arthearts:{type:"pix",theme:"hearts"}, artfire:{type:"pix",theme:"fire"},
+ artbolt:{type:"pix",theme:"bolt"}, artsnow:{type:"pix",theme:"snow"}, artstars:{type:"pix",theme:"stars"}, artvine:{type:"pix",theme:"vine"},
+};
+function ringHTML(s){
+  const band=s.band||`linear-gradient(135deg,${s.hi},${s.base} 42%,${s.lo} 74%,${s.base})`;
+  const gem=s.gem||s.base,glow=s.glow||s.base;
+  const cls="fov ring"+(s.spin?" spin":"")+(s.pulse?" pulse":"");
+  let extra=`<b class="gem tl"></b><b class="gem tr"></b><b class="gem bl"></b><b class="gem br"></b>`;
+  if(s.crown)extra+=`<span class="crown">${_CROWN}</span>`;
+  if(s.badge)extra+=`<span class="fbadge">67</span>`;
+  return `<div class="${cls}" style="--band:${band};--gem:${gem};--glow:${glow}">${extra}</div>`;
+}
+function frameCosmHTML(id){const s=FRAME_STYLE[id];if(!s)return"";return s.type==="pix"?pixFrameHTML(s.theme):ringHTML(s);}
 /* ===== v1.38 像素精靈:用 SVG rect 手刻,無 emoji ===== */
 function pixelSVG(rows,pal,cls){ const w=rows[0].length,h=rows.length; let r="";
   for(let y=0;y<h;y++)for(let x=0;x<rows[y].length;x++){ const ch=rows[y][x]; if(ch===" "||ch===".")continue; const col=pal[ch]; if(!col)continue; r+=`<rect x="${x}" y="${y}" width="1.03" height="1.03" fill="${col}"/>`; }
@@ -2180,28 +2246,67 @@ const PET_SPR={
 };
 function _petSpr(p){ const s=PET_SPR[p.spr]; return s?pixelSVG(s.rows,s.pal,"petpix"):""; }
 function petHTML(petId){ const p=PETS.find(x=>x.id===petId&&cosmOwned(x)); if(!p)return ""; return `<div class="pet-track" style="--tc:${p.tc}"><i class="ptrail ptrail-1"></i><i class="ptrail ptrail-2"></i><i class="ptrail ptrail-3"></i><span class="pet">${_petSpr(p)}</span></div>`; }
-/* ===== v1.38 SVG 手刻裝飾框(四角 / 邊緣;無外部圖檔)===== */
-const _A_FLOWER=`<svg viewBox="0 0 22 22"><g fill="#ff9ec4"><ellipse cx="11" cy="4.5" rx="3.6" ry="4.4"/><ellipse cx="17.6" cy="9" rx="4.4" ry="3.6"/><ellipse cx="15" cy="16.6" rx="3.6" ry="4.4" transform="rotate(34 15 16.6)"/><ellipse cx="7" cy="16.6" rx="3.6" ry="4.4" transform="rotate(-34 7 16.6)"/><ellipse cx="4.4" cy="9" rx="4.4" ry="3.6"/></g><circle cx="11" cy="10.4" r="2.6" fill="#ffe08a"/></svg>`;
-const _A_HEART=`<svg viewBox="0 0 20 18"><path d="M10 17C4 12 1 9 1 6a5 5 0 0 1 9-2 5 5 0 0 1 9 2c0 3-3 6-9 11z" fill="#ff6fae" stroke="#ffd0e4" stroke-width="0.8"/></svg>`;
-const _A_SNOW=`<svg viewBox="0 0 20 20" stroke="#bfe6ff" stroke-width="1.5" stroke-linecap="round" fill="none"><path d="M10 2v16M2.5 10h15M4.2 4.2l11.6 11.6M15.8 4.2L4.2 15.8"/><path d="M10 5l-2-2M10 5l2-2M10 15l-2 2M10 15l2 2"/></svg>`;
-const _A_SPK=`<svg viewBox="0 0 16 16"><path d="M8 0l1.7 6.3L16 8l-6.3 1.7L8 16l-1.7-6.3L0 8l6.3-1.7z" fill="#fff0b0"/></svg>`;
-const _A_MOON=`<svg viewBox="0 0 26 26"><path d="M20.5 13.5a9 9 0 1 1-9.5-9 7.2 7.2 0 0 0 9.5 9z" fill="#ffe9a8"/></svg>`;
-const _A_EAR=`<svg viewBox="0 0 30 26"><path d="M4 25 L9.5 3 L23 21 Z" fill="#f4f4f4" stroke="#d7d7d7" stroke-width="0.6"/><path d="M8.5 20 L11 9 L17.5 18 Z" fill="#ffb6cf"/></svg>`;
-const _A_BOLT=`<svg viewBox="0 0 14 100" preserveAspectRatio="none"><path d="M9 0 L3 44 L8 44 L2 100 L12 40 L6.5 40 Z" fill="#ffda3a" stroke="#ff9d00" stroke-width="0.7"/></svg>`;
-const _A_VINE=`<svg viewBox="0 0 16 100" preserveAspectRatio="none"><path d="M8 0 Q2 18 8 38 Q14 58 8 78 Q3 96 8 100" fill="none" stroke="#4f9e4f" stroke-width="2.4"/><g fill="#79c879"><ellipse cx="4" cy="18" rx="4.2" ry="2.4" transform="rotate(-30 4 18)"/><ellipse cx="12" cy="40" rx="4.2" ry="2.4" transform="rotate(30 12 40)"/><ellipse cx="4" cy="60" rx="4.2" ry="2.4" transform="rotate(-30 4 60)"/><ellipse cx="12" cy="82" rx="4.2" ry="2.4" transform="rotate(30 12 82)"/></g></svg>`;
-const _A_FIRE=pixelSVG(["..........................",".....Y......YY......Y.....","....YOY....YOOY....YOY....","...YOOOY..YOOOOY..YOOOY...","..YOOOOOYYOOOOOOYYOOOOOY..",".ROOOOOOOOOOOOOOOOOOOOOOR.","ROOOOOOOOOOOOOOOOOOOOOOOOR","RRRRRRRRRRRRRRRRRRRRRRRRRR"],{Y:"#ffe14a",O:"#ff8a1e",R:"#d63a12"},"firepix");
-function _fp(svg,pos){ return `<span class="fp ${pos}">${svg}</span>`; }
-const _ART={
- artsakura:_fp(_A_FLOWER,"tl")+_fp(_A_FLOWER,"tr")+_fp(_A_FLOWER,"bl")+_fp(_A_FLOWER,"br"),
- arthearts:_fp(_A_HEART,"tl")+_fp(_A_HEART,"tr")+_fp(_A_HEART,"bl")+_fp(_A_HEART,"br"),
- artsnow:_fp(_A_SNOW,"tl")+_fp(_A_SNOW,"tr")+_fp(_A_SNOW,"bl")+_fp(_A_SNOW,"br"),
- artcat:_fp(_A_EAR,"tl")+_fp(_A_EAR,"tr flip"),
- artstars:_fp(_A_MOON,"tr")+_fp(_A_SPK,"tl")+_fp(_A_SPK,"bl")+_fp(_A_SPK,"br"),
- artbolt:_fp(_A_BOLT,"left")+_fp(_A_BOLT,"right flip"),
- artvine:_fp(_A_VINE,"left")+_fp(_A_VINE,"right flip"),
- artfire:_fp(_A_FIRE,"bottom"),
-};
-function frameArtHTML(id){ return _ART[id]?`<div class="fart fart-${id}">${_ART[id]}</div>`:""; }
+/* ===== v1.39 詳情背景:完整像素風場景(內嵌 SVG;無外部圖檔)===== */
+function _rng(seed){let a=seed>>>0;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+/* 一顆會平移循環的粒子(additive:sum 才不會蓋掉基準位置);_reduce 時不動 */
+function _drift(x,y,w,h,fill,op,dx,dy,dur,delay){const a=_reduce()?"":`<animateTransform attributeName="transform" attributeType="XML" type="translate" values="0 0;${dx} ${dy}" dur="${dur}s" begin="${delay}s" repeatCount="indefinite" additive="sum"/>`;return `<g transform="translate(${x} ${y})"><rect width="${w}" height="${h}" fill="${fill}" opacity="${op}"/>${a}</g>`;}
+function _bob(vals,dur,begin){return _reduce()?"":`<animateTransform attributeName="transform" attributeType="XML" type="translate" values="${vals}" dur="${dur}s"${begin!=null?` begin="${begin}s"`:""} repeatCount="indefinite" additive="sum"/>`;}
+function bgSVG(id){
+  const R=_rng((id.charCodeAt(0)*131+id.charCodeAt(1)*17+id.length*7)>>>0);
+  let s=`<svg viewBox="0 0 100 200" preserveAspectRatio="xMidYMid slice" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">`;
+  if(id==="night"){
+    s+=`<defs><linearGradient id="ng" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0a0c1c"/><stop offset="1" stop-color="#181d38"/></linearGradient></defs><rect width="100" height="200" fill="url(#ng)"/>`;
+    for(let i=0;i<62;i++){const x=Math.floor(R()*100),y=Math.floor(R()*150),z=R()<.18?2:1;s+=`<rect class="twk" x="${x}" y="${y}" width="${z}" height="${z}" fill="#fff" opacity="${(.4+R()*.6).toFixed(2)}" style="animation-delay:${(R()*3).toFixed(2)}s"/>`;}
+    s+=`<circle cx="74" cy="36" r="15" fill="#f2ecc8"/><circle cx="80" cy="31" r="13" fill="#0d1126"/><circle cx="68" cy="41" r="2" fill="#d9d2ac"/><circle cx="71" cy="45" r="1.4" fill="#d9d2ac"/>`;
+    s+=`<path d="M0 200 L0 150 L20 120 L38 148 L55 118 L75 150 L100 128 L100 200 Z" fill="#0c1024"/><path d="M0 200 L0 168 L28 140 L50 166 L70 142 L100 170 L100 200 Z" fill="#151a30"/>`;
+  } else if(id==="ocean"){
+    s+=`<defs><linearGradient id="og" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0b2740"/><stop offset=".55" stop-color="#08131f"/><stop offset="1" stop-color="#04101a"/></linearGradient></defs><rect width="100" height="200" fill="url(#og)"/>`;
+    s+=`<g opacity=".14"><polygon points="30,0 40,0 20,200 0,200" fill="#7fe0ff"/><polygon points="60,0 72,0 62,200 44,200" fill="#7fe0ff"/></g>`;
+    for(let i=0;i<22;i++){const x=Math.floor(R()*100),y=Math.floor(R()*200),z=R()<.3?3:2;s+=_drift(x,y,z,z,"#bfefff",(.25+R()*.4).toFixed(2),0,-230,(6+R()*6).toFixed(1),(-R()*8).toFixed(1));}
+    s+=`<g fill="#0a2a20">${`<path d="M14 200 Q10 175 16 150 Q22 130 16 110 L20 110 Q26 132 20 152 Q15 176 20 200 Z"/>`+_bob("0 0;5 0;0 0",6)}</g>`;
+    s+=`<g fill="#0a2a20">${`<path d="M80 200 Q76 178 82 158 Q88 140 82 122 L86 122 Q92 142 86 160 Q81 180 86 200 Z"/>`+_bob("0 0;-5 0;0 0",7,-2)}</g>`;
+    s+=`<path d="M0 200 L0 188 L18 182 L40 190 L64 180 L86 188 L100 182 L100 200 Z" fill="#04121c"/>`;
+  } else if(id==="ember"){
+    s+=`<defs><linearGradient id="eg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#140f0a"/><stop offset=".6" stop-color="#20130b"/><stop offset="1" stop-color="#3a1a0a"/></linearGradient><radialGradient id="egl" cx=".5" cy="1" r=".7"><stop offset="0" stop-color="#ff7a1e" stop-opacity=".55"/><stop offset="1" stop-color="#ff7a1e" stop-opacity="0"/></radialGradient></defs><rect width="100" height="200" fill="url(#eg)"/><rect x="0" y="120" width="100" height="80" fill="url(#egl)"/>`;
+    for(let i=0;i<26;i++){const x=Math.floor(R()*100),y=Math.floor(80+R()*120),z=R()<.3?2:1,cc=R()<.5?"#ffb347":"#ff7a1e";s+=_drift(x,y,z,z,cc,(.4+R()*.5).toFixed(2),0,-200,(4+R()*5).toFixed(1),(-R()*6).toFixed(1));}
+    s+=`<path d="M0 200 L0 178 L30 170 L60 176 L100 168 L100 200 Z" fill="#180d07"/><g fill="#2a1509"><rect x="40" y="182" width="20" height="4"/><rect x="44" y="178" width="12" height="4" transform="rotate(-12 50 180)"/></g>`;
+  } else if(id==="sakura"){
+    s+=`<defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#241426"/><stop offset=".6" stop-color="#301a2c"/><stop offset="1" stop-color="#1a0f1a"/></linearGradient></defs><rect width="100" height="200" fill="url(#sg)"/>`;
+    s+=`<circle cx="72" cy="40" r="16" fill="#ffb9d6" opacity=".5"/><circle cx="72" cy="40" r="11" fill="#ffcfe0"/>`;
+    s+=`<g fill="#2a1720"><path d="M0 200 L0 150 Q6 140 4 120 Q2 100 12 88 L16 90 Q8 102 10 122 Q12 142 8 152 L8 200 Z"/></g>`;
+    s+=`<g fill="#5a2a44" opacity=".82"><circle cx="14" cy="78" r="16"/><circle cx="30" cy="70" r="14"/><circle cx="42" cy="84" r="12"/><circle cx="24" cy="92" r="13"/></g><g fill="#7a3a5a" opacity=".55"><circle cx="20" cy="74" r="9"/><circle cx="36" cy="80" r="8"/></g>`;
+    for(let i=0;i<22;i++){const x=Math.floor(R()*100),y=Math.floor(R()*200);s+=_drift(x,y,2,2,"#ff9ec4",.8,4,230,(6+R()*5).toFixed(1),(-R()*8).toFixed(1));}
+  } else if(id==="aurora"){
+    s+=`<defs><linearGradient id="ag" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#061018"/><stop offset="1" stop-color="#0a1a16"/></linearGradient><linearGradient id="aur1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7ee08a" stop-opacity="0"/><stop offset=".5" stop-color="#7ee08a" stop-opacity=".5"/><stop offset="1" stop-color="#5b8def" stop-opacity="0"/></linearGradient><linearGradient id="aur2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c77dff" stop-opacity="0"/><stop offset=".5" stop-color="#c77dff" stop-opacity=".4"/><stop offset="1" stop-color="#5b8def" stop-opacity="0"/></linearGradient></defs><rect width="100" height="200" fill="url(#ag)"/>`;
+    for(let i=0;i<36;i++){const x=Math.floor(R()*100),y=Math.floor(R()*120);s+=`<rect class="twk" x="${x}" y="${y}" width="1" height="1" fill="#dfeaff" opacity="${(.4+R()*.5).toFixed(2)}" style="animation-delay:${(R()*3).toFixed(2)}s"/>`;}
+    s+=`<g><path d="M-10 20 Q30 60 50 30 Q70 5 110 35 L110 90 Q70 60 50 85 Q30 110 -10 75 Z" fill="url(#aur1)" opacity=".8"/>${_bob("0 0;6 0;0 0",9)}</g>`;
+    s+=`<g><path d="M-10 45 Q35 85 55 55 Q80 25 110 60 L110 110 Q80 80 55 105 Q30 130 -10 95 Z" fill="url(#aur2)" opacity=".7"/>${_bob("0 0;-7 0;0 0",11,-3)}</g>`;
+    s+=`<path d="M0 200 L0 165 L26 138 L48 164 L70 140 L100 168 L100 200 Z" fill="#08120e"/>`;
+  } else if(id==="neon"){
+    s+=`<defs><linearGradient id="neg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#160726"/><stop offset=".55" stop-color="#2a0a3e"/><stop offset=".7" stop-color="#3a0b40"/><stop offset="1" stop-color="#0a0518"/></linearGradient><linearGradient id="sun" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd76a"/><stop offset=".5" stop-color="#ff6fae"/><stop offset="1" stop-color="#c04a9e"/></linearGradient><clipPath id="sunclip"><circle cx="50" cy="58" r="26"/></clipPath></defs><rect width="100" height="200" fill="url(#neg)"/>`;
+    s+=`<g clip-path="url(#sunclip)"><rect x="24" y="32" width="52" height="52" fill="url(#sun)"/><g fill="#2a0a3e"><rect x="24" y="66" width="52" height="2"/><rect x="24" y="71" width="52" height="3"/><rect x="24" y="77" width="52" height="4"/><rect x="24" y="84" width="52" height="5"/></g></g>`;
+    s+=`<g fill="#12061f"><rect x="2" y="96" width="10" height="30"/><rect x="14" y="104" width="8" height="22"/><rect x="24" y="88" width="9" height="38"/><rect x="66" y="92" width="9" height="34"/><rect x="77" y="102" width="8" height="24"/><rect x="88" y="96" width="10" height="30"/></g>`;
+    let g="";for(let i=0;i<7;i++){const y=(126+i*i*1.6).toFixed(0);g+=`<rect x="0" y="${y}" width="100" height="1" fill="#ff2f9e" opacity="${(.5-i*.05).toFixed(2)}"/>`;}
+    for(let i=-5;i<=5;i++){g+=`<line x1="50" y1="126" x2="${50+i*40}" y2="200" stroke="#00e0ff" stroke-width=".6" opacity=".4"/>`;}
+    s+=`<g>${g}</g>`;
+  } else if(id==="maya"){
+    s+=`<defs><linearGradient id="mg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a1e0a"/><stop offset=".4" stop-color="#5a2e0e"/><stop offset=".6" stop-color="#2a1608"/><stop offset="1" stop-color="#160c05"/></linearGradient></defs><rect width="100" height="200" fill="url(#mg)"/>`;
+    s+=`<circle class="twk" cx="50" cy="52" r="20" fill="#ffb347" opacity=".35" style="animation-duration:5s"/><circle cx="50" cy="52" r="13" fill="#ffcf6a"/>`;
+    let band="";for(let i=0;i<12;i++){const x=i*9;band+=`<path d="M${x} 8 L${x+4} 4 L${x+8} 8 L${x+4} 12 Z" fill="#e0b45a" opacity=".5"/>`;}
+    s+=`<g>${band}</g><g fill="#1c0f06"><path d="M20 200 L34 96 L66 96 L80 200 Z"/></g><g fill="#0f0803">`;
+    for(let i=0;i<7;i++){const w=32-i*3,x=(50-w/2).toFixed(0),y=96+i*14;s+=`<rect x="${x}" y="${y}" width="${w}" height="4"/>`;}
+    s+=`</g><rect x="46" y="150" width="8" height="50" fill="#3a1e0a"/>`;
+  } else if(id==="matrix"){
+    s+=`<rect width="100" height="200" fill="#04100a"/>`;const nc=17;
+    for(let c=0;c<nc;c++){const x=(c*(100/nc)).toFixed(1),len=6+Math.floor(R()*9),dur=(3.5+R()*4).toFixed(1),delay=(-R()*8).toFixed(1);
+      let col="";for(let k=0;k<len;k++){const op=(k/len*.75+.12).toFixed(2),lead=k===len-1;col+=`<rect${lead?' class="twk"':''} x="0" y="${k*8}" width="4" height="6" fill="${lead?"#d6ffe0":"#39d353"}" opacity="${lead?1:op}"/>`;}
+      const anim=_reduce()?"":`<animateTransform attributeName="transform" attributeType="XML" type="translate" values="0 ${-len*8};0 ${208};" dur="${dur}s" begin="${delay}s" repeatCount="indefinite" additive="sum"/>`;
+      s+=`<g transform="translate(${x} 0)"><g transform="translate(0 0)">${col}${anim}</g></g>`;}
+  }
+  s+=`</svg>`;
+  return s;
+}
+function bgSceneHTML(id){ return `<div class="bgscene">${bgSVG(id)}</div><div class="bgveil"></div>`; }
 /* 折線:回傳 svg 需要的 defs / stroke / class / filter / dash / width */
 function lineRender(id,uid){ const it=LINES.find(x=>x.id===id); if(!it) return null; let defs="",stroke;
   if(it.grad){ const cols=LINE_GRADS[it.grad]||["#fff"]; const gid=`lg-${id}-${uid}`;
@@ -2211,10 +2316,10 @@ function lineRender(id,uid){ const it=LINES.find(x=>x.id===id); if(!it) return n
   const cls="chart-line"+(it.flow?(it.dash?" line-flow":" line-pulse"):"");
   return {defs,stroke,filter,dash:it.dash||"",width:it.width||2.6,cls}; }
 /* 預覽 */
-function framePreviewHTML(fr){ const art=fr.kind==="art"?frameArtHTML(fr.id):""; return `<div class="fprev ${frameClasses(fr)}" style="--c:${colorForScore(85)}">${art}<span class="fprev-n">88</span></div>`; }
+function framePreviewHTML(fr){ return `<div class="fprev hasframe" style="--c:${colorForScore(85)}">${frameCosmHTML(fr.id)}<span class="fprev-n">88</span></div>`; }
 function petPreviewHTML(p){ return `<div class="fprev" style="--c:${colorForScore(70)}"><div class="pet-track" style="--tc:${p.tc}"><i class="ptrail ptrail-1"></i><i class="ptrail ptrail-2"></i><i class="ptrail ptrail-3"></i><span class="pet">${_petSpr(p)}</span></div><span class="fprev-n">88</span></div>`; }
 function linePreviewHTML(ln){ const lr=lineRender(ln.id,"pv-"+ln.id); return `<svg class="lprev" viewBox="0 0 122 34"><defs>${lr.defs}</defs><path class="${lr.cls}" d="M5 25 C 38 6, 74 30, 117 9" fill="none" stroke="${lr.stroke}" stroke-width="${lr.width}" stroke-linecap="round" stroke-linejoin="round" ${lr.dash?`stroke-dasharray="${lr.dash}"`:""} filter="${lr.filter}"/></svg>`; }
-function bgPreviewHTML(bg){ return `<div class="fprev bg-${bg.id} on"><span class="fprev-n" style="color:#fff;opacity:.9">88</span></div>`; }
+function bgPreviewHTML(bg){ return `<div class="fprev bgprev">${bgSceneHTML(bg.id)}<span class="fprev-n" style="color:#fff;opacity:.9;position:relative;z-index:2">88</span></div>`; }
 function cosmPreviewHTML(it,type){ return type==="frame"?framePreviewHTML(it):(type==="line"?linePreviewHTML(it):(type==="pet"?petPreviewHTML(it):bgPreviewHTML(it))); }
 /* 圖鑑:所有外觀 + 解鎖條件 + 預覽 */
 function openGallery(){ renderGallery(); openSheet("gallerySheet"); }
