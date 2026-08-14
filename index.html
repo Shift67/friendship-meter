@@ -425,7 +425,18 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 .fov .gem.tl{top:-1.5px;left:-1.5px;}.fov .gem.tr{top:-1.5px;right:-1.5px;}.fov .gem.bl{bottom:-1.5px;left:-1.5px;}.fov .gem.br{bottom:-1.5px;right:-1.5px;}
 .fov .crown{position:absolute;top:-13px;left:50%;transform:translateX(-50%);z-index:3;line-height:0;filter:drop-shadow(0 1px 2px rgba(0,0,0,.55));}
 .fov .fbadge{position:absolute;top:3px;right:8px;font-family:var(--mono);font-weight:800;font-size:11px;color:var(--gem);z-index:3;text-shadow:0 1px 2px rgba(0,0,0,.5);}
-@media (prefers-reduced-motion:reduce){.fov.ring::after,.fov.ring.spin::before,.fov.ring.pulse{animation:none;}}
+/* 動態款:流動漸層 / 電流閃爍 */
+.fov.ring.flow::before{background-size:220% 100%;animation:bandFlow 4.2s linear infinite;}
+@keyframes bandFlow{to{background-position:220% 0;}}
+.fov.ring.flicker{animation:fovFlicker 2.4s ease-in-out infinite;}
+@keyframes fovFlicker{0%,100%{filter:drop-shadow(0 0 4px var(--glow));}42%{filter:drop-shadow(0 0 11px var(--glow));}48%{filter:drop-shadow(0 0 2px var(--glow));}54%{filter:drop-shadow(0 0 13px var(--glow));}62%{filter:drop-shadow(0 0 5px var(--glow));}}
+/* 有設計感、延伸進卡片內的框:內側暈染 / 角落花飾(在文字後面,z-index:0) */
+.fov-bleed{position:absolute;inset:0;border-radius:18px;pointer-events:none;z-index:0;overflow:hidden;}
+.bleed-glow{background:radial-gradient(130% 78% at 50% 122%,color-mix(in srgb,var(--glow) 42%,transparent),transparent 62%);}
+.bleed-corner .bc{position:absolute;width:22px;height:22px;opacity:.5;}
+.bleed-corner .bc svg{width:100%;height:100%;display:block;}
+.bleed-corner .bc-tl{top:2px;left:2px;}.bleed-corner .bc-tr{top:2px;right:2px;transform:scaleX(-1);}.bleed-corner .bc-bl{bottom:2px;left:2px;transform:scaleY(-1);}.bleed-corner .bc-br{bottom:2px;right:2px;transform:scale(-1,-1);}
+@media (prefers-reduced-motion:reduce){.fov.ring::after,.fov.ring.spin::before,.fov.ring.pulse,.fov.ring.flow::before,.fov.ring.flicker{animation:none;}}
 /* 寵物:沿方框內側走 + 拖一條彩色尾巴,和外框可併用,卡片維持 overflow:hidden(不外溢) */
 .pet-track{position:absolute;inset:9px;pointer-events:none;z-index:6;}
 .pet-track .pet,.pet-track .ptrail{position:absolute;top:0;left:0;transform:translate(-50%,-50%);animation:petPath 5.5s linear infinite;}
@@ -467,11 +478,18 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 .gtiles{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
 .gtile{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;}
 .gprev{position:relative;display:flex;align-items:center;justify-content:center;}
-.gtile.lock .gprev{opacity:.4;filter:grayscale(.7);}
-.glockmark{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.gtile.lock .gprev{opacity:.82;}
+.gbadge{position:absolute;right:-3px;bottom:-3px;width:17px;height:17px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9.5px;background:var(--canvas);border:1px solid var(--hair);z-index:7;line-height:1;}
+.gtile.own .gbadge{color:#8bd88b;border-color:color-mix(in srgb,#7ee08a 55%,var(--hair));}
+.gtile.lock .gbadge{color:var(--ink-2);}
 .gname{font-size:11px;font-weight:600;color:var(--ink);}
-.gtile.lock .gname{color:var(--ink-3);}
+.gtile.lock .gname{color:var(--ink-2);}
 .greq{font-size:9.5px;color:var(--ink-3);line-height:1.25;}
+.lad-bar{height:7px;border-radius:6px;background:var(--surface-hi);overflow:hidden;margin:8px 2px 4px;border:1px solid var(--hair);}
+.lad-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--warm),var(--gold));border-radius:6px;transition:width .5s var(--ease);}
+.lad-next{font-size:11px;color:var(--ink-2);margin:2px 2px 0;}
+.lad-next b{color:var(--gold);}
+.fa-prog{font-family:var(--mono);font-size:10px;color:var(--ink-3);}
 /* 裝扮選格 */
 .dtiles{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;}
 .dtile{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px;border:1px solid var(--hair);border-radius:14px;background:var(--surface);min-width:0;}
@@ -499,9 +517,15 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 .detail-bg.on{opacity:1;}
 .bgscene{position:absolute;inset:0;}
 .bgscene svg{width:100%;height:100%;display:block;}
-.bgveil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,7,4,.5),rgba(10,7,4,.05) 32%,rgba(10,7,4,.42));}
+.bgveil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,7,4,.5),rgba(10,7,4,.05) 32%,rgba(10,7,4,.5));}
 .bgscene .twk{animation:bgTwk 3.6s ease-in-out infinite;}
 @keyframes bgTwk{0%,100%{opacity:.28;}50%{opacity:.95;}}
+/* v1.40 詳情頁沉浸:套背景時卡片變毛玻璃(透出場景)、標題用場景配色;首頁與全域不受影響 */
+#detailView.immersive .chart-wrap{background:color-mix(in srgb,var(--surface) 68%,transparent);border-color:color-mix(in srgb,var(--bgac) 34%,var(--hair));-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);box-shadow:0 6px 28px -14px #000;}
+#detailView.immersive .section-t{color:color-mix(in srgb,var(--bgac) 62%,var(--ink-2));}
+#detailView.immersive .d-sub{color:color-mix(in srgb,var(--bgac) 32%,var(--ink-2));}
+#detailView.immersive .log-item{border-bottom-color:color-mix(in srgb,var(--bgac) 22%,var(--hair-soft));}
+#detailView.immersive .chips .chip,#detailView.immersive .seg{-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);}
 /* v1.34 回顧變化排行 */
 .rk-list{margin-top:4px;}
 .rk-row{display:flex;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px solid var(--hair-soft);}
@@ -779,10 +803,18 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 
 <script>
 "use strict";
-const VERSION="1.39";
+const VERSION="1.40";
 const KEY="friendship-meter-v1";
 /* 更新紀錄:每次改版就在最前面加一筆(v 由大到小,設定頁「更新紀錄」會照這個順序顯示) */
 const CHANGELOG=[
+  {v:"1.40",date:"2026-08-14",items:[
+    "造型解鎖大改成「進度階梯」:一個成就只解一個造型,依序一個一個開,不再一次解一堆",
+    "成就由易到難排成一長串,都是真的有在記錄才拿得到(不同日子、養高某人、破冰回正、締造新高、連續記錄…)",
+    "外框加了更多會動的款式,也做了幾個「有設計感、稍微延伸進卡片內」的框(不會擋到字)",
+    "折線造型現在首頁小圖也看得到了(以前只有詳情頁看得到)",
+    "背景重畫得更立體、有層次;套背景時詳情頁的文字/卡片會配合場景微調(首頁維持暖炭黑)",
+    "圖鑑不再做成灰階:所有造型都彩色顯示,改用小圖示標「已解鎖 / 未解鎖」",
+  ]},
   {v:"1.39",date:"2026-08-14",items:[
     "外框整個重畫:不再是「四個角貼裝飾」或只是換個邊框顏色。現在每個外框都是完整一圈包起來的頭像框",
     "22 個金屬寶石環框(金、海洋、極光、彩虹旋轉…):有金屬光澤、四角寶石、光線掃過的反光;旋轉/呼吸款照舊會動",
@@ -989,7 +1021,8 @@ function load(){ try{ const r=localStorage.getItem(KEY); if(!r) return {v:1,frie
     if(!Array.isArray(d.settings.presets)) d.settings.presets=[...DEFAULT_PRESETS];
     d.friends.forEach(f=>{ if(!f.status) f.status="normal"; if(f.pinned===undefined) f.pinned=false; if(f.category==="密友") f.category="摯友"; }); return d;
   }catch(e){ return {v:1,friends:[],settings:defaultSettings()}; } }
-function save(d){ try{ localStorage.setItem(KEY,JSON.stringify(d)); }catch(e){ toast("儲存失敗:裝置空間可能已滿"); } }
+let _ladderCache=null;
+function save(d){ _ladderCache=null; try{ localStorage.setItem(KEY,JSON.stringify(d)); }catch(e){ toast("儲存失敗:裝置空間可能已滿"); } }
 let DB=load();
 
 const $=id=>document.getElementById(id);
@@ -1048,9 +1081,14 @@ function miniChartSVG(f){
   const line=data.map((p,i)=>`${i?'L':'M'}${x(i).toFixed(1)} ${y(p.value).toFixed(1)}`).join(" ");
   const area=`${line} L${W} ${H} L0 ${H} Z`;
   const t=tierOf(currentScore(f));
+  /* v1.40 折線造型也套到首頁小圖 */
+  const lid=(f.status!=="normal"?"":(f.lineStyle&&LINES.find(x=>x.id===f.lineStyle&&cosmOwned(x))?f.lineStyle:""));
+  const lr=lid?lineRender(lid,"m"+f.id):null;
+  const stroke=lr?lr.stroke:t.color, width=lr?Math.max(1.4,Math.min(lr.width,3.4)):2, cls=lr?lr.cls:"";
+  const dash=lr&&lr.dash?` stroke-dasharray="${lr.dash}"`:"", filt=lr&&lr.filter&&lr.filter!=="none"?` filter="${lr.filter}"`:"";
   return `<svg viewBox="0 0 ${W} ${H}" width="100%" height="100%" preserveAspectRatio="none">
-    <defs><linearGradient id="mf${f.id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${t.color}" stop-opacity="0.3"/><stop offset="100%" stop-color="${t.color}" stop-opacity="0"/></linearGradient></defs>
-    <path d="${area}" fill="url(#mf${f.id})"/><path d="${line}" fill="none" stroke="${t.color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>`;
+    <defs><linearGradient id="mf${f.id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${t.color}" stop-opacity="0.3"/><stop offset="100%" stop-color="${t.color}" stop-opacity="0"/></linearGradient>${lr?lr.defs:""}</defs>
+    <path d="${area}" fill="url(#mf${f.id})"/><path class="${cls}" d="${line}" fill="none" stroke="${stroke}" stroke-width="${width}" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"${dash}${filt}/></svg>`;
 }
 
 /* ============ 首頁 ============ */
@@ -1452,8 +1490,9 @@ function seriesInSpan(f){ const all=seriesOf(f); if(spanDays===0) return all; co
 
 function renderDetail(id,animateScore){
   const f=DB.friends.find(x=>x.id===id); if(!f){showHome();return;}
-  const bgItem=(f.bg&&BGS.find(x=>x.id===f.bg&&cosmOwned(x)))?f.bg:""; const bgEl=$("detailBg");
+  const bgItem=(f.bg&&BGS.find(x=>x.id===f.bg&&cosmOwned(x)))?f.bg:""; const bgEl=$("detailBg"), dv0=$("detailView");
   if(bgEl){ if(bgItem){ if(bgEl.dataset.bg!==bgItem){ bgEl.innerHTML=bgSceneHTML(bgItem); bgEl.dataset.bg=bgItem; } bgEl.className="detail-bg on"; } else { if(bgEl.dataset.bg){ bgEl.innerHTML=""; bgEl.dataset.bg=""; } bgEl.className="detail-bg"; } }
+  if(dv0){ if(bgItem){ dv0.classList.add("immersive"); dv0.style.setProperty("--bgac",BG_THEME[bgItem]||"#ffb060"); } else { dv0.classList.remove("immersive"); dv0.style.removeProperty("--bgac"); } }
   const ended=f.status==="ended";
   const sc=currentScore(f),t=tierOf(sc);
   const dScore=ended?0:sc, dColor=ended?"var(--ink-3)":t.color, dTitle=ended?"已經不是好友了":t.title;
@@ -1853,7 +1892,6 @@ function _aDayAbsMax(f){ const m={}; f.logs.filter(l=>l.kind!=="decay").forEach(
 function _aCatAllPos(n){ const m={}; _AA().forEach(f=>{ if(f.category)(m[f.category]=m[f.category]||[]).push(currentScore(f)); }); for(const k in m) if(m[k].length>=n&&m[k].every(v=>v>0))return true; return false; }
 function _aTopGap(i,j,span,within){ const s=_AA().map(currentScore).sort((a,b)=>b-a); if(s.length<=Math.max(i,j))return false; return within?(s[i]-s[j]<=span):(s[i]-s[j]>=span); }
 function _achvCount(){ const g=DB.settings.achv||{}; let n=0; for(const a of ACHV) if(g[a.id])n++; return n; }
-function _fachvCount(){ const g=DB.settings.achv||{}; let n=0; for(const a of FACHV) if(g[a.id])n++; return n; }
 const _G=["溫度里程碑","稱號收藏","圈子大小","勤勞記錄","用心維繫","修復與和好","光譜與分類","App 習慣","週年與時間","高光時刻","隱藏彩蛋","節慶時令","關係動態","收藏家 · 獎勵"];
 const ACHV=[
  {id:"n1",ic:"🧊",g:_G[0],t:"破冰",d:"讓一個負分的人回到 0 以上",c:()=>_aRecover(-1,0)},
@@ -1997,21 +2035,21 @@ const ACHV=[
  {id:"n150",ic:"🏆",g:_G[13],t:"圓滿",d:"解鎖其他所有成就",c:()=>_achvCount()>=ACHV.length-1},
 ];
 let _abQueue=[],_abBusy=false,_achvReady=false;
-function _ownedCosmCount(){ try{ return FRAMES.filter(cosmOwned).length+LINES.filter(cosmOwned).length+PETS.filter(cosmOwned).length; }catch(e){ return 0; } }
+function _ownedCosmCount(){ try{ return Math.min(_ladderCount(),COSMETIC_ORDER.length); }catch(e){ return 0; } }
 function evalAchievements(silent){ if(!DB.settings.achv)DB.settings.achv={}; const got=DB.settings.achv, skip=DB.settings._achvSkip||{}, newly=[]; let changed=true,guard=0;
-  const cosmBefore=(!silent&&_achvReady)?_ownedCosmCount():0;
   while(changed&&guard++<8){ changed=false;
-    for(const a of ACHV){ if(got[a.id]||skip[a.id])continue; let ok=false; try{ ok=!!a.c(); }catch(e){} if(ok){ got[a.id]=Date.now(); newly.push(a); changed=true; } }
-    for(const a of FACHV){ if(got[a.id])continue; let ok=false; try{ ok=!!a.c(); }catch(e){} if(ok){ got[a.id]=Date.now(); newly.push(a); changed=true; } } }
-  if(newly.length){ save(DB); refreshAchvCountUI(); if(!silent&&_achvReady){ newly.forEach(a=>_abQueue.push(a)); if(!_abBusy)_abNext();
-    const gain=_ownedCosmCount()-cosmBefore; if(gain>0) setTimeout(()=>toast(`✨ 解鎖 ${gain} 個新造型!`), 2900*Math.min(newly.length,3)+300); } }
+    for(const a of ACHV){ if(got[a.id]||skip[a.id])continue; let ok=false; try{ ok=!!a.c(); }catch(e){} if(ok){ got[a.id]=Date.now(); newly.push(a); changed=true; } } }
+  if(newly.length){ save(DB); refreshAchvCountUI(); if(!silent&&_achvReady){ newly.forEach(a=>_abQueue.push(a)); if(!_abBusy)_abNext(); } }
+  /* 進度階梯:每多滿足一個里程碑就依序解鎖一個造型 */
+  const lc=_ownedCosmCount(), seen=DB.settings._ladderSeen||0;
+  if(lc!==seen){ DB.settings._ladderSeen=lc; save(DB);
+    if(lc>seen&&!silent&&_achvReady){ const gain=lc-seen; setTimeout(()=>toast(`✨ 解鎖 ${gain} 個新造型!長按好友卡片 → 裝扮外觀`), newly.length?2900*Math.min(newly.length,3)+300:400); } }
   return newly; }
-/* 重置造型旅程:造型成就(FACHV)base 歸零 + 清掉已解的造型成就與已套用的造型;收藏成就(成就櫃)與紀錄都不動 */
+/* 重置造型旅程:階梯基準點歸零 + 清掉已套用的造型;收藏成就(成就櫃)與紀錄都不動 */
 function resetJourney(){
   if(DB.settings._did) delete DB.settings._did.newHighPB;
-  DB.settings._achvBase=Date.now(); DB.settings._fortuneTaps=0;
+  DB.settings._achvBase=Date.now(); DB.settings._fortuneTaps=0; DB.settings._ladderSeen=0; _ladderCache=null;
   DB.friends.forEach(f=>{ f.frame=undefined; f.pet=undefined; f.lineStyle=undefined; f.bg=undefined; });
-  if(DB.settings.achv){ FACHV.forEach(a=>delete DB.settings.achv[a.id]); }
   save(DB); haptic(); closeSheet(); renderHome(false); toast("已重新開始造型旅程,去記錄解鎖新造型吧 ✨");
 }
 function askResetJourney(){ closeSheet(); askConfirm("重新開始造型旅程?會清掉目前套在好友身上的造型,已達成過的收藏成就不會再自動補回,造型成就從 0 開始重新體驗。你的好友與紀錄都不受影響。", null, ()=>resetJourney(), "重新開始"); }
@@ -2042,25 +2080,40 @@ function _pbPosGainMax(){ let m=0; DB.friends.forEach(f=>{ const g=_pbGainOf(f);
 function _pbTotalPos(){ return _pbAll().reduce((a,x)=>a+(x.l.delta>0?x.l.delta:0),0); }
 function _pbReconCount(){ return _pbAll().filter(x=>x.l.kind==="reconcile").length; }
 function _pbCross(from,to){ return DB.friends.some(f=>{ const cur=currentScore(f), base=cur-_pbGainOf(f); return base<from&&cur>=to; }); }
-const FACHV=[
- {id:"F1",ic:"🌱",t:"啟程",d:"開始旅程後記下第一筆",c:()=>_pbAll().length>=1},
- {id:"F2",ic:"📅",t:"三日之約",d:"在 3 個不同的日子記錄",c:()=>_pbDays()>=3},
- {id:"F3",ic:"🗓️",t:"一週有你",d:"在 7 個不同的日子記錄",c:()=>_pbDays()>=7},
- {id:"F4",ic:"🌙",t:"月月有心",d:"在 21 個不同的日子記錄",c:()=>_pbDays()>=21},
- {id:"F5",ic:"🧊",t:"破冰新章",d:"旅程中把某人從負分救回正分",c:()=>_pbCross(0,0)},
- {id:"F6",ic:"📈",t:"升溫達人",d:"旅程中把某人累積養高 +30",c:()=>_pbPosGainMax()>=30},
- {id:"F7",ic:"❤️‍🔥",t:"深交",d:"旅程中把某人累積養高 +60",c:()=>_pbPosGainMax()>=60},
- {id:"F8",ic:"🏔️",t:"新巔峰",d:"旅程中締造某人的歷史新高溫",c:()=>_did("newHighPB")},
- {id:"F9",ic:"👥",t:"廣結善緣",d:"旅程中記錄了 6 個不同的人",c:()=>_pbPeople()>=6},
- {id:"F10",ic:"🎉",t:"全員問候",d:"旅程中記錄了 12 個不同的人",c:()=>_pbPeople()>=12},
- {id:"F11",ic:"🕊️",t:"和好如初",d:"旅程中標記 3 次和好 / 破冰",c:()=>_pbReconCount()>=3},
- {id:"F12",ic:"💠",t:"細水長流",d:"連續 5 個不同的日子都有記",c:()=>_pbStreak()>=5},
- {id:"F13",ic:"🎖️",t:"百日之交",d:"在 40 個不同的日子記錄",c:()=>_pbDays()>=40},
- {id:"F14",ic:"🌡️",t:"溫度製造機",d:"旅程中累積升溫超過 +150",c:()=>_pbTotalPos()>=150},
- {id:"F15",ic:"💯",t:"破百締造",d:"旅程中親手把某人養破 100",c:()=>_pbCross(100,100)},
- {id:"F16",ic:"🏆",t:"造型大師",d:"解鎖其他所有造型成就",c:()=>FACHV.filter(x=>x.id!=="F16"&&DB.settings.achv&&DB.settings.achv[x.id]).length>=15},
+/* v1.40 進度階梯:一連串由易到難的里程碑,每達成一個就依序解鎖 COSMETIC_ORDER 裡的下一個造型。
+   全部從基準點(_achvBase)之後才算,重置造型旅程會自然歸零。 */
+function _ladderStats(){
+  const all=_pbAll(); const dayset=new Set(),people=new Set(),dayCnt={},dayMix={}; let totalPos=0,recon=0;
+  all.forEach(({f,l})=>{ const k=_aDayKey(l.ts); dayset.add(k); people.add(f.id); dayCnt[k]=(dayCnt[k]||0)+1;
+    if(l.delta>0)totalPos+=l.delta; if(l.kind==="reconcile")recon++;
+    const dm=dayMix[k]||(dayMix[k]={p:0,n:0}); if(l.delta>0)dm.p=1; if(l.delta<0)dm.n=1; });
+  let sameDayMax=0; for(const k in dayCnt) if(dayCnt[k]>sameDayMax)sameDayMax=dayCnt[k];
+  let mixedDay=0; for(const k in dayMix) if(dayMix[k].p&&dayMix[k].n){mixedDay=1;break;}
+  const dts=[...dayset].map(k=>{const y=Math.floor(k/10000),mo=Math.floor(k/100)%100,da=k%100;return new Date(y,mo,da).getTime();}).sort((a,b)=>a-b);
+  let streak=0,run=0,prev=null; dts.forEach(t=>{ run=(prev!==null&&t-prev===86400000)?run+1:1; prev=t; if(run>streak)streak=run; });
+  let gainMax=0; DB.friends.forEach(f=>{ const g=_pbGainOf(f); if(g>gainMax)gainMax=g; });
+  return {days:dayset.size,people:people.size,logs:all.length,gainMax,totalPos,streak,recon,sameDayMax,
+    mixedDay,rescue:_pbCross(0,0)?1:0,cross100:_pbCross(100,100)?1:0,newHigh:_did("newHighPB")?1:0}; }
+const _LADFAM={
+ days:{ic:"📅",w:1.0,tiers:[2,3,5,7,10,14,18,23,30,40,55,75,100,130,170],lab:d=>`在 ${d} 個不同的日子記錄`},
+ people:{ic:"👥",w:2.2,tiers:[2,3,4,6,8,10,13,16,20,25,30],lab:d=>`記錄了 ${d} 個不同的人`},
+ logs:{ic:"✍️",w:0.5,tiers:[5,15,30,50,80,120,170,230,300,400],lab:d=>`累積記錄 ${d} 筆`},
+ gainMax:{ic:"📈",w:1.4,tiers:[15,30,45,60,80,100,130,160,200,260],lab:d=>`把某人累積養高 +${d}`},
+ totalPos:{ic:"🌡️",w:0.32,tiers:[40,80,130,200,300,420,560,720,900,1100],lab:d=>`累積升溫共 +${d}`},
+ streak:{ic:"💠",w:5,tiers:[2,3,4,5,7,10,14,21],lab:d=>`連續 ${d} 個不同的日子都有記`},
+ recon:{ic:"🕊️",w:9,tiers:[1,2,3,5,7,10],lab:d=>`標記 ${d} 次和好 / 破冰`},
+ sameDayMax:{ic:"⚡",w:8,tiers:[3,5,8],lab:d=>`同一天記滿 ${d} 筆`},
+};
+const _LADBOOL=[
+ {fam:"rescue",ic:"🧊",w:55,d:"把某人從負分救回正分"},
+ {fam:"mixedDay",ic:"⚖️",w:30,d:"同一天內同時有加分和扣分"},
+ {fam:"newHigh",ic:"🏔️",w:42,d:"締造某人的歷史新高溫"},
+ {fam:"cross100",ic:"💯",w:120,d:"親手把某人養破 100"},
 ];
-function _achvDef(id){ return ACHV.find(a=>a.id===id)||FACHV.find(a=>a.id===id); }
+const LADDER=(()=>{ const a=[]; for(const fam in _LADFAM){ const F=_LADFAM[fam]; F.tiers.forEach(t=>a.push({fam,ic:F.ic,need:t,d:F.lab(t),diff:t*F.w})); }
+  _LADBOOL.forEach(b=>a.push({fam:b.fam,ic:b.ic,need:1,d:b.d,diff:b.w})); a.sort((x,y)=>x.diff-y.diff); return a; })();
+function _ladderCount(){ if(_ladderCache!=null)return _ladderCache; const s=_ladderStats(); let n=0; for(const m of LADDER) if((s[m.fam]||0)>=m.need)n++; _ladderCache=n; return n; }
+function _achvDef(id){ return ACHV.find(a=>a.id===id); }
 /* ===== v1.35 外觀系統:外框 / 折線 / 寵物 / 背景(用造型成就 FACHV 解鎖,可預覽、套到某個好友) ===== */
 const FRAMES=[
   {id:"gold",name:"尊爵金框",req:"F1",kind:"glow"},
@@ -2093,6 +2146,12 @@ const FRAMES=[
   {id:"artsnow",name:"雪花",req:"F5",kind:"art"},
   {id:"artstars",name:"星月",req:"F2",kind:"art"},
   {id:"artvine",name:"藤蔓",req:"F9",kind:"art"},
+  {id:"innerglow",name:"燼芯",kind:"design"},
+  {id:"cornerbloom",name:"綻放",kind:"design"},
+  {id:"emberflow",name:"流焰",kind:"ring"},
+  {id:"prisma",name:"流光稜鏡",kind:"ring"},
+  {id:"electric",name:"電流",kind:"ring"},
+  {id:"halo",name:"光暈",kind:"ring"},
 ];
 /* 背景:點進某位好友的詳情時整個畫面的氛圍(CSS,低耗效、不影響閱讀)。friend.bg */
 const BGS=[
@@ -2136,10 +2195,15 @@ const LINES=[
   {id:"midnight",name:"午夜藍",req:"F5",solid:"#5b8def",glow:1,width:3},
   {id:"blossom",name:"櫻粉",req:"F11",solid:"#ff6fae",glow:1},
 ];
+/* v1.40 造型解鎖順序:四類交錯排(框/線/背景/寵物),每類內部由樸素到華麗;s67 不進階梯(用今日運勢彩蛋解) */
+const COSMETIC_ORDER=(()=>{ const arrs=[FRAMES.filter(f=>f.id!=="s67"),LINES,BGS,PETS],ty=["frame","line","bg","pet"],idx=[0,0,0,0],out=[]; let any=true;
+  while(any){ any=false; for(let i=0;i<4;i++){ if(idx[i]<arrs[i].length){ out.push({t:ty[i],id:arrs[i][idx[i]].id}); idx[i]++; any=true; } } } return out; })();
+{ const L={frame:FRAMES,line:LINES,bg:BGS,pet:PETS}; COSMETIC_ORDER.forEach((c,i)=>{ const o=L[c.t].find(x=>x.id===c.id); if(o)o._ord=i; }); }
 function cosmOwned(it){ if(it.req==="fortune67") return (DB.settings._fortuneTaps||0)>=67;
-  return typeof it.req==="number" ? _achvCount()>=it.req : !!(DB.settings.achv&&DB.settings.achv[it.req]); }
+  return typeof it._ord==="number" ? it._ord < _ladderCount() : false; }
 function cosmReqText(it){ if(it.req==="fortune67") return `點「今日運勢」67 次(目前 ${DB.settings._fortuneTaps||0} 次)`;
-  if(typeof it.req==="number") return `解鎖任意 ${it.req} 個成就`; const a=_achvDef(it.req); return a?`造型成就「${a.t}」· ${a.d}`:"隱藏條件"; }
+  if(typeof it._ord!=="number") return "隱藏造型";
+  const need=it._ord+1-_ladderCount(); return need<=0?"已解鎖":`再解鎖 ${need} 個造型成就`; }
 function rewardOwned(r){ return cosmOwned(r); }  /* 舊名相容 */
 /* ===== v1.39 外框:完整包邊頭像框(金屬寶石環 ring + 像素themed 9-slice)===== */
 function _flipH(rows){return rows.map(r=>[...r].reverse().join(""));}
@@ -2221,17 +2285,32 @@ const FRAME_STYLE={
  s67:{type:"ring",band:"conic-gradient(from 0deg,#ffd76a,#ff9d3c,#ff6fae,#c77dff,#ffd76a)",glow:"#ffd76a",gem:"#ffd76a",spin:1,badge:1},
  artsakura:{type:"pix",theme:"sakura"}, artcat:{type:"pix",theme:"cat"}, arthearts:{type:"pix",theme:"hearts"}, artfire:{type:"pix",theme:"fire"},
  artbolt:{type:"pix",theme:"bolt"}, artsnow:{type:"pix",theme:"snow"}, artstars:{type:"pix",theme:"stars"}, artvine:{type:"pix",theme:"vine"},
+ emberflow:{type:"ring",band:"linear-gradient(90deg,#c81810,#ff9d3c,#ffe08a,#ff9d3c,#c81810)",glow:"#ff9d3c",gem:"#ffd76a",flow:1},
+ prisma:{type:"ring",band:"linear-gradient(90deg,#ff5a4a,#ffcf6a,#7ee08a,#5b8def,#c77dff,#ff5a4a)",glow:"#c9d4ff",gem:"#ffffff",flow:1},
+ electric:{type:"ring",base:"#2aa0c8",hi:"#d6f7ff",lo:"#186a90",glow:"#5be0ff",gem:"#d0f4ff",flicker:1},
+ halo:{type:"ring",band:"linear-gradient(90deg,#ffd9ea,#ffb0d4,#ffffff,#ffb0d4,#ffd9ea)",glow:"#ffb0d4",gem:"#ffe0ee",flow:1,pulse:1},
+ innerglow:{type:"design",variant:"glow",base:"#e6b53c",hi:"#fff3c0",lo:"#a9781a",glow:"#ffcf6a",gem:"#ffe08a"},
+ cornerbloom:{type:"design",variant:"bloom",base:"#5fc7a8",hi:"#d6fff0",lo:"#2f8467",glow:"#7ee0c0",gem:"#c9fff0"},
 };
 function ringHTML(s){
   const band=s.band||`linear-gradient(135deg,${s.hi},${s.base} 42%,${s.lo} 74%,${s.base})`;
   const gem=s.gem||s.base,glow=s.glow||s.base;
-  const cls="fov ring"+(s.spin?" spin":"")+(s.pulse?" pulse":"");
+  const cls="fov ring"+(s.spin?" spin":"")+(s.pulse?" pulse":"")+(s.flow?" flow":"")+(s.flicker?" flicker":"");
   let extra=`<b class="gem tl"></b><b class="gem tr"></b><b class="gem bl"></b><b class="gem br"></b>`;
   if(s.crown)extra+=`<span class="crown">${_CROWN}</span>`;
   if(s.badge)extra+=`<span class="fbadge">67</span>`;
   return `<div class="${cls}" style="--band:${band};--gem:${gem};--glow:${glow}">${extra}</div>`;
 }
-function frameCosmHTML(id){const s=FRAME_STYLE[id];if(!s)return"";return s.type==="pix"?pixFrameHTML(s.theme):ringHTML(s);}
+/* 有設計感、稍微延伸進卡片內的框:外圈金屬環 + 內側低調暈染/角落花飾(在文字後面,不擋字) */
+const _BLOOM=`<svg viewBox="0 0 20 20"><g fill="var(--glow)" opacity="0.9"><circle cx="3" cy="3" r="2.4"/><ellipse cx="9" cy="2.4" rx="3.2" ry="1.5"/><ellipse cx="2.4" cy="9" rx="1.5" ry="3.2"/></g></svg>`;
+function designFrameHTML(id,s){
+  const ring=ringHTML(Object.assign({},s,{type:"ring"}));
+  let inner="";
+  if(s.variant==="glow") inner=`<div class="fov-bleed bleed-glow" style="--glow:${s.glow}"></div>`;
+  else if(s.variant==="bloom") inner=`<div class="fov-bleed bleed-corner" style="--glow:${s.glow}"><i class="bc bc-tl">${_BLOOM}</i><i class="bc bc-tr">${_BLOOM}</i><i class="bc bc-bl">${_BLOOM}</i><i class="bc bc-br">${_BLOOM}</i></div>`;
+  return inner+ring;
+}
+function frameCosmHTML(id){const s=FRAME_STYLE[id];if(!s)return"";return s.type==="pix"?pixFrameHTML(s.theme):(s.type==="design"?designFrameHTML(id,s):ringHTML(s));}
 /* ===== v1.38 像素精靈:用 SVG rect 手刻,無 emoji ===== */
 function pixelSVG(rows,pal,cls){ const w=rows[0].length,h=rows.length; let r="";
   for(let y=0;y<h;y++)for(let x=0;x<rows[y].length;x++){ const ch=rows[y][x]; if(ch===" "||ch===".")continue; const col=pal[ch]; if(!col)continue; r+=`<rect x="${x}" y="${y}" width="1.03" height="1.03" fill="${col}"/>`; }
@@ -2303,9 +2382,12 @@ function bgSVG(id){
       const anim=_reduce()?"":`<animateTransform attributeName="transform" attributeType="XML" type="translate" values="0 ${-len*8};0 ${208};" dur="${dur}s" begin="${delay}s" repeatCount="indefinite" additive="sum"/>`;
       s+=`<g transform="translate(${x} 0)"><g transform="translate(0 0)">${col}${anim}</g></g>`;}
   }
+  /* 景深:角落壓暗的暈影 + 近景霧,讓場景更立體 */
+  s+=`<defs><radialGradient id="vig-${id}" cx="0.5" cy="0.4" r="0.82"><stop offset="0.48" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.55"/></radialGradient></defs><rect width="100" height="200" fill="url(#vig-${id})"/>`;
   s+=`</svg>`;
   return s;
 }
+const BG_THEME={neon:"#ff5ea8",sakura:"#ff9ec4",aurora:"#8fe0b0",ember:"#ff9d3c",ocean:"#4fd0e8",night:"#8fa8e8",maya:"#ffcf6a",matrix:"#5be08a"};
 function bgSceneHTML(id){ return `<div class="bgscene">${bgSVG(id)}</div><div class="bgveil"></div>`; }
 /* 折線:回傳 svg 需要的 defs / stroke / class / filter / dash / width */
 function lineRender(id,uid){ const it=LINES.find(x=>x.id===id); if(!it) return null; let defs="",stroke;
@@ -2324,12 +2406,18 @@ function cosmPreviewHTML(it,type){ return type==="frame"?framePreviewHTML(it):(t
 /* 圖鑑:所有外觀 + 解鎖條件 + 預覽 */
 function openGallery(){ renderGallery(); openSheet("gallerySheet"); }
 function _galleryTiles(list,type){ return list.map(it=>{ const own=cosmOwned(it);
-    return `<div class="gtile ${own?'own':'lock'}"><div class="gprev">${cosmPreviewHTML(it,type)}${own?"":`<div class="glockmark">🔒</div>`}</div><div class="gname">${escapeHtml(it.name)}</div><div class="greq">${own?"已解鎖":escapeHtml(cosmReqText(it))}</div></div>`; }).join(""); }
+    return `<div class="gtile ${own?'own':'lock'}"><div class="gprev">${cosmPreviewHTML(it,type)}<div class="gbadge">${own?"✓":"🔒"}</div></div><div class="gname">${escapeHtml(it.name)}</div><div class="greq">${own?"已解鎖":escapeHtml(cosmReqText(it))}</div></div>`; }).join(""); }
 function renderGallery(){ const nf=FRAMES.filter(cosmOwned).length,nl=LINES.filter(cosmOwned).length,np=PETS.filter(cosmOwned).length,nb=BGS.filter(cosmOwned).length;
-  const got=DB.settings.achv||{};
-  const fachvRows=FACHV.map(a=>`<div class="fa-row ${got[a.id]?'got':''}"><div class="fa-ic">${got[a.id]?a.ic:"🔒"}</div><div class="fa-tx"><div class="fa-t">${escapeHtml(a.t)}</div><div class="fa-d">${escapeHtml(a.d)}</div></div></div>`).join("");
-  $("galleryBody").innerHTML=`<div class="hint" style="margin:8px 2px 10px">造型全靠「造型成就」解鎖(下面那些),都是真的有在記錄才拿得到。已解鎖的可長按好友卡片 →「裝扮外觀」套上去(寵物、背景可和外框併用)。</div>
-    <div class="ag-h">造型成就進度 <span>${_fachvCount()}/${FACHV.length}</span></div><div class="fa-list">${fachvRows}</div>
+  const lc=_ownedCosmCount(), total=COSMETIC_ORDER.length;
+  const stats=_ladderStats(); const done=LADDER.filter(m=>(stats[m.fam]||0)>=m.need).length;
+  const upcoming=LADDER.filter(m=>(stats[m.fam]||0)<m.need).slice(0,4);
+  const nextName=(()=>{ const c=COSMETIC_ORDER[lc]; if(!c)return""; const L={frame:FRAMES,line:LINES,bg:BGS,pet:PETS}[c.t]; const o=L&&L.find(x=>x.id===c.id); return o?o.name:""; })();
+  const upRows=upcoming.length?upcoming.map(m=>`<div class="fa-row"><div class="fa-ic">${m.ic}</div><div class="fa-tx"><div class="fa-d">${escapeHtml(m.d)} <span class="fa-prog">${Math.min(stats[m.fam]||0,m.need)}/${m.need}</span></div></div></div>`).join(""):`<div class="fa-row got"><div class="fa-ic">🏆</div><div class="fa-tx"><div class="fa-d">全部里程碑都達成了,造型全開!</div></div></div>`;
+  $("galleryBody").innerHTML=`<div class="hint" style="margin:8px 2px 10px">造型用「進度階梯」解鎖:每達成一個里程碑,就依序解鎖清單裡的下一個造型(一個成就解一個)。都是真的有在記錄才拿得到。已解鎖的可長按好友卡片 →「裝扮外觀」套上去。</div>
+    <div class="ag-h">造型解鎖進度 <span>${lc}/${total}</span></div>
+    <div class="lad-bar"><i style="width:${total?Math.round(lc/total*100):0}%"></i></div>
+    <div class="lad-next">${nextName?`下一個造型:<b>${escapeHtml(nextName)}</b> · 再達成 1 個里程碑`:"造型已全部解鎖 🎉"}</div>
+    <div class="ag-h" style="margin-top:14px">接下來的里程碑 <span>${done} 已達成</span></div><div class="fa-list">${upRows}</div>
     <div class="ag-h" style="margin-top:18px">外框 <span>${nf}/${FRAMES.length}</span></div><div class="gtiles">${_galleryTiles(FRAMES,"frame")}</div>
     <div class="ag-h" style="margin-top:16px">寵物(繞著卡片走) <span>${np}/${PETS.length}</span></div><div class="gtiles">${_galleryTiles(PETS,"pet")}</div>
     <div class="ag-h" style="margin-top:16px">背景(詳情頁氛圍) <span>${nb}/${BGS.length}</span></div><div class="gtiles">${_galleryTiles(BGS,"bg")}</div>
