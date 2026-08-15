@@ -801,10 +801,15 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 
 <script>
 "use strict";
-const VERSION="1.41";
+const VERSION="1.42";
 const KEY="friendship-meter-v1";
 /* 更新紀錄:每次改版就在最前面加一筆(v 由大到小,設定頁「更新紀錄」會照這個順序顯示) */
 const CHANGELOG=[
+  {v:"1.42",date:"2026-08-15",items:[
+    "修好「面板往下滑關不掉」:所有下拉面板(成就、圖鑑、裝扮、資料、回顧、選單…)現在捲到頂往下滑、或按著頂部橫條往下拉,都能關了",
+    "關鍵原因:iOS Safari 的下拉關閉本來用 pointer 事件,它的 preventDefault 擋不住原生回彈捲動,會變成「拉了只是彈一下」;改用 touch 事件重寫手勢就穩了",
+    "抽屜(設定)維持往右滑返回;桌機(無觸控)自動退回原本的滑鼠拖曳",
+  ]},
   {v:"1.41",date:"2026-08-15",items:[
     "這版專心修順手感:拿掉會嚴重掉幀的毛玻璃模糊(遮罩、詳情頁卡片),換成不透明底,滑起來順很多",
     "外框動態改用便宜的做法(只動透明度、不再一直重繪陰影);圖鑑一次幾十個預覽、首頁小圖的折線都改成靜態,不再一起狂動",
@@ -1709,28 +1714,43 @@ function addSheetHeaders(){ document.querySelectorAll(".sheet").forEach(s=>{ if(
   hd.appendChild(x); s.insertBefore(hd,s.firstChild);
 }); }
 
-/* 面板往右滑或(捲到頂時)往下滑都能關閉;離場方向跟著手勢走,背後遮罩同步變化 */
+/* 面板關閉手勢:抽屜往右滑、下拉面板(捲到頂或抓頂部把手時)往下滑都能關。
+   ★用 touch 事件不用 pointer:iOS Safari 的 pointermove preventDefault 擋不住原生回彈捲動,
+     會變成「拉了卻只是彈一下、關不掉」;touch 的 preventDefault 才擋得住。桌機(無觸控)才退回 pointer。 */
+const _HAS_TOUCH=("ontouchstart" in window)||(navigator.maxTouchPoints>0);
+function _sheetGo(sheet,sc,dir){ sheet.style.transition="transform .3s var(--ease)"; sc.style.transition="opacity .3s var(--ease)";
+  sheet.style.transform=(dir==="x"?"translateX(115%)":"translateY(112%)"); sc.style.opacity="0"; sheet.classList.remove("on"); if(openedSheet===sheet.id)openedSheet=null;
+  setTimeout(()=>{ sc.classList.remove("on"); sheet.style.transform="";sheet.style.transition=""; sc.style.opacity="";sc.style.transition=""; },300); }
+function _sheetBack(sheet,sc,dir){ sheet.style.transition="transform .3s var(--ease)"; sc.style.transition="opacity .3s var(--ease)";
+  sheet.style.transform=(dir==="x"?"translateX(0)":"translateY(0)"); sc.style.opacity="1";
+  setTimeout(()=>{ sheet.style.transform="";sheet.style.transition=""; sc.style.opacity="";sc.style.transition=""; },300); }
+function _skipDrag(t){ return !!(t&&t.closest&&t.closest("input,textarea,.thermo-face,.seg,.pillseg,.signseg,.sheet-x")); }
 function bindSheetDrag(){ const sc=$("scrim"); document.querySelectorAll(".sheet").forEach(sheet=>{ if(sheet._sd)return; sheet._sd=true;
   const isDrawer=sheet.classList.contains("drawer");
-  let sx=0,sy=0,dx=0,dy=0,active=false,decided=false,dir="",onHandle=false;
-  sheet.addEventListener("pointerdown",e=>{ if(e.target.closest("input,textarea,.thermo-face,.seg,.pillseg,.signseg,.sheet-x"))return;
-    onHandle=!!e.target.closest(".sheet-hd");
-    sx=e.clientX;sy=e.clientY;dx=0;dy=0;active=true;decided=false;dir=""; });
-  sheet.addEventListener("pointermove",e=>{ if(!active)return; const mx=e.clientX-sx,my=e.clientY-sy;
-    if(!decided){ if(Math.abs(mx)<8&&Math.abs(my)<8)return; decided=true;
-      if(Math.abs(mx)>Math.abs(my)){ if(mx>0)dir="x"; } else if(!isDrawer&&my>0&&(onHandle||sheet.scrollTop<=0)){ dir="y"; }
-      if(!dir){ active=false; return; } sheet.style.transition="none"; sc.style.transition="none"; try{sheet.setPointerCapture(e.pointerId);}catch(_){} }
+  let sx=0,sy=0,dx=0,dy=0,active=false,dir="",onHandle=false;
+  const decide=(mx,my)=>{ if(Math.abs(mx)<7&&Math.abs(my)<7)return"";
+    if(Math.abs(mx)>Math.abs(my)){ return mx>0?"x":"skip"; }
+    if(!isDrawer&&my>0&&(onHandle||sheet.scrollTop<=0)) return "y";
+    return "skip"; };
+  const move=(cx,cy,prevent)=>{ if(!active)return; const mx=cx-sx,my=cy-sy;
+    if(!dir){ const d=decide(mx,my); if(!d)return; if(d==="skip"){ active=false; return; } dir=d; sheet.style.transition="none"; sc.style.transition="none"; }
+    prevent&&prevent();
     let prog;
-    if(dir==="x"){ dx=Math.max(0,e.clientX-sx); sheet.style.transform=`translateX(${dx}px)`; prog=Math.min(1,dx/(sheet.offsetWidth||320)); }
-    else { dy=Math.max(0,e.clientY-sy); sheet.style.transform=`translateY(${dy}px)`; prog=Math.min(1,dy/(sheet.offsetHeight||480)); }
-    sc.style.opacity=(1-prog).toFixed(3); e.preventDefault(); },{passive:false});
-  const end=()=>{ if(!active||!dir){ active=false; return; } active=false; sheet.style.transition="transform .3s var(--ease)"; sc.style.transition="opacity .3s var(--ease)";
-    const go=(dir==="x"?dx>75:dy>90);
-    if(go){ sheet.style.transform=(dir==="x"?"translateX(115%)":"translateY(112%)"); sc.style.opacity="0"; sheet.classList.remove("on"); openedSheet=null;
-      setTimeout(()=>{ sc.classList.remove("on"); sheet.style.transform="";sheet.style.transition=""; sc.style.opacity="";sc.style.transition=""; },300); }
-    else { sheet.style.transform=(dir==="x"?"translateX(0)":"translateY(0)"); sc.style.opacity="1";
-      setTimeout(()=>{ sheet.style.transform="";sheet.style.transition=""; sc.style.opacity="";sc.style.transition=""; },300); } };
-  sheet.addEventListener("pointerup",end); sheet.addEventListener("pointercancel",end);
+    if(dir==="x"){ dx=Math.max(0,mx); sheet.style.transform=`translateX(${dx}px)`; prog=Math.min(1,dx/(sheet.offsetWidth||320)); }
+    else { dy=Math.max(0,my); sheet.style.transform=`translateY(${dy}px)`; prog=Math.min(1,dy/(sheet.offsetHeight||480)); }
+    sc.style.opacity=(1-prog).toFixed(3); };
+  const end=()=>{ if(!active||!dir){ active=false; dir=""; return; } active=false; const d=dir; dir="";
+    if(d==="x"?dx>70:dy>84) _sheetGo(sheet,sc,d); else _sheetBack(sheet,sc,d); };
+  if(_HAS_TOUCH){
+    sheet.addEventListener("touchstart",e=>{ if(e.touches.length!==1||_skipDrag(e.target)){active=false;return;}
+      onHandle=!!(e.target.closest&&e.target.closest(".sheet-hd")); const t=e.touches[0]; sx=t.clientX;sy=t.clientY;dx=0;dy=0;active=true;dir=""; },{passive:true});
+    sheet.addEventListener("touchmove",e=>{ if(!active)return; const t=e.touches[0]; move(t.clientX,t.clientY,()=>{ if(e.cancelable)e.preventDefault(); }); },{passive:false});
+    sheet.addEventListener("touchend",end); sheet.addEventListener("touchcancel",end);
+  } else {
+    sheet.addEventListener("pointerdown",e=>{ if(_skipDrag(e.target))return; onHandle=!!e.target.closest(".sheet-hd"); sx=e.clientX;sy=e.clientY;dx=0;dy=0;active=true;dir=""; try{sheet.setPointerCapture(e.pointerId);}catch(_){} });
+    sheet.addEventListener("pointermove",e=>{ if(!active)return; move(e.clientX,e.clientY,()=>{ if(e.cancelable)e.preventDefault(); }); },{passive:false});
+    sheet.addEventListener("pointerup",end); sheet.addEventListener("pointercancel",end);
+  }
 }); }
 
 /* 首頁往左滑 → 打開設定;抽屜跟著手指走(滑一半露一半),放開再決定開/關 */
