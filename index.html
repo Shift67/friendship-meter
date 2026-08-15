@@ -151,7 +151,7 @@ html[data-theme="light"] .reminder{border-color:#e9c98a;background:#fdf3df;}
 .btn.danger{background:var(--danger);color:#fff;border:none;}
 .btn.small{flex:0 0 auto;padding:15px 20px;}
 
-.scrim{position:fixed;inset:0;z-index:40;background:rgba(8,5,2,.55);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .28s var(--ease);}
+.scrim{position:fixed;inset:0;z-index:40;background:rgba(8,5,2,.66);opacity:0;pointer-events:none;transition:opacity .28s var(--ease);}
 html[data-theme="light"] .scrim{background:rgba(60,40,20,.28);}
 .scrim.on{opacity:1;pointer-events:auto;}
 .sheet{position:fixed;left:0;right:0;bottom:0;z-index:50;background:var(--canvas-2);border-top:1px solid var(--hair);border-radius:26px 26px 0 0;transform:translateY(102%);transition:transform .42s var(--ease);max-height:calc(100dvh - env(safe-area-inset-top) - 16px);overflow-y:auto;overscroll-behavior:contain;padding:0 22px calc(26px + env(safe-area-inset-bottom));box-shadow:0 -20px 60px rgba(0,0,0,.5);}
@@ -159,14 +159,16 @@ html[data-theme="light"] .scrim{background:rgba(60,40,20,.28);}
 .sheet.drawer{left:0;right:0;top:0;bottom:0;width:100%;height:100dvh;max-height:none;border-radius:0;border-top:none;transform:translateX(100%);touch-action:pan-y;}
 .sheet.drawer.on{transform:translateX(0);}
 .sheet.drawer.on .stagger>*{animation:none;}  /* 抽屜不跑逐項淡入,避免滑到全開時內容再閃一次 */
-.sheet.drawer .sheet-hd{padding-top:calc(env(safe-area-inset-top) + 11px);}
-.sheet.drawer .sheet-x{top:calc(env(safe-area-inset-top) + 9px);}
+.sheet.drawer .sheet-hd{padding-top:calc(env(safe-area-inset-top) + 12px);}
+.sheet.drawer .sheet-x{top:calc(env(safe-area-inset-top) + 12px);transform:none;}
+.sheet.drawer .sheet-x:active{transform:scale(.9);}
 .grabber{display:none;}  /* 由 .sheet-hd 內的把手取代 */
-.sheet-hd{position:sticky;top:0;z-index:6;background:var(--canvas-2);margin:0 -22px 12px;padding:11px 22px 11px;display:flex;align-items:center;justify-content:center;}
+.sheet-hd{position:sticky;top:0;z-index:6;background:var(--canvas-2);margin:0 -22px 10px;padding:12px 22px 11px;min-height:42px;display:flex;align-items:center;justify-content:center;touch-action:none;}
 .sheet-hd::after{content:"";position:absolute;left:0;right:0;top:100%;height:14px;background:linear-gradient(var(--canvas-2),transparent);pointer-events:none;}
 .sheet-hd .grab2{width:40px;height:5px;border-radius:3px;background:var(--hair);}
-.sheet-x{position:absolute;right:13px;top:9px;width:33px;height:33px;border-radius:50%;background:var(--surface-hi);border:1px solid var(--hair);color:var(--ink-2);font-family:var(--sans);font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center;transition:transform .15s var(--spring),background .2s;}
-.sheet-x:active{background:var(--hair);transform:scale(.9);}
+/* 關閉鈕:整顆置中在把手列裡、不被圓角或內容切到;不透明底 + 陰影,永遠是完整一顆圓 */
+.sheet-x{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:31px;height:31px;border-radius:50%;background:var(--surface-hi);border:1px solid var(--hair);box-shadow:0 2px 7px rgba(0,0,0,.4);color:var(--ink-2);font-family:var(--sans);font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center;transition:transform .15s var(--spring),background .2s;}
+.sheet-x:active{background:var(--hair);transform:translateY(-50%) scale(.9);}
 .sheet h2{font-family:var(--disp);font-size:22px;margin:0 0 4px;font-weight:700;letter-spacing:-0.02em;}
 .sheet.on .stagger>*{animation:sIn .5s var(--ease) both;}
 @keyframes sIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
@@ -411,32 +413,29 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 .fov.ring{inset:-3px;border-radius:21px;filter:drop-shadow(0 0 5px var(--glow));}
 .fov.ring::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:3.5px;background:var(--band);
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;}
-.fov.ring::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:3.5px;
-  background:linear-gradient(120deg,transparent 42%,rgba(255,255,255,.6) 50%,transparent 58%);background-size:260% 260%;
-  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:glint 5s ease-in-out infinite;}
-@keyframes glint{0%{background-position:130% 0;}55%,100%{background-position:-45% 0;}}
-.grid .fov.ring::after{animation:none;opacity:0;}   /* 首頁多卡片時關掉反光掃動,省效能 */
-.fov.ring.spin::before{animation:hueSpin 4.5s linear infinite;}
+.fov.ring.spin::before{animation:hueSpin 5s linear infinite;}
 @keyframes hueSpin{to{filter:hue-rotate(360deg);}}
-.fov.ring.pulse{animation:fovPulse 2.4s ease-in-out infinite;}
-@keyframes fovPulse{0%,100%{filter:drop-shadow(0 0 4px var(--glow));}50%{filter:drop-shadow(0 0 13px var(--glow));}}
+/* 動態款一律用 opacity(合成層、便宜、不重繪),不再動 filter/drop-shadow */
+.fov.ring.pulse{animation:fovPulse 2.6s ease-in-out infinite;}
+@keyframes fovPulse{0%,100%{opacity:.72;}50%{opacity:1;}}
+.fov.ring.flicker{animation:fovFlicker 2.6s ease-in-out infinite;}
+@keyframes fovFlicker{0%,100%{opacity:1;}42%{opacity:.6;}48%{opacity:1;}55%{opacity:.48;}62%{opacity:.9;}}
+.fov.ring.flow::before{background-size:220% 100%;animation:bandFlow 4.6s linear infinite;}
+@keyframes bandFlow{to{background-position:220% 0;}}
 .fov .gem{position:absolute;width:8px;height:8px;transform:rotate(45deg);border-radius:1.5px;z-index:2;
   background:linear-gradient(135deg,#fff,var(--gem) 52%,color-mix(in srgb,var(--gem) 50%,#000));box-shadow:0 0 5px var(--glow);}
 .fov .gem.tl{top:-1.5px;left:-1.5px;}.fov .gem.tr{top:-1.5px;right:-1.5px;}.fov .gem.bl{bottom:-1.5px;left:-1.5px;}.fov .gem.br{bottom:-1.5px;right:-1.5px;}
 .fov .crown{position:absolute;top:-13px;left:50%;transform:translateX(-50%);z-index:3;line-height:0;filter:drop-shadow(0 1px 2px rgba(0,0,0,.55));}
 .fov .fbadge{position:absolute;top:3px;right:8px;font-family:var(--mono);font-weight:800;font-size:11px;color:var(--gem);z-index:3;text-shadow:0 1px 2px rgba(0,0,0,.5);}
-/* 動態款:流動漸層 / 電流閃爍 */
-.fov.ring.flow::before{background-size:220% 100%;animation:bandFlow 4.2s linear infinite;}
-@keyframes bandFlow{to{background-position:220% 0;}}
-.fov.ring.flicker{animation:fovFlicker 2.4s ease-in-out infinite;}
-@keyframes fovFlicker{0%,100%{filter:drop-shadow(0 0 4px var(--glow));}42%{filter:drop-shadow(0 0 11px var(--glow));}48%{filter:drop-shadow(0 0 2px var(--glow));}54%{filter:drop-shadow(0 0 13px var(--glow));}62%{filter:drop-shadow(0 0 5px var(--glow));}}
+/* 圖鑑/裝扮預覽 + 首頁小圖:折線/外框一律靜態(不然一次幾十個都在動會很卡;造型樣式本身還是看得到) */
+.fprev .fov.ring,.fprev .fov.ring::before,.lprev .chart-line,.gmini .chart-line{animation:none!important;}
 /* 有設計感、延伸進卡片內的框:內側暈染 / 角落花飾(在文字後面,z-index:0) */
 .fov-bleed{position:absolute;inset:0;border-radius:18px;pointer-events:none;z-index:0;overflow:hidden;}
 .bleed-glow{background:radial-gradient(130% 78% at 50% 122%,color-mix(in srgb,var(--glow) 42%,transparent),transparent 62%);}
 .bleed-corner .bc{position:absolute;width:22px;height:22px;opacity:.5;}
 .bleed-corner .bc svg{width:100%;height:100%;display:block;}
 .bleed-corner .bc-tl{top:2px;left:2px;}.bleed-corner .bc-tr{top:2px;right:2px;transform:scaleX(-1);}.bleed-corner .bc-bl{bottom:2px;left:2px;transform:scaleY(-1);}.bleed-corner .bc-br{bottom:2px;right:2px;transform:scale(-1,-1);}
-@media (prefers-reduced-motion:reduce){.fov.ring::after,.fov.ring.spin::before,.fov.ring.pulse,.fov.ring.flow::before,.fov.ring.flicker{animation:none;}}
+@media (prefers-reduced-motion:reduce){.fov.ring.spin::before,.fov.ring.pulse,.fov.ring.flow::before,.fov.ring.flicker{animation:none;}}
 /* 寵物:沿方框內側走 + 拖一條彩色尾巴,和外框可併用,卡片維持 overflow:hidden(不外溢) */
 .pet-track{position:absolute;inset:9px;pointer-events:none;z-index:6;}
 .pet-track .pet,.pet-track .ptrail{position:absolute;top:0;left:0;transform:translate(-50%,-50%);animation:petPath 5.5s linear infinite;}
@@ -521,11 +520,10 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 .bgscene .twk{animation:bgTwk 3.6s ease-in-out infinite;}
 @keyframes bgTwk{0%,100%{opacity:.28;}50%{opacity:.95;}}
 /* v1.40 詳情頁沉浸:套背景時卡片變毛玻璃(透出場景)、標題用場景配色;首頁與全域不受影響 */
-#detailView.immersive .chart-wrap{background:color-mix(in srgb,var(--surface) 68%,transparent);border-color:color-mix(in srgb,var(--bgac) 34%,var(--hair));-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);box-shadow:0 6px 28px -14px #000;}
+#detailView.immersive .chart-wrap{background:color-mix(in srgb,var(--surface) 88%,transparent);border-color:color-mix(in srgb,var(--bgac) 34%,var(--hair));box-shadow:0 6px 28px -14px #000;}
 #detailView.immersive .section-t{color:color-mix(in srgb,var(--bgac) 62%,var(--ink-2));}
 #detailView.immersive .d-sub{color:color-mix(in srgb,var(--bgac) 32%,var(--ink-2));}
 #detailView.immersive .log-item{border-bottom-color:color-mix(in srgb,var(--bgac) 22%,var(--hair-soft));}
-#detailView.immersive .chips .chip,#detailView.immersive .seg{-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);}
 /* v1.34 回顧變化排行 */
 .rk-list{margin-top:4px;}
 .rk-row{display:flex;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px solid var(--hair-soft);}
@@ -803,10 +801,17 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 
 <script>
 "use strict";
-const VERSION="1.40";
+const VERSION="1.41";
 const KEY="friendship-meter-v1";
 /* 更新紀錄:每次改版就在最前面加一筆(v 由大到小,設定頁「更新紀錄」會照這個順序顯示) */
 const CHANGELOG=[
+  {v:"1.41",date:"2026-08-15",items:[
+    "這版專心修順手感:拿掉會嚴重掉幀的毛玻璃模糊(遮罩、詳情頁卡片),換成不透明底,滑起來順很多",
+    "外框動態改用便宜的做法(只動透明度、不再一直重繪陰影);圖鑑一次幾十個預覽、首頁小圖的折線都改成靜態,不再一起狂動",
+    "背景動畫的粒子數量砍半,詳情頁不再卡",
+    "修好關閉鈕(右上角叉叉)被切一半的問題:改成置中在頂部橫條裡、不透明底加陰影,永遠是完整一顆",
+    "面板可以按著頂部橫條直接往下拉關閉了(就算已經捲到中間也可以)",
+  ]},
   {v:"1.40",date:"2026-08-14",items:[
     "造型解鎖大改成「進度階梯」:一個成就只解一個造型,依序一個一個開,不再一次解一堆",
     "成就由易到難排成一長串,都是真的有在記錄才拿得到(不同日子、養高某人、破冰回正、締造新高、連續記錄…)",
@@ -1707,12 +1712,13 @@ function addSheetHeaders(){ document.querySelectorAll(".sheet").forEach(s=>{ if(
 /* 面板往右滑或(捲到頂時)往下滑都能關閉;離場方向跟著手勢走,背後遮罩同步變化 */
 function bindSheetDrag(){ const sc=$("scrim"); document.querySelectorAll(".sheet").forEach(sheet=>{ if(sheet._sd)return; sheet._sd=true;
   const isDrawer=sheet.classList.contains("drawer");
-  let sx=0,sy=0,dx=0,dy=0,active=false,decided=false,dir="";
-  sheet.addEventListener("pointerdown",e=>{ if(e.target.closest("input,textarea,.thermo-face,.seg,.pillseg,.signseg"))return;
+  let sx=0,sy=0,dx=0,dy=0,active=false,decided=false,dir="",onHandle=false;
+  sheet.addEventListener("pointerdown",e=>{ if(e.target.closest("input,textarea,.thermo-face,.seg,.pillseg,.signseg,.sheet-x"))return;
+    onHandle=!!e.target.closest(".sheet-hd");
     sx=e.clientX;sy=e.clientY;dx=0;dy=0;active=true;decided=false;dir=""; });
   sheet.addEventListener("pointermove",e=>{ if(!active)return; const mx=e.clientX-sx,my=e.clientY-sy;
     if(!decided){ if(Math.abs(mx)<8&&Math.abs(my)<8)return; decided=true;
-      if(Math.abs(mx)>Math.abs(my)){ if(mx>0)dir="x"; } else if(!isDrawer&&my>0&&sheet.scrollTop<=0){ dir="y"; }
+      if(Math.abs(mx)>Math.abs(my)){ if(mx>0)dir="x"; } else if(!isDrawer&&my>0&&(onHandle||sheet.scrollTop<=0)){ dir="y"; }
       if(!dir){ active=false; return; } sheet.style.transition="none"; sc.style.transition="none"; try{sheet.setPointerCapture(e.pointerId);}catch(_){} }
     let prog;
     if(dir==="x"){ dx=Math.max(0,e.clientX-sx); sheet.style.transform=`translateX(${dx}px)`; prog=Math.min(1,dx/(sheet.offsetWidth||320)); }
@@ -2328,36 +2334,38 @@ function petHTML(petId){ const p=PETS.find(x=>x.id===petId&&cosmOwned(x)); if(!p
 /* ===== v1.39 詳情背景:完整像素風場景(內嵌 SVG;無外部圖檔)===== */
 function _rng(seed){let a=seed>>>0;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
 /* 一顆會平移循環的粒子(additive:sum 才不會蓋掉基準位置);_reduce 時不動 */
-function _drift(x,y,w,h,fill,op,dx,dy,dur,delay){const a=_reduce()?"":`<animateTransform attributeName="transform" attributeType="XML" type="translate" values="0 0;${dx} ${dy}" dur="${dur}s" begin="${delay}s" repeatCount="indefinite" additive="sum"/>`;return `<g transform="translate(${x} ${y})"><rect width="${w}" height="${h}" fill="${fill}" opacity="${op}"/>${a}</g>`;}
-function _bob(vals,dur,begin){return _reduce()?"":`<animateTransform attributeName="transform" attributeType="XML" type="translate" values="${vals}" dur="${dur}s"${begin!=null?` begin="${begin}s"`:""} repeatCount="indefinite" additive="sum"/>`;}
+let _bgStill=false;   /* 預覽用:靜態,不放動畫(圖鑑一次幾十個預覽,全在動會卡) */
+function _drift(x,y,w,h,fill,op,dx,dy,dur,delay){const a=(_reduce()||_bgStill)?"":`<animateTransform attributeName="transform" attributeType="XML" type="translate" values="0 0;${dx} ${dy}" dur="${dur}s" begin="${delay}s" repeatCount="indefinite" additive="sum"/>`;return `<g transform="translate(${x} ${y})"><rect width="${w}" height="${h}" fill="${fill}" opacity="${op}"/>${a}</g>`;}
+function _bob(vals,dur,begin){return (_reduce()||_bgStill)?"":`<animateTransform attributeName="transform" attributeType="XML" type="translate" values="${vals}" dur="${dur}s"${begin!=null?` begin="${begin}s"`:""} repeatCount="indefinite" additive="sum"/>`;}
 function bgSVG(id){
   const R=_rng((id.charCodeAt(0)*131+id.charCodeAt(1)*17+id.length*7)>>>0);
+  const twk=_bgStill?"":"twk";
   let s=`<svg viewBox="0 0 100 200" preserveAspectRatio="xMidYMid slice" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">`;
   if(id==="night"){
     s+=`<defs><linearGradient id="ng" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0a0c1c"/><stop offset="1" stop-color="#181d38"/></linearGradient></defs><rect width="100" height="200" fill="url(#ng)"/>`;
-    for(let i=0;i<62;i++){const x=Math.floor(R()*100),y=Math.floor(R()*150),z=R()<.18?2:1;s+=`<rect class="twk" x="${x}" y="${y}" width="${z}" height="${z}" fill="#fff" opacity="${(.4+R()*.6).toFixed(2)}" style="animation-delay:${(R()*3).toFixed(2)}s"/>`;}
+    for(let i=0;i<34;i++){const x=Math.floor(R()*100),y=Math.floor(R()*150),z=R()<.18?2:1;s+=`<rect class="${twk}" x="${x}" y="${y}" width="${z}" height="${z}" fill="#fff" opacity="${(.4+R()*.6).toFixed(2)}" style="animation-delay:${(R()*3).toFixed(2)}s"/>`;}
     s+=`<circle cx="74" cy="36" r="15" fill="#f2ecc8"/><circle cx="80" cy="31" r="13" fill="#0d1126"/><circle cx="68" cy="41" r="2" fill="#d9d2ac"/><circle cx="71" cy="45" r="1.4" fill="#d9d2ac"/>`;
     s+=`<path d="M0 200 L0 150 L20 120 L38 148 L55 118 L75 150 L100 128 L100 200 Z" fill="#0c1024"/><path d="M0 200 L0 168 L28 140 L50 166 L70 142 L100 170 L100 200 Z" fill="#151a30"/>`;
   } else if(id==="ocean"){
     s+=`<defs><linearGradient id="og" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0b2740"/><stop offset=".55" stop-color="#08131f"/><stop offset="1" stop-color="#04101a"/></linearGradient></defs><rect width="100" height="200" fill="url(#og)"/>`;
     s+=`<g opacity=".14"><polygon points="30,0 40,0 20,200 0,200" fill="#7fe0ff"/><polygon points="60,0 72,0 62,200 44,200" fill="#7fe0ff"/></g>`;
-    for(let i=0;i<22;i++){const x=Math.floor(R()*100),y=Math.floor(R()*200),z=R()<.3?3:2;s+=_drift(x,y,z,z,"#bfefff",(.25+R()*.4).toFixed(2),0,-230,(6+R()*6).toFixed(1),(-R()*8).toFixed(1));}
+    for(let i=0;i<12;i++){const x=Math.floor(R()*100),y=Math.floor(R()*200),z=R()<.3?3:2;s+=_drift(x,y,z,z,"#bfefff",(.25+R()*.4).toFixed(2),0,-230,(6+R()*6).toFixed(1),(-R()*8).toFixed(1));}
     s+=`<g fill="#0a2a20">${`<path d="M14 200 Q10 175 16 150 Q22 130 16 110 L20 110 Q26 132 20 152 Q15 176 20 200 Z"/>`+_bob("0 0;5 0;0 0",6)}</g>`;
     s+=`<g fill="#0a2a20">${`<path d="M80 200 Q76 178 82 158 Q88 140 82 122 L86 122 Q92 142 86 160 Q81 180 86 200 Z"/>`+_bob("0 0;-5 0;0 0",7,-2)}</g>`;
     s+=`<path d="M0 200 L0 188 L18 182 L40 190 L64 180 L86 188 L100 182 L100 200 Z" fill="#04121c"/>`;
   } else if(id==="ember"){
     s+=`<defs><linearGradient id="eg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#140f0a"/><stop offset=".6" stop-color="#20130b"/><stop offset="1" stop-color="#3a1a0a"/></linearGradient><radialGradient id="egl" cx=".5" cy="1" r=".7"><stop offset="0" stop-color="#ff7a1e" stop-opacity=".55"/><stop offset="1" stop-color="#ff7a1e" stop-opacity="0"/></radialGradient></defs><rect width="100" height="200" fill="url(#eg)"/><rect x="0" y="120" width="100" height="80" fill="url(#egl)"/>`;
-    for(let i=0;i<26;i++){const x=Math.floor(R()*100),y=Math.floor(80+R()*120),z=R()<.3?2:1,cc=R()<.5?"#ffb347":"#ff7a1e";s+=_drift(x,y,z,z,cc,(.4+R()*.5).toFixed(2),0,-200,(4+R()*5).toFixed(1),(-R()*6).toFixed(1));}
+    for(let i=0;i<15;i++){const x=Math.floor(R()*100),y=Math.floor(80+R()*120),z=R()<.3?2:1,cc=R()<.5?"#ffb347":"#ff7a1e";s+=_drift(x,y,z,z,cc,(.4+R()*.5).toFixed(2),0,-200,(4+R()*5).toFixed(1),(-R()*6).toFixed(1));}
     s+=`<path d="M0 200 L0 178 L30 170 L60 176 L100 168 L100 200 Z" fill="#180d07"/><g fill="#2a1509"><rect x="40" y="182" width="20" height="4"/><rect x="44" y="178" width="12" height="4" transform="rotate(-12 50 180)"/></g>`;
   } else if(id==="sakura"){
     s+=`<defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#241426"/><stop offset=".6" stop-color="#301a2c"/><stop offset="1" stop-color="#1a0f1a"/></linearGradient></defs><rect width="100" height="200" fill="url(#sg)"/>`;
     s+=`<circle cx="72" cy="40" r="16" fill="#ffb9d6" opacity=".5"/><circle cx="72" cy="40" r="11" fill="#ffcfe0"/>`;
     s+=`<g fill="#2a1720"><path d="M0 200 L0 150 Q6 140 4 120 Q2 100 12 88 L16 90 Q8 102 10 122 Q12 142 8 152 L8 200 Z"/></g>`;
     s+=`<g fill="#5a2a44" opacity=".82"><circle cx="14" cy="78" r="16"/><circle cx="30" cy="70" r="14"/><circle cx="42" cy="84" r="12"/><circle cx="24" cy="92" r="13"/></g><g fill="#7a3a5a" opacity=".55"><circle cx="20" cy="74" r="9"/><circle cx="36" cy="80" r="8"/></g>`;
-    for(let i=0;i<22;i++){const x=Math.floor(R()*100),y=Math.floor(R()*200);s+=_drift(x,y,2,2,"#ff9ec4",.8,4,230,(6+R()*5).toFixed(1),(-R()*8).toFixed(1));}
+    for(let i=0;i<12;i++){const x=Math.floor(R()*100),y=Math.floor(R()*200);s+=_drift(x,y,2,2,"#ff9ec4",.8,4,230,(6+R()*5).toFixed(1),(-R()*8).toFixed(1));}
   } else if(id==="aurora"){
     s+=`<defs><linearGradient id="ag" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#061018"/><stop offset="1" stop-color="#0a1a16"/></linearGradient><linearGradient id="aur1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7ee08a" stop-opacity="0"/><stop offset=".5" stop-color="#7ee08a" stop-opacity=".5"/><stop offset="1" stop-color="#5b8def" stop-opacity="0"/></linearGradient><linearGradient id="aur2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c77dff" stop-opacity="0"/><stop offset=".5" stop-color="#c77dff" stop-opacity=".4"/><stop offset="1" stop-color="#5b8def" stop-opacity="0"/></linearGradient></defs><rect width="100" height="200" fill="url(#ag)"/>`;
-    for(let i=0;i<36;i++){const x=Math.floor(R()*100),y=Math.floor(R()*120);s+=`<rect class="twk" x="${x}" y="${y}" width="1" height="1" fill="#dfeaff" opacity="${(.4+R()*.5).toFixed(2)}" style="animation-delay:${(R()*3).toFixed(2)}s"/>`;}
+    for(let i=0;i<20;i++){const x=Math.floor(R()*100),y=Math.floor(R()*120);s+=`<rect class="${twk}" x="${x}" y="${y}" width="1" height="1" fill="#dfeaff" opacity="${(.4+R()*.5).toFixed(2)}" style="animation-delay:${(R()*3).toFixed(2)}s"/>`;}
     s+=`<g><path d="M-10 20 Q30 60 50 30 Q70 5 110 35 L110 90 Q70 60 50 85 Q30 110 -10 75 Z" fill="url(#aur1)" opacity=".8"/>${_bob("0 0;6 0;0 0",9)}</g>`;
     s+=`<g><path d="M-10 45 Q35 85 55 55 Q80 25 110 60 L110 110 Q80 80 55 105 Q30 130 -10 95 Z" fill="url(#aur2)" opacity=".7"/>${_bob("0 0;-7 0;0 0",11,-3)}</g>`;
     s+=`<path d="M0 200 L0 165 L26 138 L48 164 L70 140 L100 168 L100 200 Z" fill="#08120e"/>`;
@@ -2370,16 +2378,16 @@ function bgSVG(id){
     s+=`<g>${g}</g>`;
   } else if(id==="maya"){
     s+=`<defs><linearGradient id="mg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a1e0a"/><stop offset=".4" stop-color="#5a2e0e"/><stop offset=".6" stop-color="#2a1608"/><stop offset="1" stop-color="#160c05"/></linearGradient></defs><rect width="100" height="200" fill="url(#mg)"/>`;
-    s+=`<circle class="twk" cx="50" cy="52" r="20" fill="#ffb347" opacity=".35" style="animation-duration:5s"/><circle cx="50" cy="52" r="13" fill="#ffcf6a"/>`;
+    s+=`<circle class="${twk}" cx="50" cy="52" r="20" fill="#ffb347" opacity=".35" style="animation-duration:5s"/><circle cx="50" cy="52" r="13" fill="#ffcf6a"/>`;
     let band="";for(let i=0;i<12;i++){const x=i*9;band+=`<path d="M${x} 8 L${x+4} 4 L${x+8} 8 L${x+4} 12 Z" fill="#e0b45a" opacity=".5"/>`;}
     s+=`<g>${band}</g><g fill="#1c0f06"><path d="M20 200 L34 96 L66 96 L80 200 Z"/></g><g fill="#0f0803">`;
     for(let i=0;i<7;i++){const w=32-i*3,x=(50-w/2).toFixed(0),y=96+i*14;s+=`<rect x="${x}" y="${y}" width="${w}" height="4"/>`;}
     s+=`</g><rect x="46" y="150" width="8" height="50" fill="#3a1e0a"/>`;
   } else if(id==="matrix"){
-    s+=`<rect width="100" height="200" fill="#04100a"/>`;const nc=17;
+    s+=`<rect width="100" height="200" fill="#04100a"/>`;const nc=12;
     for(let c=0;c<nc;c++){const x=(c*(100/nc)).toFixed(1),len=6+Math.floor(R()*9),dur=(3.5+R()*4).toFixed(1),delay=(-R()*8).toFixed(1);
-      let col="";for(let k=0;k<len;k++){const op=(k/len*.75+.12).toFixed(2),lead=k===len-1;col+=`<rect${lead?' class="twk"':''} x="0" y="${k*8}" width="4" height="6" fill="${lead?"#d6ffe0":"#39d353"}" opacity="${lead?1:op}"/>`;}
-      const anim=_reduce()?"":`<animateTransform attributeName="transform" attributeType="XML" type="translate" values="0 ${-len*8};0 ${208};" dur="${dur}s" begin="${delay}s" repeatCount="indefinite" additive="sum"/>`;
+      let col="";for(let k=0;k<len;k++){const op=(k/len*.75+.12).toFixed(2),lead=k===len-1;col+=`<rect${lead?' class="'+twk+'"':''} x="0" y="${k*8}" width="4" height="6" fill="${lead?"#d6ffe0":"#39d353"}" opacity="${lead?1:op}"/>`;}
+      const anim=(_reduce()||_bgStill)?"":`<animateTransform attributeName="transform" attributeType="XML" type="translate" values="0 ${-len*8};0 ${208};" dur="${dur}s" begin="${delay}s" repeatCount="indefinite" additive="sum"/>`;
       s+=`<g transform="translate(${x} 0)"><g transform="translate(0 0)">${col}${anim}</g></g>`;}
   }
   /* 景深:角落壓暗的暈影 + 近景霧,讓場景更立體 */
@@ -2401,7 +2409,7 @@ function lineRender(id,uid){ const it=LINES.find(x=>x.id===id); if(!it) return n
 function framePreviewHTML(fr){ return `<div class="fprev hasframe" style="--c:${colorForScore(85)}">${frameCosmHTML(fr.id)}<span class="fprev-n">88</span></div>`; }
 function petPreviewHTML(p){ return `<div class="fprev" style="--c:${colorForScore(70)}"><div class="pet-track" style="--tc:${p.tc}"><i class="ptrail ptrail-1"></i><i class="ptrail ptrail-2"></i><i class="ptrail ptrail-3"></i><span class="pet">${_petSpr(p)}</span></div><span class="fprev-n">88</span></div>`; }
 function linePreviewHTML(ln){ const lr=lineRender(ln.id,"pv-"+ln.id); return `<svg class="lprev" viewBox="0 0 122 34"><defs>${lr.defs}</defs><path class="${lr.cls}" d="M5 25 C 38 6, 74 30, 117 9" fill="none" stroke="${lr.stroke}" stroke-width="${lr.width}" stroke-linecap="round" stroke-linejoin="round" ${lr.dash?`stroke-dasharray="${lr.dash}"`:""} filter="${lr.filter}"/></svg>`; }
-function bgPreviewHTML(bg){ return `<div class="fprev bgprev">${bgSceneHTML(bg.id)}<span class="fprev-n" style="color:#fff;opacity:.9;position:relative;z-index:2">88</span></div>`; }
+function bgPreviewHTML(bg){ _bgStill=true; const scene=bgSceneHTML(bg.id); _bgStill=false; return `<div class="fprev bgprev">${scene}<span class="fprev-n" style="color:#fff;opacity:.9;position:relative;z-index:2">88</span></div>`; }
 function cosmPreviewHTML(it,type){ return type==="frame"?framePreviewHTML(it):(type==="line"?linePreviewHTML(it):(type==="pet"?petPreviewHTML(it):bgPreviewHTML(it))); }
 /* 圖鑑:所有外觀 + 解鎖條件 + 預覽 */
 function openGallery(){ renderGallery(); openSheet("gallerySheet"); }
