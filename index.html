@@ -521,6 +521,25 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 .fortune-text{font-size:14.5px;font-weight:600;line-height:1.4;}
 .fortune-sub{font-size:11px;color:var(--ink-3);margin-top:3px;}
 @keyframes fortuneSpin{0%{transform:rotate(-18deg) scale(.8);}100%{transform:none;}}
+/* v1.45 今日運勢內頁 */
+.ft-pre{display:flex;flex-direction:column;align-items:center;text-align:center;padding:24px 8px 8px;}
+.ft-orb{width:96px;height:96px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-size:38px;font-weight:700;color:var(--gold);background:radial-gradient(circle at 42% 34%,color-mix(in srgb,var(--warm) 22%,var(--surface-hi)),var(--surface));border:1px solid color-mix(in srgb,var(--warm) 40%,var(--hair));box-shadow:0 0 34px -6px var(--warm);}
+.ft-orb.spin{animation:ftShake .5s ease-in-out infinite;}
+@keyframes ftShake{0%,100%{transform:rotate(-7deg);}50%{transform:rotate(7deg);}}
+.ft-pre-t{margin-top:16px;font-size:14px;color:var(--ink-2);}
+.ft-res{text-align:center;padding:8px 4px 2px;}
+.ft-res.reveal{animation:ftReveal .55s var(--spring);}
+@keyframes ftReveal{0%{opacity:0;transform:scale(.86) translateY(8px);}100%{opacity:1;transform:none;}}
+.ft-lv-cap{font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--ink-3);}
+.ft-lv{font-family:var(--disp);font-size:66px;font-weight:800;line-height:1.05;color:var(--fc);text-shadow:0 0 34px color-mix(in srgb,var(--fc) 55%,transparent);margin:2px 0 6px;}
+.ft-msg{font-size:15.5px;line-height:1.65;color:var(--ink);margin:6px 18px 0;}
+.ft-cats{margin:20px 6px 4px;border-top:1px solid var(--hair-soft);padding-top:14px;display:flex;flex-direction:column;gap:11px;}
+.ft-cat{display:flex;align-items:center;justify-content:space-between;}
+.ft-cat-k{font-size:14px;color:var(--ink-2);letter-spacing:.08em;}
+.ft-stars{display:inline-flex;gap:3px;}
+.ft-star{font-size:17px;color:var(--hair);line-height:1;}
+.ft-star.on{color:var(--fc);text-shadow:0 0 8px color-mix(in srgb,var(--fc) 60%,transparent);}
+.ft-foot{margin-top:18px;font-size:11px;color:var(--ink-3);}
 /* 造型成就進度 */
 .fa-list{display:flex;flex-direction:column;gap:6px;}
 .fa-row{display:flex;gap:10px;align-items:center;padding:8px 10px;border:1px solid var(--hair);border-radius:12px;background:var(--surface);opacity:.62;}
@@ -798,9 +817,9 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
       <div class="set-row" data-press onclick="closeSheet();openData()"><div class="k">備份 / 匯入</div><div class="set-val">備份到檔案 · 從備份還原 ›</div></div>
     </div>
     <div class="field-label">今日運勢</div>
-    <div class="fortune-card" data-press onclick="rollFortune()">
-      <div class="fortune-emoji" id="fortuneEmoji">🔮</div>
-      <div style="flex:1;"><div class="fortune-text" id="fortuneText">點一下,抽今天的運勢</div><div class="fortune-sub" id="fortuneSub">點越多次好像會有事發生…</div></div>
+    <div class="fortune-card" data-press onclick="openFortune()">
+      <div class="fortune-emoji" id="fortuneEmoji">籤</div>
+      <div style="flex:1;"><div class="fortune-text" id="fortuneText">抽今天的運勢</div><div class="fortune-sub" id="fortuneSub">每天一次,靜下心再抽</div></div>
     </div>
     <div class="field-label">關於</div>
     <div class="set-group">
@@ -830,6 +849,12 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 <div class="sheet" id="achDetailSheet">
   <div class="grabber"></div>
   <div id="achDetailBody"></div>
+  <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
+</div>
+
+<div class="sheet" id="fortuneSheet">
+  <div class="grabber"></div>
+  <div id="fortuneBody"></div>
   <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
 </div>
 
@@ -885,10 +910,17 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 
 <script>
 "use strict";
-const VERSION="1.44";
+const VERSION="1.45";
 const KEY="friendship-meter-v1";
 /* 更新紀錄:每次改版就在最前面加一筆(v 由大到小,設定頁「更新紀錄」會照這個順序顯示) */
 const CHANGELOG=[
+  {v:"1.45",date:"2026-08-15",items:[
+    "今日運勢整個重做:有儀式感,每天只能抽一次(同一天再點結果都一樣,才符合「今日」的意義)",
+    "改成吉凶等級:大吉 / 中吉 / 小吉 / 吉 / 末吉 / 凶 / 大凶,偏好運多一點",
+    "抽籤有動畫(求籤 → 揭曉 + 金光)",
+    "給五個面向的星等:事業 / 愛情 / 人際 / 財運 / 心情,滿分五顆星",
+    "「67 專屬」外框改成連抽 67 天解鎖(每天算一次)",
+  ]},
   {v:"1.44",date:"2026-08-15",items:[
     "全新抽獎系統:完成成就會拿到抽獎卷(越難的成就給越多,1~5 張),用抽獎卷抽造型",
     "造型分四種稀有度:普通(藍)、稀有(紫)、史詩(粉)、傳奇(金);抽獎依稀有度加權",
@@ -1729,7 +1761,9 @@ function syncSettingsUI(){ $("verText").textContent=VERSION;
   document.querySelectorAll("#themeSeg button").forEach(b=>b.classList.toggle("on",b.dataset.themeOpt===DB.settings.theme));
   segMove($("themeSeg")); renderCatManage(); renderPresetManage();
   { const cc=$("catCount"); if(cc)cc.textContent=(DB.settings.categories||[]).length+" 個"; const pc=$("presetCount"); if(pc)pc.textContent=(DB.settings.presets||[]).length+" 個"; }
-  { const t=DB.settings._fortuneTaps||0, fo=_fortuneOfDay(), fe=$("fortuneEmoji"),ft=$("fortuneText"),fs=$("fortuneSub"); if(fe)fe.textContent=fo.e; if(ft)ft.textContent=fo.t; if(fs)fs.textContent=t>=67?"🎉 67 專屬造型已解鎖":(t>0?`已點 ${t} 次`:"點越多次好像會有事發生…"); }
+  { const drawn=(DB.settings._fortuneShownDay===_fDayKey()); const fe=$("fortuneEmoji"),ft=$("fortuneText"),fs=$("fortuneSub");
+    if(drawn){ const f=_fortuneToday(); if(fe){fe.textContent=f.level;fe.style.color=f.col;fe.style.fontSize="22px";} if(ft)ft.textContent="今天的運勢已揭曉"; if(fs)fs.textContent="點開看 · 明天再抽"; }
+    else{ if(fe){fe.textContent="籤";fe.style.color="var(--warm)";fe.style.fontSize="26px";} if(ft)ft.textContent="抽今天的運勢"; if(fs)fs.textContent="每天一次,靜下心再抽"; } }
   $("swCooldown").classList.toggle("on",!!DB.settings.notifyCooldown);
   $("swDaily").classList.toggle("on",!!DB.settings.notifyDaily);
   $("swAskDel").classList.toggle("on",DB.settings.askBeforeDeleteLog!==false);
@@ -2635,29 +2669,36 @@ function setFrame(id){ const f=DB.friends.find(x=>x.id===dressId); if(!f)return;
 function setPet(id){ const f=DB.friends.find(x=>x.id===dressId); if(!f)return; if(id){const p=PETS.find(x=>x.id===id); if(!p||!cosmOwned(p))return;} f.pet=id||undefined; save(DB); haptic(); renderDress(); renderHome(false); }
 function setLine(id){ const f=DB.friends.find(x=>x.id===dressId); if(!f)return; if(id){const ln=LINES.find(x=>x.id===id); if(!ln||!cosmOwned(ln))return;} f.lineStyle=id||undefined; save(DB); haptic(); renderDress(); if(currentDetailId===dressId)renderDetail(dressId,false); }
 function setBg(id){ const f=DB.friends.find(x=>x.id===dressId); if(!f)return; if(id){const bg=BGS.find(x=>x.id===id); if(!bg||!cosmOwned(bg))return;} f.bg=id||undefined; save(DB); haptic(); renderDress(); if(currentDetailId===dressId)renderDetail(dressId,false); }
-/* ===== v1.36 今日運勢(點 67 次解鎖專屬框)===== */
-const FORTUNES=[
- {e:"🌟",t:"今天很適合主動找久沒聯絡的人聊聊"},{e:"☕",t:"有人正想著要不要傳訊息給你,回得慢也沒關係"},
- {e:"🔥",t:"把心裡想講的話講出來,今天氣氛站在你這邊"},{e:"🌧️",t:"如果被已讀不回,別放心上,不是你的問題"},
- {e:"🍀",t:"一個不經意的舉動,會讓某段關係回溫"},{e:"🌊",t:"順其自然的一天,不用勉強維繫誰"},
- {e:"💌",t:"適合傳一句「最近好嗎」,收穫會超出預期"},{e:"🧊",t:"有段關係在降溫,今天是止血的好時機"},
- {e:"🎯",t:"想約的人就今天約,拖下去會不了了之"},{e:"🌙",t:"深夜的訊息力量很大,但也要小心誤會"},
- {e:"🌈",t:"雨過天青,和好從一句道歉開始"},{e:"🍜",t:"一起吃頓飯能解決的事,別用訊息解決"},
- {e:"⚡",t:"今天講話容易衝,先深呼吸再送出"},{e:"🕊️",t:"放下一段執念,你會輕鬆很多"},
- {e:"🎁",t:"別人的好意記得收下,也記得回禮"},{e:"🧭",t:"不確定要不要聯絡?那就聯絡吧"},
- {e:"🌻",t:"你今天的能量很暖,適合當那個先伸手的人"},{e:"🎲",t:"隨緣,但別忘了主動也是一種緣分"},
- {e:"🫧",t:"有些關係涼掉是正常的,不必自責"},{e:"🔮",t:"今天遇到的巧合,可能是老朋友的訊號"},
- {e:"🐾",t:"慢慢走,重要的人不會因為你慢而走掉"},{e:"✨",t:"你在別人心裡的份量,比你想的重"},
- {e:"🌱",t:"新認識的人值得多聊兩句"},{e:"🎈",t:"今天適合報喜,好消息要跟在乎的人分享"},
+/* ===== v1.45 今日運勢:有儀式感、每天只能抽一次(同一天結果固定)、吉凶等級 + 五項星等 ===== */
+const FORTUNE_LV=[
+ {k:"大吉",col:"#ffd76a",w:9,c:4.3,msgs:["今天整個宇宙都替你開路,想做的就去做。","難得的順風日,主動聯絡誰都會有好回應。","把握今天,想修復的關係一句話就能回暖。"]},
+ {k:"中吉",col:"#ff9d3c",w:15,c:3.7,msgs:["穩穩的好日子,踏實一點會更有收穫。","今天的你有餘裕照顧別人,先伸手的人就是你。","一件小小的主動,會讓某段關係加溫。"]},
+ {k:"小吉",col:"#7ee08a",w:19,c:3.3,msgs:["平順中帶點驚喜,留意身邊的訊號。","不用用力,順著今天的節奏走就好。","一句「最近好嗎」,收穫會比你想的多。"]},
+ {k:"吉",col:"#5fc7a8",w:21,c:2.9,msgs:["中規中矩的一天,把眼前的事做好就夠了。","沒有大事,但適合慢慢把在乎的人放心上。","今天平淡,平淡也是一種幸運。"]},
+ {k:"末吉",col:"#8fbaff",w:15,c:2.5,msgs:["先蓄力的一天,別急著下決定。","有點悶,但撐過去後面會轉好。","今天適合傾聽,少說多聽會避開誤會。"]},
+ {k:"凶",col:"#b06fef",w:12,c:1.9,msgs:["容易衝動的一天,送出訊息前先深呼吸。","被已讀不回也別放心上,不是你的問題。","今天先照顧好自己,關係的事明天再說。"]},
+ {k:"大凶",col:"#ff6b5e",w:4,c:1.2,msgs:["低氣壓日,重要決定通通延到明天。","越想解釋越糟,今天適合安靜。","把手機放下,給自己一點空間就好。"]},
 ];
-function _fortuneOfDay(){ const d=new Date(); const seed=(d.getFullYear()*372+d.getMonth()*31+d.getDate()); return FORTUNES[seed%FORTUNES.length]; }
-function rollFortune(){ const before=DB.settings._fortuneTaps||0; DB.settings._fortuneTaps=before+1; const taps=before+1;
-  const fo=FORTUNES[Math.floor(Math.random()*FORTUNES.length)]; const fe=$("fortuneEmoji"),ft=$("fortuneText"),fs=$("fortuneSub");
-  if(fe){ fe.textContent=fo.e; fe.style.animation="none"; void fe.offsetWidth; fe.style.animation="fortuneSpin .5s var(--spring)"; }
-  if(ft)ft.textContent=fo.t; if(fs)fs.textContent = taps>=67?"🎉 67 專屬造型已解鎖":`已點 ${taps} 次${taps>=60&&taps<67?`(再 ${67-taps} 次…)`:""}`;
-  save(DB); haptic();
-  if(before<67&&taps>=67){ toast("🎉 解鎖「67 專屬」外框!去長按好友卡片 → 裝扮外觀套套看"); if(!_reduce())fxBurst(innerWidth/2,140,{n:44,pal:_FX_GOLD,spd:4.6,up:1.4,life:84,sz:3.1}); }
-}
+const FORTUNE_CATS=["事業","愛情","人際","財運","心情"];
+function _fDayKey(){ const d=new Date(); return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate(); }
+function _fortuneToday(){ const R=_rng((_fDayKey()*2654435761)>>>0);
+  let tot=0; FORTUNE_LV.forEach(l=>tot+=l.w); let r=R()*tot,lv=FORTUNE_LV[3]; for(const l of FORTUNE_LV){ r-=l.w; if(r<=0){lv=l;break;} }
+  const msg=lv.msgs[Math.floor(R()*lv.msgs.length)];
+  const stars=FORTUNE_CATS.map(()=>Math.max(0,Math.min(5,Math.round(lv.c+(R()-0.5)*2.6))));
+  return {level:lv.k,col:lv.col,msg,stars}; }
+function openFortune(){ closeSheet(); renderFortune(false); openSheet("fortuneSheet"); }
+function renderFortune(justDrew){ const body=$("fortuneBody"); if(!body)return; const f=_fortuneToday(); const drawn=(DB.settings._fortuneShownDay===_fDayKey());
+  if(!drawn&&!justDrew){ body.innerHTML=`<div class="ft-pre"><div class="ft-orb">籤</div><div class="ft-pre-t">靜下心,想著那個在乎的人</div><button class="btn primary" data-press style="width:100%;margin-top:20px" onclick="drawFortune()">抽今日運勢</button></div>`; bindPress(); return; }
+  const stars=n=>`<span class="ft-stars">${Array.from({length:5},(_,i)=>`<span class="ft-star ${i<n?'on':''}">★</span>`).join("")}</span>`;
+  body.innerHTML=`<div class="ft-res ${justDrew?'reveal':''}" style="--fc:${f.col}"><div class="ft-lv-cap">今日運勢</div><div class="ft-lv">${f.level}</div>
+    <div class="ft-msg">${escapeHtml(f.msg)}</div>
+    <div class="ft-cats">${FORTUNE_CATS.map((c,i)=>`<div class="ft-cat"><span class="ft-cat-k">${c}</span>${stars(f.stars[i])}</div>`).join("")}</div>
+    <div class="ft-foot">今天就這一支籤了,明天再來 · 已抽 ${DB.settings._fortuneTaps||0} 天</div></div>`; }
+function drawFortune(){ const dk=_fDayKey(); if(DB.settings._fortuneShownDay===dk){ renderFortune(false); return; }
+  DB.settings._fortuneShownDay=dk; const before=DB.settings._fortuneTaps||0; DB.settings._fortuneTaps=before+1; save(DB); haptic(); syncSettingsUI();
+  const body=$("fortuneBody"); if(body)body.innerHTML=`<div class="ft-pre"><div class="ft-orb spin">籤</div><div class="ft-pre-t">求籤中…</div></div>`;
+  setTimeout(()=>{ renderFortune(true); haptic(); if(!_reduce())fxBurst(innerWidth/2,innerHeight*0.36,{n:34,pal:_FX_GOLD,spd:3.4,up:1,life:72,sz:2.6});
+    const taps=before+1; if(before<67&&taps>=67){ if(!DB.settings.owned)DB.settings.owned={}; DB.settings.owned["frame:s67"]=Date.now(); save(DB); toast("連抽 67 天,解鎖「67 專屬」外框!"); } }, 1400); }
 
 /* ---- v1.30 撤銷 / 改日期 ---- */
 let _undo=null,_undoT=null;
