@@ -38,7 +38,8 @@ input,textarea{-webkit-user-select:text;user-select:text;-webkit-touch-callout:d
 body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(120% 80% at 50% -10%,var(--amb1),transparent 60%),radial-gradient(90% 60% at 100% 110%,var(--amb2),transparent 60%);}
 button{font-family:inherit;cursor:pointer;color:inherit;border:none;background:none;}
 input,select,textarea{font-family:inherit;font-size:16px;}
-.view{height:100dvh;overflow-y:auto;overflow-x:hidden;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;padding-bottom:calc(104px + env(safe-area-inset-bottom));touch-action:pan-y;}
+.view{height:100dvh;overflow-y:auto;overflow-x:hidden;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;padding-bottom:calc(36px + env(safe-area-inset-bottom));touch-action:pan-y;}
+body.selecting #homeView{padding-bottom:calc(100px + env(safe-area-inset-bottom));}
 #homeView{transition:transform .34s var(--ease);}
 #detailView{position:fixed;inset:0;z-index:32;background:var(--canvas);transform:translateX(100%);transition:transform .34s var(--ease);box-shadow:-16px 0 50px rgba(0,0,0,.4);}
 #detailView.on{transform:translateX(0);}
@@ -499,6 +500,9 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 .gtile.lock .gname{color:var(--ink-2);}
 .greq{font-size:9.5px;color:var(--ink-3);line-height:1.25;}
 .lad-bar{height:7px;border-radius:6px;background:var(--surface-hi);overflow:hidden;margin:8px 2px 4px;border:1px solid var(--hair);}
+.gv-seg{display:flex;gap:6px;margin:12px 2px 2px;}
+.gv-seg button{flex:1;padding:9px;border-radius:11px;border:1px solid var(--hair);background:var(--surface);color:var(--ink-3);font-size:13px;font-weight:600;}
+.gv-seg button.on{background:var(--surface-hi);color:var(--ink);border-color:color-mix(in srgb,var(--warm) 42%,var(--hair));}
 .lad-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--warm),var(--gold));border-radius:6px;transition:width .5s var(--ease);}
 .lad-next{font-size:11px;color:var(--ink-2);margin:2px 2px 0;}
 .lad-next b{color:var(--gold);}
@@ -571,6 +575,43 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 .tc-main #scoreDate{position:absolute;inset:0;width:100%;height:100%;opacity:0;border:none;margin:0;padding:0;background:none;-webkit-appearance:none;appearance:none;}
 .tc-reset{display:none;width:24px;height:24px;border-radius:50%;background:var(--surface-hi);border:1px solid var(--hair);color:var(--ink-3);font-size:12px;line-height:1;align-items:center;justify-content:center;flex:0 0 auto;}
 .time-chip.set .tc-reset{display:inline-flex;}
+/* ===== v1.44 抽獎 ===== */
+.gacha-btn{position:relative;}
+.gacha-count{position:absolute;top:-4px;right:-4px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:var(--gold);color:#231604;font-family:var(--mono);font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--canvas);pointer-events:none;}
+.gc-head{display:flex;align-items:center;justify-content:space-between;margin:2px 2px 12px;}
+.gc-tk{display:flex;align-items:center;gap:8px;}
+.gc-tk .tk-ic{width:27px;height:27px;color:var(--gold);display:inline-flex;} .tk-ic svg{width:100%;height:100%;}
+.gc-tk .tk-count{font-family:var(--mono);font-size:23px;font-weight:800;color:var(--gold);}
+.gc-tklab{color:var(--ink-3);font-size:12px;}
+.gc-prog{font-family:var(--mono);font-size:12px;color:var(--ink-3);}
+.gc-reel{position:relative;height:96px;border-radius:16px;overflow:hidden;border:1px solid var(--hair);background:linear-gradient(180deg,var(--canvas-2),var(--surface));margin-bottom:12px;}
+.gc-reel::before,.gc-reel::after{content:"";position:absolute;top:0;bottom:0;width:44px;z-index:3;pointer-events:none;}
+.gc-reel::before{left:0;background:linear-gradient(90deg,var(--canvas-2),transparent);}
+.gc-reel::after{right:0;background:linear-gradient(270deg,var(--canvas-2),transparent);}
+.greel-strip{display:flex;height:100%;align-items:center;will-change:transform;}
+.rar-c{--rc:#5b8def;}.rar-r{--rc:#b06fef;}.rar-e{--rc:#ff6fae;}.rar-l{--rc:#ffc24b;}
+.greel-tile{flex:0 0 84px;height:76px;display:flex;align-items:center;justify-content:center;border-radius:12px;box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--rc) 60%,transparent);background:color-mix(in srgb,var(--rc) 9%,transparent);}
+.greel-prev{transform:scale(.6);pointer-events:none;}
+.greel-prev .lprev{width:96px;}
+.greel-marker{position:absolute;left:50%;top:5px;bottom:5px;width:3px;margin-left:-1.5px;border-radius:2px;background:linear-gradient(var(--gold),#ff7020);box-shadow:0 0 12px var(--gold);z-index:4;}
+.greel-marker::before,.greel-marker::after{content:"";position:absolute;left:50%;transform:translateX(-50%);border:6px solid transparent;}
+.greel-marker::before{top:-7px;border-top-color:var(--gold);}
+.greel-marker::after{bottom:-7px;border-bottom-color:var(--gold);}
+.gc-reveal{min-height:0;}
+.gc-reveal.show{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 0 6px;margin-bottom:6px;border-radius:16px;overflow:hidden;box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--rc) 55%,transparent);background:color-mix(in srgb,var(--rc) 7%,transparent);animation:gcrPop .5s var(--spring);}
+@keyframes gcrPop{from{opacity:0;transform:scale(.82);}to{opacity:1;transform:none;}}
+.gcr-glow{position:absolute;inset:0;background:radial-gradient(62% 62% at 50% 44%,color-mix(in srgb,var(--rc) 32%,transparent),transparent 72%);pointer-events:none;}
+.gc-reveal.rar-l .gcr-glow{animation:gcrGlow 1.7s ease-in-out infinite;}
+@keyframes gcrGlow{0%,100%{opacity:.65;}50%{opacity:1;}}
+.gcr-rar{font-family:var(--mono);font-size:11px;font-weight:800;letter-spacing:.14em;margin-bottom:6px;z-index:1;}
+.gcr-prev{transform:scale(.94);z-index:1;}
+.gcr-name{font-family:var(--disp);font-size:20px;font-weight:700;margin-top:12px;z-index:1;}
+.gcr-hint{font-size:11px;color:var(--ink-3);margin-top:4px;z-index:1;}
+.gc-draw{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;}
+.gc-draw .tk-ic{width:20px;height:20px;color:currentColor;display:inline-flex;}
+.tk-gain{position:fixed;left:50%;top:28%;transform:translate(-50%,20px);z-index:90;display:flex;align-items:center;gap:8px;background:var(--surface-hi);border:1px solid color-mix(in srgb,var(--gold) 50%,var(--hair));border-radius:14px;padding:11px 18px;font-size:15px;font-weight:700;color:var(--gold);box-shadow:0 14px 40px rgba(0,0,0,.5);opacity:0;transition:transform .4s var(--spring),opacity .3s;pointer-events:none;}
+.tk-gain.on{transform:translate(-50%,0);opacity:1;}
+.tk-gain .tk-ic{width:24px;height:24px;display:inline-flex;}
 @media (prefers-reduced-motion: reduce){*{animation-duration:.001s !important;transition-duration:.05s !important;animation-delay:0s !important;}.logo{animation:none;}.c-ring{animation:none !important;}#fxCanvas,.record-ribbon{display:none !important;}}
 </style>
 </head>
@@ -587,7 +628,7 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
       </defs><circle cx="16" cy="16" r="15" fill="url(#emberGlow)"/><circle cx="16" cy="15.4" r="9.4" fill="url(#ember)"/><ellipse cx="12.6" cy="12" rx="2.6" ry="1.8" fill="#fff7e6" opacity="0.5"/></svg>
       <span class="wm"><h1>餘溫</h1><span class="en">ember</span></span>
     </div><div class="count" id="countLine">0 段關係</div></div>
-    <div class="topbtns"><button class="btn small selall-btn" id="selectAllBtn" data-press style="display:none;" onclick="toggleSelectAll()">全選</button><button class="gear" id="multiBtn" data-press onclick="toggleSelectMode()" aria-label="多選"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M3.5 6l1.2 1.2L6.6 4.7"/><path d="M3.5 12l1.2 1.2L6.6 10.7"/><path d="M3.5 18l1.2 1.2L6.6 16.7"/></svg></button><button class="gear" id="gearBtn" data-press onclick="openSettings()" aria-label="設定"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></div>
+    <div class="topbtns"><button class="btn small selall-btn" id="selectAllBtn" data-press style="display:none;" onclick="toggleSelectAll()">全選</button><button class="gear" id="addFriendBtn" data-press onclick="openAddFriend()" aria-label="新增好友"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="9.5" cy="8" r="3.3"/><path d="M4 19c0-3.2 2.6-5.3 5.5-5.3 1 0 1.9.2 2.7.6"/><path d="M17.5 14.2v5.6M14.7 17h5.6"/></svg></button><button class="gear gacha-btn" id="gachaBtn" data-press onclick="openGacha()" aria-label="抽獎"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3.4 9.2a1.6 1.6 0 0 0 1.2-1.5V6.6h14.8v1.1a1.6 1.6 0 0 0 1.2 1.5v5.6a1.6 1.6 0 0 0-1.2 1.5v1.1H4.6v-1.1a1.6 1.6 0 0 0-1.2-1.5z"/><path d="M14.2 6.8v10.4"/></svg><span class="gacha-count" id="gachaCount" style="display:none">0</span></button><button class="gear" id="multiBtn" data-press onclick="toggleSelectMode()" aria-label="多選"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M3.5 6l1.2 1.2L6.6 4.7"/><path d="M3.5 12l1.2 1.2L6.6 10.7"/><path d="M3.5 18l1.2 1.2L6.6 16.7"/></svg></button><button class="gear" id="gearBtn" data-press onclick="openSettings()" aria-label="設定"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></div>
   </div>
   <div class="searchwrap" style="display:flex;gap:10px;align-items:center;"><input class="search" id="searchInput" placeholder="搜尋姓名或標籤" autocomplete="off" style="flex:1;"><button class="gear sortbtn" id="sortBtn" data-press onclick="openSortFilter()" aria-label="排序與篩選"><svg viewBox="0 0 24 24"><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="16" x2="20" y2="16"/><circle cx="9" cy="8" r="2.4" fill="var(--surface)"/><circle cx="15" cy="16" r="2.4" fill="var(--surface)"/></svg></button></div>
   <div class="ticker" id="tickerBar" style="display:none;"></div>
@@ -603,7 +644,7 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
   <div style="padding:2px 22px 0;position:relative;z-index:1;" id="detailBody"></div>
 </div>
 
-<div class="tabbar" id="homeTabbar"><button class="btn small" data-press onclick="openData()">資料</button><button class="btn primary" data-press onclick="openAddFriend()">＋ 新增好友</button></div>
+<div class="tabbar" id="homeTabbar" style="display:none;"></div>
 
 <div class="scrim" id="scrim" onclick="closeSheet()"></div>
 
@@ -745,11 +786,16 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
     </div>
     <div class="field-label">刪除</div>
     <div class="set-group"><div class="set-row tap" onclick="toggleAskDel()"><div style="flex:1;"><div class="k">刪紀錄前先詢問</div><div class="sub">關掉後,長按日誌會直接刪除</div></div><div class="sw" id="swAskDel"></div></div></div>
-    <div class="field-label">成就 · 外觀</div>
+    <div class="field-label">成就 · 外觀 · 抽獎</div>
     <div class="set-group">
+      <div class="set-row" data-press onclick="closeSheet();openGacha()"><div class="k">抽獎</div><div class="set-val"><b class="tk-count">0</b> 張抽獎卷 ›</div></div>
       <div class="set-row" data-press onclick="openAchv()"><div class="k">成就櫃</div><div class="set-val" id="achvSetCount">0 / 150</div></div>
-      <div class="set-row" data-press onclick="openGallery()"><div class="k">外觀圖鑑</div><div class="set-val">外框 / 折線 / 寵物 / 背景 ›</div></div>
-      <div class="set-row tap" onclick="askResetJourney()"><div style="flex:1;"><div class="k">重新開始造型旅程</div><div class="sub">造型成就從 0 重來、清掉已套用的造型;好友與紀錄不受影響</div></div><div class="set-val" style="color:var(--warm)">重來 ›</div></div>
+      <div class="set-row" data-press onclick="closeSheet();openGallery()"><div class="k">外觀圖鑑</div><div class="set-val">外框 / 折線 / 寵物 / 背景 ›</div></div>
+      <div class="set-row tap" onclick="askResetJourney()"><div style="flex:1;"><div class="k">重置造型、退回抽獎卷</div><div class="sub">清掉抽到與套上的造型,把成就對應的抽獎卷全退還讓你重抽;好友與紀錄不受影響</div></div><div class="set-val" style="color:var(--warm)">重抽 ›</div></div>
+    </div>
+    <div class="field-label">資料</div>
+    <div class="set-group">
+      <div class="set-row" data-press onclick="closeSheet();openData()"><div class="k">備份 / 匯入</div><div class="set-val">備份到檔案 · 從備份還原 ›</div></div>
     </div>
     <div class="field-label">今日運勢</div>
     <div class="fortune-card" data-press onclick="rollFortune()">
@@ -794,6 +840,17 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
   <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">完成</button></div>
 </div>
 
+<div class="sheet" id="gachaSheet">
+  <div class="grabber"></div>
+  <h2>抽獎 · 收集造型</h2>
+  <div id="gachaHead" class="gc-head"></div>
+  <div class="gc-reel" id="gachaReel"><div class="greel-strip" id="greelStrip"></div><div class="greel-marker"></div></div>
+  <div class="gc-reveal" id="gachaReveal"></div>
+  <button class="btn primary gc-draw" id="gachaDrawBtn" data-press onclick="gachaDraw()">抽一張</button>
+  <div class="hint" style="margin-top:12px;text-align:center;">完成成就會拿到抽獎卷,越難的成就給越多(1~5 張)。抽到的造型長按好友卡片就能套上。</div>
+  <div class="sheet-actions"><button class="btn" data-press onclick="openGallery()">看全部圖鑑</button><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
+</div>
+
 <div class="sheet" id="gallerySheet">
   <div class="grabber"></div>
   <h2>外觀圖鑑</h2>
@@ -828,10 +885,19 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 
 <script>
 "use strict";
-const VERSION="1.43";
+const VERSION="1.44";
 const KEY="friendship-meter-v1";
 /* 更新紀錄:每次改版就在最前面加一筆(v 由大到小,設定頁「更新紀錄」會照這個順序顯示) */
 const CHANGELOG=[
+  {v:"1.44",date:"2026-08-15",items:[
+    "全新抽獎系統:完成成就會拿到抽獎卷(越難的成就給越多,1~5 張),用抽獎卷抽造型",
+    "造型分四種稀有度:普通(藍)、稀有(紫)、史詩(粉)、傳奇(金);抽獎依稀有度加權",
+    "抽獎有 CS2 直線滾輪動畫 + 開獎特效;傳奇金光爆發",
+    "外觀圖鑑可切「依種類」或「依稀有度」看,每個都標稀有度與已擁有/未擁有",
+    "首頁右上角新增「新增好友」「抽獎」按鈕(自己畫的圖示、不用 emoji);抽獎鈕會顯示剩幾張卷",
+    "「資料(備份/匯入)」移進設定;底部的按鈕列收起來,只在多選時出現",
+    "重置造型改成「退回等值抽獎卷讓你重抽一輪」",
+  ]},
   {v:"1.43",date:"2026-08-15",items:[
     "詳情頁背景不再往下滑就變黑:改成整段捲動都蓋滿(甚至延伸到最底),卡片也調透一點讓場景更明顯,文字配合場景配色",
     "撤銷條可以往下滑掉;成就通知條可以往上滑掉、或點一下看完整內容",
@@ -1058,7 +1124,7 @@ function nameForScore(s){
   return "形同陌路";
 }
 function tierOf(s){ return {title:nameForScore(s), color:colorForScore(s), hot:s>=100}; }
-function defaultSettings(){ return {theme:"system",notifyCooldown:false,notifyDaily:false,askBeforeDeleteLog:true,layout:"list",categories:[...DEFAULT_CATEGORIES],presets:[...DEFAULT_PRESETS],emberDecay:false,emberDecayRate:1,sortBy:"score",filterCat:"",filterCooling:false,_lastDaily:null,_lastExport:null,achv:{},_did:{},_fortuneTaps:0,_achvBase:0,_achvSkip:{}}; }
+function defaultSettings(){ return {theme:"system",notifyCooldown:false,notifyDaily:false,askBeforeDeleteLog:true,layout:"list",categories:[...DEFAULT_CATEGORIES],presets:[...DEFAULT_PRESETS],emberDecay:false,emberDecayRate:1,sortBy:"score",filterCat:"",filterCooling:false,_lastDaily:null,_lastExport:null,achv:{},_did:{},_fortuneTaps:0,_achvBase:0,_achvSkip:{},owned:{},_tickets:0,_ticketSeen:0,_gachaMig:false,galleryView:"type"}; }
 function load(){ try{ const r=localStorage.getItem(KEY); if(!r) return {v:1,friends:[],settings:defaultSettings()};
     const d=JSON.parse(r); if(!d.friends) d.friends=[]; d.settings=Object.assign(defaultSettings(),d.settings||{});
     if(!Array.isArray(d.settings.categories)||!d.settings.categories.length) d.settings.categories=[...DEFAULT_CATEGORIES];
@@ -1332,9 +1398,9 @@ function bindSelectDrag(){ const box=$("friendList"); if(box._sel)return; box._s
     if(painting){ e.preventDefault(); const t=document.elementFromPoint(e.clientX,e.clientY); const card=t&&t.closest?t.closest(".friend[data-fid]"):null; paint(card); } },{passive:false});
   const end=()=>{ if(selectMode&&startFid&&!painting){ toggleSelect(startFid,document.querySelector(`.friend[data-fid="${startFid}"]`)); } startFid=null; painting=false; };
   box.addEventListener("pointerup",end); box.addEventListener("pointercancel",()=>{startFid=null;painting=false;}); }
-function updateSelectBar(){ const tb=$("homeTabbar"); if(selectMode){ const n=selectedIds.size;
+function updateSelectBar(){ const tb=$("homeTabbar"); if(selectMode){ const n=selectedIds.size; tb.style.display="flex";
     tb.innerHTML=`<button class="btn small" data-press onclick="exitSelectMode()">取消</button><button class="btn primary" data-press ${n?'':'disabled'} onclick="openBatchScore()">批次打分${n?` · ${n}`:''}</button><button class="btn small" data-press ${n?'':'disabled'} onclick="openBatchMenu()">⋯</button>`;
-  } else { tb.innerHTML=`<button class="btn small" data-press onclick="openData()">資料</button><button class="btn primary" data-press onclick="openAddFriend()">＋ 新增好友</button>`; }
+  } else { tb.style.display="none"; tb.innerHTML=""; }
   bindPress(); updateSelectAllLabel(); }
 function openBatchMenu(){ if(!selectedIds.size)return; $("ctxTitle").textContent=`批次動作 · ${selectedIds.size} 人`;
   $("ctxBody").innerHTML=`
@@ -2096,23 +2162,31 @@ const ACHV=[
 ];
 let _abQueue=[],_abBusy=false,_achvReady=false;
 function _ownedCosmCount(){ try{ return Math.min(_ladderCount(),COSMETIC_ORDER.length); }catch(e){ return 0; } }
+/* 成就分組順序(越後面越難),用來決定一個成就給幾張抽獎卷(1~5) */
+const _GROUP_ORDER=(()=>{ const o=[]; ACHV.forEach(a=>{ if(!o.includes(a.g))o.push(a.g); }); return o; })();
+function _achvTickets(a){ const n=_GROUP_ORDER.length,gi=_GROUP_ORDER.indexOf(a.g); if(gi<0||n<=1)return 1; return Math.max(1,Math.min(5,1+Math.round(gi/(n-1)*4))); }
 function evalAchievements(silent){ if(!DB.settings.achv)DB.settings.achv={}; const got=DB.settings.achv, skip=DB.settings._achvSkip||{}, newly=[]; let changed=true,guard=0;
   while(changed&&guard++<8){ changed=false;
     for(const a of ACHV){ if(got[a.id]||skip[a.id])continue; let ok=false; try{ ok=!!a.c(); }catch(e){} if(ok){ got[a.id]=Date.now(); newly.push(a); changed=true; } } }
-  if(newly.length){ save(DB); refreshAchvCountUI(); if(!silent&&_achvReady){ newly.forEach(a=>_abQueue.push(a)); if(!_abBusy)_abNext(); } }
-  /* 進度階梯:每多滿足一個里程碑就依序解鎖一個造型 */
-  const lc=_ownedCosmCount(), seen=DB.settings._ladderSeen||0;
-  if(lc!==seen){ DB.settings._ladderSeen=lc; save(DB);
-    if(lc>seen&&!silent&&_achvReady){ const gain=lc-seen; setTimeout(()=>toast(`✨ 解鎖 ${gain} 個新造型!長按好友卡片 → 裝扮外觀`), newly.length?2900*Math.min(newly.length,3)+300:400); } }
+  if(newly.length){ let tk=0; newly.forEach(a=>{ tk+=_achvTickets(a); }); DB.settings._tickets=(DB.settings._tickets||0)+tk; save(DB); refreshAchvCountUI(); refreshTicketUI();
+    if(!silent&&_achvReady){ newly.forEach(a=>_abQueue.push(a)); if(!_abBusy)_abNext(); ticketGainFx(tk); } }
   return newly; }
-/* 重置造型旅程:階梯基準點歸零 + 清掉已套用的造型;收藏成就(成就櫃)與紀錄都不動 */
+/* 舊資料升級:保留身上造型 + 依已完成成就補發抽獎卷(只跑一次) */
+function _migrateGacha(){ const s=DB.settings; if(!s.owned)s.owned={}; if(s._gachaMig)return;
+  DB.friends.forEach(f=>{ [["frame",f.frame],["line",f.lineStyle],["bg",f.bg],["pet",f.pet]].forEach(([t,id])=>{ if(id)s.owned[t+":"+id]=Date.now(); }); });
+  let tk=0; const got=s.achv||{}; for(const a of ACHV){ if(got[a.id])tk+=_achvTickets(a); }
+  s._tickets=(s._tickets||0)+tk; s._ticketSeen=s._tickets; s._gachaMig=true; save(DB); }
+/* 重置造型旅程:清掉已擁有與身上造型,退回等值抽獎卷讓你重抽一輪;收藏成就與紀錄不動 */
 function resetJourney(){
   if(DB.settings._did) delete DB.settings._did.newHighPB;
-  DB.settings._achvBase=Date.now(); DB.settings._fortuneTaps=0; DB.settings._ladderSeen=0; _ladderCache=null;
+  DB.settings._fortuneTaps=0;
   DB.friends.forEach(f=>{ f.frame=undefined; f.pet=undefined; f.lineStyle=undefined; f.bg=undefined; });
-  save(DB); haptic(); closeSheet(); renderHome(false); toast("已重新開始造型旅程,去記錄解鎖新造型吧 ✨");
+  DB.settings.owned={};
+  let tk=0; const got=DB.settings.achv||{}; for(const a of ACHV){ if(got[a.id])tk+=_achvTickets(a); }
+  DB.settings._tickets=tk; DB.settings._ticketSeen=tk;
+  save(DB); haptic(); closeSheet(); renderHome(false); refreshTicketUI(); toast(`已重置造型,退回 ${tk} 張抽獎卷,重新抽一輪吧`);
 }
-function askResetJourney(){ closeSheet(); askConfirm("重新開始造型旅程?會清掉目前套在好友身上的造型,已達成過的收藏成就不會再自動補回,造型成就從 0 開始重新體驗。你的好友與紀錄都不受影響。", null, ()=>resetJourney(), "重新開始"); }
+function askResetJourney(){ closeSheet(); askConfirm("重新開始造型?會清掉目前抽到與套在好友身上的造型,並把已完成成就對應的抽獎卷全部退還給你,讓你從頭再抽一輪。收藏成就與紀錄都不受影響。", null, ()=>resetJourney(), "重置重抽"); }
 function _abNext(){ if(!_abQueue.length){_abBusy=false;return;} _abBusy=true; const a=_abQueue.shift(); showAchvBanner(a); setTimeout(_abNext,2900); }
 let _bannerA=null;
 function showAchvBanner(a){ const b=$("achvBanner"); if(!b)return; _bannerA=a; $("abDisc").textContent=a.ic||"🏅"; $("abTitle").textContent=a.t; $("abSub").textContent=a.d;
@@ -2273,13 +2347,58 @@ const LINES=[
 /* v1.40 造型解鎖順序:四類交錯排(框/線/背景/寵物),每類內部由樸素到華麗;s67 不進階梯(用今日運勢彩蛋解) */
 const COSMETIC_ORDER=(()=>{ const arrs=[FRAMES.filter(f=>f.id!=="s67"),LINES,BGS,PETS],ty=["frame","line","bg","pet"],idx=[0,0,0,0],out=[]; let any=true;
   while(any){ any=false; for(let i=0;i<4;i++){ if(idx[i]<arrs[i].length){ out.push({t:ty[i],id:arrs[i][idx[i]].id}); idx[i]++; any=true; } } } return out; })();
-{ const L={frame:FRAMES,line:LINES,bg:BGS,pet:PETS}; COSMETIC_ORDER.forEach((c,i)=>{ const o=L[c.t].find(x=>x.id===c.id); if(o)o._ord=i; }); }
-function cosmOwned(it){ if(it.req==="fortune67") return (DB.settings._fortuneTaps||0)>=67;
-  return typeof it._ord==="number" ? it._ord < _ladderCount() : false; }
-function cosmReqText(it){ if(it.req==="fortune67") return `點「今日運勢」67 次(目前 ${DB.settings._fortuneTaps||0} 次)`;
-  if(typeof it._ord!=="number") return "隱藏造型";
-  const need=it._ord+1-_ladderCount(); return need<=0?"已解鎖":`再解鎖 ${need} 個造型成就`; }
+/* v1.44 稀有度 + 每個造型唯一 key(擁有 / 抽獎用)。普通藍 / 稀有紫 / 史詩粉 / 傳奇金 */
+const RAR_DEF={
+ frame:{c:["gold","sky","mint","rose","ice","violet"],r:["sunset","ocean","aurora","candy","forest","flamingo","peach","innerglow","cornerbloom","pulserose"],e:["blackgold","lava","artsakura","arthearts","artsnow","artstars","artvine","pulsegold","emberspin"],l:["crown","rainbowspin","neonspin","artfire","artcat","artbolt","emberflow","prisma","electric","halo","s67"]},
+ line:{c:["thin","mono","sky","dot","thick","glowline"],r:["sunset","ocean","ice","forest","candy","gold","midnight","blossom","dash"],e:["rainbow","aurora","fire","violet","neon","pulsegold"],l:["auroraflow","fireflow","rainbowflow"]},
+ bg:{c:["night"],r:["ocean","maya"],e:["sakura","aurora","ember","matrix"],l:["neon"]},
+ pet:{c:["dog","bird"],r:["fish","bunny"],e:["cat"],l:["ghost"]},
+};
+function _rarOf(type,id){ const d=RAR_DEF[type]||{}; for(const k of ["l","e","r","c"]) if((d[k]||[]).includes(id)) return k; return "c"; }
+{ const L={frame:FRAMES,line:LINES,bg:BGS,pet:PETS}; for(const t in L){ L[t].forEach(o=>{ o._key=t+":"+o.id; o._type=t; o._rar=_rarOf(t,o.id); }); }
+  COSMETIC_ORDER.forEach((c,i)=>{ const o=L[c.t].find(x=>x.id===c.id); if(o)o._ord=i; }); }
+const RAR_META={c:{name:"普通",col:"#5b8def"},r:{name:"稀有",col:"#b06fef"},e:{name:"史詩",col:"#ff6fae"},l:{name:"傳奇",col:"#ffc24b"}};
+const RAR_WEIGHT={c:52,r:28,e:14,l:6}, RAR_ORDER=["l","e","r","c"];
+function _isOwned(key){ return !!(key&&DB.settings.owned&&DB.settings.owned[key]); }
+function cosmOwned(it){ if(!it)return false; if(it.req==="fortune67") return _isOwned(it._key)||(DB.settings._fortuneTaps||0)>=67; return _isOwned(it._key); }
+function cosmReqText(it){ if(it&&it.req==="fortune67"&&!(DB.settings.owned&&DB.settings.owned[it._key])) return `點「今日運勢」67 次(目前 ${DB.settings._fortuneTaps||0} 次)`; return "抽獎池 · 抽到才有"; }
 function rewardOwned(r){ return cosmOwned(r); }  /* 舊名相容 */
+/* 全部可抽的造型物件(不含 s67 專屬彩蛋) */
+function _allCosms(){ const L={frame:FRAMES,line:LINES,bg:BGS,pet:PETS},out=[]; COSMETIC_ORDER.forEach(c=>{ const o=L[c.t].find(x=>x.id===c.id); if(o)out.push(o); }); return out; }
+function _ownedCount(){ let n=0; _allCosms().forEach(o=>{ if(_isOwned(o._key))n++; }); return n; }
+/* ===== v1.44 抽獎系統:成就給抽獎卷、抽獎卷抽造型、稀有度加權、CS2 直線滾輪 ===== */
+const TICKET_SVG=`<svg viewBox="0 0 24 24" fill="none"><path d="M3 9a1.6 1.6 0 0 0 1.6-1.6V6.5h14.8v.9A1.6 1.6 0 0 0 21 9v2a1.6 1.6 0 0 0-1.6 1.6v.9H4.6v-.9A1.6 1.6 0 0 0 3 11z" fill="currentColor" opacity="0.18"/><path d="M3 9a1.6 1.6 0 0 0 1.6-1.6V6.5h14.8v.9A1.6 1.6 0 0 0 21 9v2a1.6 1.6 0 0 0-1.6 1.6v.9H4.6v-.9A1.6 1.6 0 0 0 3 11z" stroke="currentColor" stroke-width="1.5"/><path d="M14 6v9" stroke="currentColor" stroke-width="1.3" stroke-dasharray="1.6 2"/></svg>`;
+const ADD_SVG=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9.5" cy="8" r="3.3"/><path d="M4 19c0-3.2 2.6-5.3 5.5-5.3 1 0 1.9.2 2.7.6"/><path d="M17.5 14.2v5.6M14.7 17h5.6"/></svg>`;
+function _gachaPool(){ return _allCosms().filter(o=>!_isOwned(o._key)); }
+function _pickWeighted(pool){ let tot=0; pool.forEach(o=>tot+=(RAR_WEIGHT[o._rar]||10)); let r=Math.random()*tot; for(const o of pool){ r-=(RAR_WEIGHT[o._rar]||10); if(r<=0)return o; } return pool[pool.length-1]; }
+function _rarFx(r){ return r==="l"?["#ffe08a","#ffc24b","#fff3cf"]:r==="e"?["#ff9ec4","#ff6fae","#ffd7ea"]:r==="r"?["#c9b0ff","#b06fef","#e0c8ff"]:["#a9c8ff","#5b8def","#cfe0ff"]; }
+function refreshTicketUI(){ const n=(DB.settings&&DB.settings._tickets)||0; document.querySelectorAll(".tk-count").forEach(e=>e.textContent=n); const badge=$("gachaCount"); if(badge){ badge.textContent=n; badge.style.display=n>0?"flex":"none"; } if(openedSheet==="gachaSheet")_renderGachaHead(); }
+function ticketGainFx(n){ if(!n)return; const el=document.createElement("div"); el.className="tk-gain"; el.innerHTML=`<span class="tk-ic">${TICKET_SVG}</span>+${n} 抽獎卷`; document.body.appendChild(el); requestAnimationFrame(()=>el.classList.add("on")); setTimeout(()=>{ el.classList.remove("on"); setTimeout(()=>el.remove(),450); },2000); }
+function _cosmMini(o){ return cosmPreviewHTML(o,o._type); }
+function _reelTile(o){ return `<div class="greel-tile rar-${o._rar}"><div class="greel-prev">${_cosmMini(o)}</div></div>`; }
+function openGacha(){ renderGacha(); openSheet("gachaSheet"); }
+function _renderGachaHead(){ const n=(DB.settings._tickets)||0, owned=_ownedCount(), total=COSMETIC_ORDER.length; const h=$("gachaHead");
+  if(h)h.innerHTML=`<div class="gc-tk"><span class="tk-ic">${TICKET_SVG}</span><b class="tk-count">${n}</b><span class="gc-tklab">張抽獎卷</span></div><div class="gc-prog">收藏 ${owned} / ${total}</div>`; }
+let _gachaSpinning=false;
+function renderGacha(){ _renderGachaHead(); if(!$("greelStrip")) $("gachaReel").innerHTML=`<div class="greel-strip" id="greelStrip"></div><div class="greel-marker"></div>`;
+  const pool=_gachaPool(), n=(DB.settings._tickets)||0, btn=$("gachaDrawBtn");
+  if(btn){ btn.disabled=_gachaSpinning||n<=0||pool.length===0; btn.innerHTML=pool.length===0?"已全部收集完成 🎉":(n<=0?"沒有抽獎卷了":`<span class="tk-ic">${TICKET_SVG}</span> 抽一張`); } }
+function gachaDraw(){ if(_gachaSpinning)return; const n=(DB.settings._tickets)||0, pool=_gachaPool();
+  if(n<=0){ toast("沒有抽獎卷,完成成就會拿到"); return; } if(pool.length===0){ toast("已經全部收集完成 🎉"); return; }
+  _gachaSpinning=true; DB.settings._tickets=n-1; const winner=_pickWeighted(pool); DB.settings.owned[winner._key]=Date.now(); save(DB); refreshTicketUI();
+  $("gachaReveal").className="gc-reveal"; $("gachaReveal").innerHTML=""; const btn=$("gachaDrawBtn"); if(btn)btn.disabled=true;
+  const all=_allCosms(), TILE=84, WINPOS=44, strip=$("greelStrip"); const tiles=[];
+  for(let i=0;i<WINPOS+7;i++){ tiles.push(i===WINPOS?winner:all[Math.floor(Math.random()*all.length)]); }
+  strip.style.transition="none"; strip.style.transform="translateX(0)"; strip.innerHTML=tiles.map(_reelTile).join("");
+  const view=$("gachaReel"), center=view.clientWidth/2, jitter=(Math.random()*40-20);
+  const dest=-(WINPOS*TILE + TILE/2 - center + jitter); void strip.offsetWidth;
+  strip.style.transition="transform 4.7s cubic-bezier(.11,.75,.05,1)"; strip.style.transform=`translateX(${dest}px)`;
+  if(navigator.vibrate&&!_reduce()){ let d=90; const tick=()=>{ if(!_gachaSpinning)return; try{navigator.vibrate(6);}catch(e){} d*=1.12; if(d<520)setTimeout(tick,d); }; setTimeout(tick,260); }
+  setTimeout(()=>{ _gachaSpinning=false; haptic(); _gachaRevealCard(winner); if(!_reduce())fxBurst(innerWidth/2,innerHeight*0.4,{n:winner._rar==="l"?64:winner._rar==="e"?44:30,pal:_rarFx(winner._rar),spd:winner._rar==="l"?5.2:3.8,up:1.2,life:82,sz:3.1}); renderGacha(); }, 4760);
+}
+function _gachaRevealCard(o){ const rm=RAR_META[o._rar]||RAR_META.c; const tname={frame:"外框",line:"折線",bg:"背景",pet:"寵物"}[o._type]||"";
+  const box=$("gachaReveal"); if(!box)return; box.className="gc-reveal rar-"+o._rar+" show";
+  box.innerHTML=`<div class="gcr-glow"></div><div class="gcr-rar" style="color:${rm.col}">${rm.name} · ${tname}</div><div class="gcr-prev">${_cosmMini(o)}</div><div class="gcr-name">${escapeHtml(o.name)}</div><div class="gcr-hint">已加入收藏 · 長按好友卡片可套上</div>`; }
 /* ===== v1.39 外框:完整包邊頭像框(金屬寶石環 ring + 像素themed 9-slice)===== */
 function _flipH(rows){return rows.map(r=>[...r].reverse().join(""));}
 function _flipV(rows){return [...rows].reverse();}
@@ -2482,23 +2601,20 @@ function bgPreviewHTML(bg){ _bgStill=true; const scene=bgSceneHTML(bg.id); _bgSt
 function cosmPreviewHTML(it,type){ return type==="frame"?framePreviewHTML(it):(type==="line"?linePreviewHTML(it):(type==="pet"?petPreviewHTML(it):bgPreviewHTML(it))); }
 /* 圖鑑:所有外觀 + 解鎖條件 + 預覽 */
 function openGallery(){ renderGallery(); openSheet("gallerySheet"); }
-function _galleryTiles(list,type){ return list.map(it=>{ const own=cosmOwned(it);
-    return `<div class="gtile ${own?'own':'lock'}"><div class="gprev">${cosmPreviewHTML(it,type)}<div class="gbadge">${own?"✓":"🔒"}</div></div><div class="gname">${escapeHtml(it.name)}</div><div class="greq">${own?"已解鎖":escapeHtml(cosmReqText(it))}</div></div>`; }).join(""); }
-function renderGallery(){ const nf=FRAMES.filter(cosmOwned).length,nl=LINES.filter(cosmOwned).length,np=PETS.filter(cosmOwned).length,nb=BGS.filter(cosmOwned).length;
-  const lc=_ownedCosmCount(), total=COSMETIC_ORDER.length;
-  const stats=_ladderStats(); const done=LADDER.filter(m=>(stats[m.fam]||0)>=m.need).length;
-  const upcoming=LADDER.filter(m=>(stats[m.fam]||0)<m.need).slice(0,4);
-  const nextName=(()=>{ const c=COSMETIC_ORDER[lc]; if(!c)return""; const L={frame:FRAMES,line:LINES,bg:BGS,pet:PETS}[c.t]; const o=L&&L.find(x=>x.id===c.id); return o?o.name:""; })();
-  const upRows=upcoming.length?upcoming.map(m=>`<div class="fa-row"><div class="fa-ic">${m.ic}</div><div class="fa-tx"><div class="fa-d">${escapeHtml(m.d)} <span class="fa-prog">${Math.min(stats[m.fam]||0,m.need)}/${m.need}</span></div></div></div>`).join(""):`<div class="fa-row got"><div class="fa-ic">🏆</div><div class="fa-tx"><div class="fa-d">全部里程碑都達成了,造型全開!</div></div></div>`;
-  $("galleryBody").innerHTML=`<div class="hint" style="margin:8px 2px 10px">造型用「進度階梯」解鎖:每達成一個里程碑,就依序解鎖清單裡的下一個造型(一個成就解一個)。都是真的有在記錄才拿得到。已解鎖的可長按好友卡片 →「裝扮外觀」套上去。</div>
-    <div class="ag-h">造型解鎖進度 <span>${lc}/${total}</span></div>
-    <div class="lad-bar"><i style="width:${total?Math.round(lc/total*100):0}%"></i></div>
-    <div class="lad-next">${nextName?`下一個造型:<b>${escapeHtml(nextName)}</b> · 再達成 1 個里程碑`:"造型已全部解鎖 🎉"}</div>
-    <div class="ag-h" style="margin-top:14px">接下來的里程碑 <span>${done} 已達成</span></div><div class="fa-list">${upRows}</div>
-    <div class="ag-h" style="margin-top:18px">外框 <span>${nf}/${FRAMES.length}</span></div><div class="gtiles">${_galleryTiles(FRAMES,"frame")}</div>
-    <div class="ag-h" style="margin-top:16px">寵物(繞著卡片走) <span>${np}/${PETS.length}</span></div><div class="gtiles">${_galleryTiles(PETS,"pet")}</div>
-    <div class="ag-h" style="margin-top:16px">背景(詳情頁氛圍) <span>${nb}/${BGS.length}</span></div><div class="gtiles">${_galleryTiles(BGS,"bg")}</div>
-    <div class="ag-h" style="margin-top:16px">折線 <span>${nl}/${LINES.length}</span></div><div class="gtiles">${_galleryTiles(LINES,"line")}</div>`; }
+function _galleryTile(it){ const own=cosmOwned(it),rm=RAR_META[it._rar]||RAR_META.c;
+  return `<div class="gtile ${own?'own':'lock'} rar-${it._rar}"><div class="gprev">${cosmPreviewHTML(it,it._type)}<div class="gbadge">${own?"✓":"🔒"}</div></div><div class="gname">${escapeHtml(it.name)}</div><div class="greq" style="color:${own?rm.col:'var(--ink-3)'}">${own?rm.name:"未擁有"}</div></div>`; }
+function setGalleryView(v){ DB.settings.galleryView=v; save(DB); haptic(); renderGallery(); }
+function renderGallery(){ const view=DB.settings.galleryView||"type"; const all=_allCosms(); const owned=all.filter(cosmOwned).length, total=all.length;
+  const toggle=`<div class="gv-seg">${[["type","依種類"],["rarity","依稀有度"]].map(([v,l])=>`<button class="${view===v?'on':''}" data-press onclick="setGalleryView('${v}')">${l}</button>`).join("")}</div>`;
+  let body="";
+  if(view==="type"){ const groups=[["外框",FRAMES],["寵物",PETS],["背景",BGS],["折線",LINES]];
+    body=groups.map(([label,list])=>{ const L=list.filter(x=>typeof x._ord==="number"); const n=L.filter(cosmOwned).length;
+      return `<div class="ag-h" style="margin-top:16px">${label} <span>${n}/${L.length}</span></div><div class="gtiles">${L.map(_galleryTile).join("")}</div>`; }).join(""); }
+  else { body=RAR_ORDER.map(r=>{ const items=all.filter(x=>x._rar===r); const n=items.filter(cosmOwned).length; const rm=RAR_META[r];
+      return `<div class="ag-h" style="margin-top:16px"><span style="color:${rm.col}">${rm.name}</span> <span>${n}/${items.length}</span></div><div class="gtiles">${items.map(_galleryTile).join("")}</div>`; }).join(""); }
+  $("galleryBody").innerHTML=`<div class="hint" style="margin:8px 2px 10px">造型靠「抽獎」收集(完成成就拿抽獎卷)。已擁有的可長按好友卡片 →「裝扮外觀」套上去。稀有度 <b style="color:#5b8def">普通</b> · <b style="color:#b06fef">稀有</b> · <b style="color:#ff6fae">史詩</b> · <b style="color:#ffc24b">傳奇</b></div>
+    <div class="ag-h">收藏進度 <span>${owned}/${total}</span></div><div class="lad-bar"><i style="width:${total?Math.round(owned/total*100):0}%"></i></div>
+    ${toggle}${body}`; bindPress(); }
 /* 每個好友的裝扮:上面用「他本人的卡片」即時預覽,下面選已解鎖的 */
 let dressId=null;
 function openDress(id){ dressId=id; renderDress(); openSheet("dressSheet"); }
@@ -2587,7 +2703,7 @@ _emCv=$("emberCanvas"); if(_emCv){ _emCtx=_emCv.getContext("2d"); _emSize(); }
 _fxCv=$("fxCanvas"); if(_fxCv){ _fxCtx=_fxCv.getContext("2d"); _fxSize(); }
 { const di=$("scoreDate"); if(di) di.addEventListener("change",()=>{ const v=di.value; if(v){ const ts=new Date(v).getTime(); scoreTs=Number.isFinite(ts)?Math.min(ts,Date.now()):null; } else scoreTs=null; updateScoreTimeLabel(); haptic(); }); }
 catchUpDecay();
-applyTheme(); renderHome(true); addSheetHeaders(); syncSettingsUI(); bindPress(); bindSheetDrag(); bindHomeSwipe(); bindDetailSwipe(); bindSelectDrag(); segMoveAll(); runReminders();
+_migrateGacha(); applyTheme(); renderHome(true); addSheetHeaders(); syncSettingsUI(); refreshTicketUI(); bindPress(); bindSheetDrag(); bindHomeSwipe(); bindDetailSwipe(); bindSelectDrag(); segMoveAll(); runReminders();
 evalAchievements(true); _achvReady=true; refreshAchvCountUI();
 window.addEventListener("resize",()=>{ if(_emCv&&_emRaf)_emSize(); if(_fxCv)_fxSize(); });
 document.addEventListener("visibilitychange",()=>{ emberBg(true); if(!document.hidden&&catchUpDecay()){ if(currentDetailId)renderDetail(currentDetailId,false); else renderHome(false); } });
