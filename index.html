@@ -159,8 +159,8 @@ html[data-theme="light"] .scrim{background:rgba(60,40,20,.28);}
 .sheet.drawer{left:0;right:0;top:0;bottom:0;width:100%;height:100dvh;max-height:none;border-radius:0;border-top:none;transform:translateX(100%);touch-action:pan-y;}
 .sheet.drawer.on{transform:translateX(0);}
 .sheet.drawer.on .stagger>*{animation:none;}  /* 抽屜不跑逐項淡入,避免滑到全開時內容再閃一次 */
-.sheet.drawer .sheet-hd{padding-top:calc(env(safe-area-inset-top) + 12px);}
-.sheet.drawer .sheet-x{top:calc(env(safe-area-inset-top) + 12px);transform:none;}
+.sheet.drawer .sheet-hd{padding-top:calc(env(safe-area-inset-top) + 10px);min-height:calc(env(safe-area-inset-top) + 52px);}
+.sheet.drawer .sheet-x{top:calc(env(safe-area-inset-top) + 10px);transform:none;}
 .sheet.drawer .sheet-x:active{transform:scale(.9);}
 .grabber{display:none;}  /* 由 .sheet-hd 內的把手取代 */
 .sheet-hd{position:sticky;top:0;z-index:6;background:var(--canvas-2);margin:0 -22px 10px;padding:12px 22px 11px;min-height:42px;display:flex;align-items:center;justify-content:center;touch-action:none;}
@@ -298,7 +298,9 @@ body.selecting .list .friend:not(.ended)::after{top:50%;left:16px;right:auto;tra
 .chart-legend span{display:inline-flex;align-items:center;gap:6px;}
 .dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
 .chart-line{stroke-linecap:round;stroke-linejoin:round;}
-.log-item{display:flex;gap:12px;padding:14px 2px;align-items:flex-start;border-bottom:1px solid var(--hair-soft);user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;}
+.log-item{display:flex;gap:12px;padding:14px 2px;align-items:flex-start;border-bottom:1px solid var(--hair-soft);user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;position:relative;overflow:hidden;box-sizing:border-box;}
+.log-item.will-del{background:linear-gradient(90deg,transparent 24%,color-mix(in srgb,var(--danger) 26%,transparent));}
+.log-item.will-del::after{content:"刪除";position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--danger);font-size:12px;font-weight:700;letter-spacing:.05em;}
 .log-item:active{background:color-mix(in srgb,var(--danger) 8%,transparent);}
 .log-delta{font-family:var(--mono);font-size:16px;font-weight:700;min-width:50px;}
 .log-delta.up{color:var(--warm);} .log-delta.down{color:var(--cool);} .log-delta.flat{color:var(--ink-3);}
@@ -387,6 +389,18 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 /* v1.33 成就:解鎖橫幅 + 成就櫃 */
 .achv-banner{position:fixed;left:14px;right:14px;top:calc(env(safe-area-inset-top) + 12px);max-width:440px;margin:0 auto;z-index:87;background:var(--surface-hi);border:1px solid color-mix(in srgb,var(--warm) 45%,var(--hair));border-radius:16px;padding:12px 14px;display:flex;gap:12px;align-items:center;box-shadow:0 16px 40px rgba(0,0,0,.5);transform:translateY(-170%);opacity:0;transition:transform .45s var(--spring),opacity .3s;pointer-events:none;}
 .achv-banner.on{transform:none;opacity:1;}
+.achv-banner{cursor:pointer;pointer-events:auto;}
+.medal{cursor:pointer;}
+/* 成就內頁 */
+.acd-hero{display:flex;align-items:center;justify-content:center;height:118px;margin:2px -22px 14px;background:radial-gradient(120% 130% at 50% 0,color-mix(in srgb,var(--warm) 10%,transparent),transparent 62%),var(--surface);border-bottom:1px solid var(--hair);}
+.acd-hero .acd-disc{width:74px;height:74px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:38px;background:radial-gradient(circle at 40% 35%,var(--surface-hi),var(--surface));border:1px solid var(--hair);filter:grayscale(.55) opacity(.7);transition:transform .3s var(--spring);}
+.acd-hero.on .acd-disc{filter:none;background:radial-gradient(circle at 40% 35%,#fff3cf,color-mix(in srgb,var(--warm) 55%,var(--surface-hi)));box-shadow:0 0 26px -4px var(--warm);}
+.acd-t{font-family:var(--disp);font-size:23px;font-weight:700;text-align:center;}
+.acd-badge{text-align:center;font-family:var(--mono);font-size:11px;color:var(--ink-3);margin-top:6px;}
+.acd-badge.on{color:var(--gold);}
+.acd-grp{text-align:center;font-size:11px;color:var(--ink-3);margin-top:10px;letter-spacing:.14em;text-transform:uppercase;}
+.acd-d{text-align:center;font-size:15.5px;line-height:1.6;color:var(--ink);margin:6px 8px 0;}
+.acd-tale{text-align:center;font-size:13px;line-height:1.7;color:var(--ink-2);margin:16px 12px 4px;padding-top:16px;border-top:1px solid var(--hair-soft);font-style:italic;}
 .achv-banner .ab-disc{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:21px;flex:0 0 auto;background:radial-gradient(circle at 40% 35%,#fff3cf,var(--warm));box-shadow:0 0 16px -2px var(--warm);}
 .achv-banner .ab-cap{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);}
 .achv-banner .ab-t{font-family:var(--disp);font-weight:800;font-size:15.5px;margin-top:1px;}
@@ -512,18 +526,25 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 .fa-row.got .fa-t{color:var(--ink);}
 .fa-d{font-size:10.5px;color:var(--ink-3);margin-top:1px;line-height:1.3;}
 /* v1.39 詳情背景:完整像素風場景(SVG 注入 #detailBg),在內容後面、偏暗保持可讀性 */
-.detail-bg{position:fixed;inset:0;z-index:0;opacity:0;transition:opacity .45s ease;pointer-events:none;overflow:hidden;}
+/* sticky + 負 margin:即使 #detailView 有 transform(fixed 會退化成 absolute)也能整段捲動都蓋滿視窗,不會捲到底變黑 */
+.detail-bg{position:sticky;top:0;left:0;width:100%;height:100dvh;margin-bottom:-100dvh;z-index:0;opacity:0;transition:opacity .45s ease;pointer-events:none;overflow:hidden;}
 .detail-bg.on{opacity:1;}
 .bgscene{position:absolute;inset:0;}
 .bgscene svg{width:100%;height:100%;display:block;}
-.bgveil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,7,4,.5),rgba(10,7,4,.05) 32%,rgba(10,7,4,.5));}
+.bgveil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,7,4,.42),rgba(10,7,4,.02) 34%,rgba(10,7,4,.34));}
 .bgscene .twk{animation:bgTwk 3.6s ease-in-out infinite;}
 @keyframes bgTwk{0%,100%{opacity:.28;}50%{opacity:.95;}}
-/* v1.40 詳情頁沉浸:套背景時卡片變毛玻璃(透出場景)、標題用場景配色;首頁與全域不受影響 */
-#detailView.immersive .chart-wrap{background:color-mix(in srgb,var(--surface) 88%,transparent);border-color:color-mix(in srgb,var(--bgac) 34%,var(--hair));box-shadow:0 6px 28px -14px #000;}
-#detailView.immersive .section-t{color:color-mix(in srgb,var(--bgac) 62%,var(--ink-2));}
-#detailView.immersive .d-sub{color:color-mix(in srgb,var(--bgac) 32%,var(--ink-2));}
-#detailView.immersive .log-item{border-bottom-color:color-mix(in srgb,var(--bgac) 22%,var(--hair-soft));}
+/* v1.40/43 詳情頁沉浸:套背景時卡片半透(透出場景,但不用毛玻璃 → 不掉幀)、文字用場景配色;首頁與全域不受影響 */
+#detailView.immersive .chart-wrap{background:color-mix(in srgb,var(--surface) 62%,transparent);border-color:color-mix(in srgb,var(--bgac) 40%,var(--hair));box-shadow:0 8px 30px -14px #000;}
+#detailView.immersive .section-t{color:color-mix(in srgb,var(--bgac) 66%,var(--ink-2));}
+#detailView.immersive .d-tier{color:color-mix(in srgb,var(--bgac) 30%,var(--c,var(--ink)));}
+#detailView.immersive .d-sub{color:color-mix(in srgb,var(--bgac) 34%,var(--ink-2));}
+#detailView.immersive .chips .chip{border-color:color-mix(in srgb,var(--bgac) 32%,var(--hair));background:color-mix(in srgb,var(--surface) 55%,transparent);}
+#detailView.immersive .log-item{border-bottom-color:color-mix(in srgb,var(--bgac) 24%,var(--hair-soft));}
+#detailView.immersive .log-note,#detailView.immersive .log-date{color:color-mix(in srgb,var(--bgac) 12%,var(--ink-2));}
+/* 詳情內容底部的主題收尾(取代突然變黑;每個背景不一樣) */
+.detail-foot{position:relative;z-index:1;height:120px;margin:10px -22px -2px;pointer-events:none;overflow:hidden;}
+.detail-foot svg{width:100%;height:100%;display:block;}
 /* v1.34 回顧變化排行 */
 .rk-list{margin-top:4px;}
 .rk-row{display:flex;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px solid var(--hair-soft);}
@@ -760,6 +781,12 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
   <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
 </div>
 
+<div class="sheet" id="achDetailSheet">
+  <div class="grabber"></div>
+  <div id="achDetailBody"></div>
+  <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
+</div>
+
 <div class="sheet" id="dressSheet">
   <div class="grabber"></div>
   <h2 id="dressTitle">裝扮</h2>
@@ -801,10 +828,17 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 
 <script>
 "use strict";
-const VERSION="1.42";
+const VERSION="1.43";
 const KEY="friendship-meter-v1";
 /* 更新紀錄:每次改版就在最前面加一筆(v 由大到小,設定頁「更新紀錄」會照這個順序顯示) */
 const CHANGELOG=[
+  {v:"1.43",date:"2026-08-15",items:[
+    "詳情頁背景不再往下滑就變黑:改成整段捲動都蓋滿(甚至延伸到最底),卡片也調透一點讓場景更明顯,文字配合場景配色",
+    "撤銷條可以往下滑掉;成就通知條可以往上滑掉、或點一下看完整內容",
+    "所有成就都可以點進去看:大圖示 + 完整說明 + 一句小故事",
+    "時間軸日誌可以左滑刪除(滑出 + 收合動畫),長按選單照舊",
+    "修設定頁右上角叉叉在瀏海機被切一半(把頂列加高包住整顆)",
+  ]},
   {v:"1.42",date:"2026-08-15",items:[
     "修好「面板往下滑關不掉」:所有下拉面板(成就、圖鑑、裝扮、資料、回顧、選單…)現在捲到頂往下滑、或按著頂部橫條往下拉,都能關了",
     "關鍵原因:iOS Safari 的下拉關閉本來用 pointer 事件,它的 preventDefault 擋不住原生回彈捲動,會變成「拉了只是彈一下」;改用 touch 事件重寫手勢就穩了",
@@ -1529,7 +1563,7 @@ function renderDetail(id,animateScore){
     ${logsHtml}
     <div style="text-align:center;margin:26px 0 10px"><button class="linkbtn del-friend" data-press onclick="askDeleteFriend('${f.id}')">刪除這位好友與所有紀錄</button></div>`;
   bindPress(); igniteChart(); segMove($("detailBody").querySelector(".seg"));
-  document.querySelectorAll("#detailBody .log-item").forEach(el=>{ const lid=el.dataset.lid; bindLongPress(el, null, ()=>openLogContext(f.id,lid)); });
+  document.querySelectorAll("#detailBody .log-item").forEach(el=>{ const lid=el.dataset.lid; bindLongPress(el, null, ()=>openLogContext(f.id,lid)); bindLogSwipe(el,f.id,lid); });
   if(animateScore){ rollNumber($("dScore"),Math.round(dScore*0.4),dScore,550); countUpIn($("detailBody")); }
 }
 function setSpan(d){ spanDays=d; haptic(); renderDetail(currentDetailId,false); }
@@ -2080,17 +2114,32 @@ function resetJourney(){
 }
 function askResetJourney(){ closeSheet(); askConfirm("重新開始造型旅程?會清掉目前套在好友身上的造型,已達成過的收藏成就不會再自動補回,造型成就從 0 開始重新體驗。你的好友與紀錄都不受影響。", null, ()=>resetJourney(), "重新開始"); }
 function _abNext(){ if(!_abQueue.length){_abBusy=false;return;} _abBusy=true; const a=_abQueue.shift(); showAchvBanner(a); setTimeout(_abNext,2900); }
-function showAchvBanner(a){ const b=$("achvBanner"); if(!b)return; $("abDisc").textContent=a.ic||"🏅"; $("abTitle").textContent=a.t; $("abSub").textContent=a.d;
+let _bannerA=null;
+function showAchvBanner(a){ const b=$("achvBanner"); if(!b)return; _bannerA=a; $("abDisc").textContent=a.ic||"🏅"; $("abTitle").textContent=a.t; $("abSub").textContent=a.d;
   b.classList.remove("on"); void b.offsetWidth; b.classList.add("on"); haptic();
   const c=_fxCenter(b); if(c&&!_reduce()) fxBurst(c.x,c.y,{n:18,pal:_FX_GOLD,spd:3.2,life:66,sz:2.6});
-  setTimeout(()=>b.classList.remove("on"),2600); }
+  bindSwipeDismiss(b,"up",()=>b.classList.remove("on"),()=>{ b.classList.remove("on"); if(_bannerA)openAchvDetail(_bannerA); });
+  clearTimeout(b._t); b._t=setTimeout(()=>b.classList.remove("on"),3400); }
 function refreshAchvCountUI(){ const n=_achvCount(); const e=$("achvSetCount"); if(e)e.textContent=`${n} / ${ACHV.length}`; if(openedSheet==="achvSheet")renderAchvShelf(); }
 function openAchv(){ renderAchvShelf(); closeSheet(); openSheet("achvSheet"); }
 function renderAchvShelf(){ const box=$("achvShelf"); if(!box)return; const got=DB.settings.achv||{}; const cnt=$("achvCount"); if(cnt)cnt.textContent=`${_achvCount()} / ${ACHV.length}`;
   const groups=[],gi={}; ACHV.forEach(a=>{ if(gi[a.g]==null){gi[a.g]=groups.length;groups.push({g:a.g,items:[]});} groups[gi[a.g]].items.push(a); });
   box.innerHTML=groups.map(gr=>{ const un=gr.items.filter(a=>got[a.id]).length;
     return `<div class="achv-group"><div class="ag-h">${escapeHtml(gr.g)} <span>${un}/${gr.items.length}</span></div><div class="achv-grid">`+
-      gr.items.map(a=>`<div class="medal ${got[a.id]?'got':''}"><div class="disc">${a.ic}</div><div class="mtx"><div class="mt">${escapeHtml(a.t)}</div><div class="ms">${escapeHtml(a.d)}</div></div></div>`).join("")+`</div></div>`; }).join(""); }
+      gr.items.map(a=>`<div class="medal ${got[a.id]?'got':''}" data-press onclick="openAchvDetail('${a.id}')"><div class="disc">${a.ic}</div><div class="mtx"><div class="mt">${escapeHtml(a.t)}</div><div class="ms">${escapeHtml(a.d)}</div></div></div>`).join("")+`</div></div>`; }).join(""); bindPress(); }
+/* 點成就 → 看完整內容 + 一句小故事(原創短句,依 id 穩定選一句) */
+const _ACHV_TALES=["每一次記錄,都是把「在乎」放進時間裡。","關係不是天生的,是一次一次選擇留下來的。","溫度會變,但你願意回來看它,就已經很難得。","有些人值得你多寫一筆,這一筆你做到了。","把火顧著,不是熱鬧,是不想讓它熄掉。","記得的人,通常也是被記得的人。","慢慢來,長長久久的東西都不急。","今天的這一點溫度,以後回頭會是故事的開頭。"];
+function _achvById(id){ return ACHV.find(x=>x.id===id); }
+function _achvTale(id){ let h=0; for(let i=0;i<id.length;i++)h=(h*31+id.charCodeAt(i))>>>0; return _ACHV_TALES[h%_ACHV_TALES.length]; }
+function openAchvDetail(id){ const a=(typeof id==="object")?id:_achvById(id); if(!a)return; const got=DB.settings.achv||{}; const on=!!got[a.id];
+  const when=on?new Date(got[a.id]):null; const dstr=when?`${when.getFullYear()}/${String(when.getMonth()+1).padStart(2,"0")}/${String(when.getDate()).padStart(2,"0")} 達成`:"還沒解鎖";
+  $("achDetailBody").innerHTML=`<div class="acd-hero ${on?'on':''}"><div class="acd-disc">${a.ic||"🏅"}</div></div>
+    <div class="acd-t">${escapeHtml(a.t)}</div>
+    <div class="acd-badge ${on?'on':''}">${on?"✓ 已解鎖":"🔒 未解鎖"} · <span>${dstr}</span></div>
+    <div class="acd-grp">${escapeHtml(a.g||"成就")}</div>
+    <div class="acd-d">${escapeHtml(a.d)}</div>
+    <div class="acd-tale">${escapeHtml(_achvTale(a.id))}</div>`;
+  openSheet("achDetailSheet"); }
 
 /* ===== v1.37 造型成就(FACHV):唯一會解鎖造型的成就,從「重置」的基準點開始算 =====
    都是真的在記錄才拿得到的(跨越多個不同的日子、真的把某人養起來、把負分救回來…),
@@ -2499,9 +2548,39 @@ let _undo=null,_undoT=null;
 function _cloneLogs(id){ const f=DB.friends.find(x=>x.id===id); return f?JSON.parse(JSON.stringify(f.logs)):null; }
 function _restoreLogs(id,logs){ const f=DB.friends.find(x=>x.id===id); if(f&&logs)f.logs=logs; }
 function offerUndo(msg,revert){ _undo={revert}; const t=$("undoToast"); if(!t)return; $("undoMsg").textContent=msg;
-  t.classList.remove("on"); void t.offsetWidth; t.classList.add("on"); clearTimeout(_undoT); _undoT=setTimeout(dismissUndo,3000); }
+  t.classList.remove("on"); void t.offsetWidth; t.classList.add("on"); clearTimeout(_undoT); _undoT=setTimeout(dismissUndo,3000);
+  bindSwipeDismiss(t,"down",dismissUndo); }
 function runUndo(){ if(_undo&&_undo.revert)_undo.revert(); _undo=null; haptic(); dismissUndo(); markDid("undo"); }
 function dismissUndo(){ clearTimeout(_undoT); const t=$("undoToast"); if(t)t.classList.remove("on"); _undo=null; }
+/* ===== v1.43 通知類可滑掉:撤銷條往下滑、成就條往上滑或點開 ===== */
+function bindSwipeDismiss(el,dir,onDismiss,onTap){ if(!el||el._swd)return; el._swd=true;
+  let sx=0,sy=0,d=0,active=false,decided=false,vert=false;
+  el.addEventListener("touchstart",e=>{ if(e.touches.length!==1){active=false;return;} const t=e.touches[0]; sx=t.clientX;sy=t.clientY;d=0;active=true;decided=false;vert=false; el.style.transition="none"; },{passive:true});
+  el.addEventListener("touchmove",e=>{ if(!active)return; const t=e.touches[0],mx=t.clientX-sx,my=t.clientY-sy;
+    if(!decided){ if(Math.abs(mx)<6&&Math.abs(my)<6)return; decided=true; vert=Math.abs(my)>=Math.abs(mx); if(!vert){active=false;el.style.transition="";return;} }
+    e.preventDefault(); d=(dir==="down")?Math.max(0,my):Math.min(0,my);
+    el.style.transform=`translateY(${d}px)`; el.style.opacity=String(Math.max(0,1-Math.abs(d)/90)); },{passive:false});
+  const end=()=>{ if(!active){return;} active=false;
+    if(!decided){ el.style.transition="";el.style.transform="";el.style.opacity=""; if(onTap)onTap(); return; }
+    el.style.transition="transform .24s var(--ease),opacity .2s";
+    if(Math.abs(d)>46){ el.style.transform=`translateY(${dir==="down"?130:-180}px)`; el.style.opacity="0"; haptic(); setTimeout(()=>{ el.style.transform="";el.style.transition="";el.style.opacity=""; if(onDismiss)onDismiss(); },210); }
+    else { el.style.transform="";el.style.opacity=""; setTimeout(()=>el.style.transition="",240); } };
+  el.addEventListener("touchend",end); el.addEventListener("touchcancel",end);
+}
+/* 時間軸日誌:左滑刪除(過門檻整條滑出 + 收合),鬆手前紅底提示 */
+function bindLogSwipe(el,fid,lid){ if(el._lsw)return; el._lsw=true;
+  let sx=0,sy=0,mx=0,active=false,decided=false,horiz=false;
+  el.addEventListener("touchstart",e=>{ if(e.touches.length!==1)return; const t=e.touches[0]; sx=t.clientX;sy=t.clientY;mx=0;active=true;decided=false;horiz=false; el.style.transition="none"; },{passive:true});
+  el.addEventListener("touchmove",e=>{ if(!active)return; const t=e.touches[0],dx=t.clientX-sx,dy=t.clientY-sy;
+    if(!decided){ if(Math.abs(dx)<9&&Math.abs(dy)<9)return; decided=true; horiz=(Math.abs(dx)>Math.abs(dy)&&dx<0); if(!horiz){active=false;el.style.transition="";return;} }
+    e.preventDefault(); mx=Math.min(0,dx); el.style.transform=`translateX(${mx}px)`; el.classList.toggle("will-del",-mx>80); },{passive:false});
+  const end=()=>{ if(!active||!horiz){active=false;el.classList.remove("will-del");return;} active=false;
+    if(-mx>80){ haptic(); el.style.transition="transform .26s var(--ease),opacity .24s,max-height .3s ease,margin .3s,padding .3s,border 0s .28s";
+      el.style.maxHeight=el.offsetHeight+"px"; void el.offsetWidth; el.style.transform="translateX(-105%)"; el.style.opacity="0"; el.style.maxHeight="0"; el.style.paddingTop="0"; el.style.paddingBottom="0"; el.style.marginTop="0"; el.style.marginBottom="0"; el.style.borderWidth="0";
+      setTimeout(()=>{ doDeleteLog(fid,lid); },300); }
+    else { el.style.transition="transform .22s var(--ease)"; el.style.transform=""; el.classList.remove("will-del"); setTimeout(()=>el.style.transition="",240); } };
+  el.addEventListener("touchend",end); el.addEventListener("touchcancel",end);
+}
 function _toLocalInput(ts){ const d=new Date(ts),p=n=>String(n).padStart(2,"0"); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`; }
 
 _emCv=$("emberCanvas"); if(_emCv){ _emCtx=_emCv.getContext("2d"); _emSize(); }
