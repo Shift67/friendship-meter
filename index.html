@@ -481,39 +481,54 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 .fov.pix .pixsheen{position:absolute;inset:0;overflow:hidden;pointer-events:none;border-radius:7px;}
 .fov.pix .pixsheen::before{content:"";position:absolute;top:-25%;bottom:-25%;left:-50%;width:30%;transform:skewX(-18deg);background:linear-gradient(90deg,transparent,rgba(255,255,255,.42),transparent);mix-blend-mode:screen;animation:pixSheen 3.6s ease-in-out infinite;}
 @keyframes pixSheen{0%{left:-50%;}58%,100%{left:135%;}}
-/* v1.47 特殊框:電視 / 全息 / 水族箱 / 底片 / 街機。框內效果低透明、pointer-events:none,不擋分數 */
-.fov.special{inset:-3px;border-radius:16px;overflow:hidden;pointer-events:none;z-index:5;}
+/* v1.48 特殊框引擎:資料驅動的動態模組。邊框用 --bz,特效用 --gl;全部合成層、低透明、不擋分數 */
+.fov.special{inset:-3px;border-radius:16px;overflow:hidden;pointer-events:none;z-index:5;box-shadow:inset 0 0 0 2px var(--bz),inset 0 0 0 3.2px color-mix(in srgb,var(--gl) 30%,transparent),inset 0 0 14px 3px color-mix(in srgb,var(--gl) 20%,transparent);}
 .fov.special i,.fov.special b{position:absolute;pointer-events:none;}
-.sp-tv{box-shadow:inset 0 0 0 2px #3a4048,inset 0 0 0 5px #0c0e13,inset 0 0 0 6px #4a515c,inset 0 0 16px 5px rgba(0,0,0,.4);}
-.sp-tv .sp-screen{inset:6px;border-radius:9px;background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(130,200,255,.05) 2px 3px);}
-.sp-tv .sp-scan{left:6px;right:6px;top:0;height:16px;border-radius:9px;background:linear-gradient(180deg,transparent,rgba(180,230,255,.16),transparent);animation:spScan 3.4s linear infinite;}
-.sp-tv .sp-noise{inset:6px;border-radius:9px;opacity:0;mix-blend-mode:screen;background-size:58px 58px;animation:tvNoise 7s steps(1,end) infinite;}
-@keyframes tvNoise{0%,89%,100%{opacity:0}91%{opacity:.16}93%{opacity:.04}95%{opacity:.14}97%{opacity:.03}}
-.sp-tv .sp-led{right:9px;bottom:3px;width:4px;height:4px;border-radius:50%;background:#37e07a;box-shadow:0 0 5px #37e07a;animation:spLed 2.6s ease-in-out infinite;}
-@keyframes spScan{0%{top:-8%}100%{top:100%}}
+.fxm.sptint{inset:2px;border-radius:12px;}
+.fxm.hscan{inset:4px;border-radius:11px;background:repeating-linear-gradient(0deg,transparent 0 3px,color-mix(in srgb,var(--gl) 12%,transparent) 3px 4px);}
+.fxm.scan{left:5px;right:5px;top:0;height:18px;border-radius:10px;background:linear-gradient(180deg,transparent,color-mix(in srgb,var(--gl) 34%,transparent),transparent);animation:spScan 3.2s linear infinite;}
+@keyframes spScan{0%{top:-10%}100%{top:100%}}
+.fxm.noise{inset:5px;border-radius:10px;opacity:0;mix-blend-mode:screen;background-size:56px 56px;animation:tvNoise 6.5s steps(1,end) infinite;}
+@keyframes tvNoise{0%,88%,100%{opacity:0}90%{opacity:.16}92%{opacity:.04}95%{opacity:.13}97%{opacity:.03}}
+.fxm.led{right:8px;bottom:3px;width:4px;height:4px;border-radius:50%;background:#37e07a;box-shadow:0 0 5px #37e07a;animation:spLed 2.6s ease-in-out infinite;}
 @keyframes spLed{0%,100%{opacity:.45}50%{opacity:1}}
-.sp-holo{box-shadow:inset 0 0 0 1.6px rgba(90,224,255,.9),inset 0 0 12px 2px rgba(90,224,255,.3);animation:holoFlick 3.6s ease-in-out infinite;}
-@keyframes holoFlick{0%,100%{opacity:1}47%{opacity:.82}50%{opacity:1}72%{opacity:.9}}
-.sp-holo .sp-hscan{inset:4px;border-radius:11px;background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(120,230,255,.07) 3px 4px);}
-.sp-holo .sp-hglow{left:4px;right:4px;top:0;height:20px;background:linear-gradient(180deg,transparent,rgba(120,230,255,.15),transparent);animation:spScan 2.6s linear infinite;}
-.sp-aq{box-shadow:inset 0 0 0 2px rgba(90,180,230,.55),inset 0 0 0 4px rgba(18,58,88,.6),inset 0 0 14px 3px rgba(70,180,230,.25);background:linear-gradient(180deg,rgba(40,120,170,.07),rgba(20,60,100,.12));}
-.sp-aq .bub{bottom:5px;width:5px;height:5px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,rgba(180,230,255,.5));opacity:0;animation:bubUp 4.2s linear infinite;}
-.sp-aq .b1{left:12%}.sp-aq .b2{left:30%;width:4px;height:4px;animation-delay:1.2s}.sp-aq .b3{left:52%;animation-delay:2.1s}.sp-aq .b4{left:73%;width:3px;height:3px;animation-delay:.7s}.sp-aq .b5{left:88%;animation-delay:3s}
-@keyframes bubUp{0%{transform:translateY(0);opacity:0}12%{opacity:.85}86%{opacity:.65}100%{transform:translateY(-84px);opacity:0}}
-.sp-film{box-shadow:inset 0 0 0 8px #0b0b0e;}
-.sp-film .perf{top:6px;bottom:6px;width:8px;background:repeating-linear-gradient(180deg,transparent 0 5px,rgba(205,205,214,.85) 5px 9px,transparent 9px 14px);background-size:8px 14px;animation:filmRoll 2.4s linear infinite;}
-.sp-film .pl{left:0}.sp-film .pr{right:0}
-@keyframes filmRoll{to{background-position:0 14px;}}
-.sp-arc{box-shadow:inset 0 0 0 2px #ff2f9e,inset 0 0 0 4px #12061f,inset 0 0 12px 2px rgba(255,47,158,.4);}
-.sp-arc .marq{top:3px;left:6px;right:6px;height:4px;border-radius:2px;background:repeating-linear-gradient(90deg,#ffe14a 0 4px,transparent 4px 9px);animation:marqRun .55s linear infinite;}
+.fxm.breathe{inset:2px;border-radius:12px;box-shadow:inset 0 0 14px 3px color-mix(in srgb,var(--gl) 45%,transparent);opacity:.5;animation:fovPulse 2.5s ease-in-out infinite;}
+.fxm.conic{inset:-22%;border-radius:50%;background:conic-gradient(from 0deg,transparent,color-mix(in srgb,var(--gl) 50%,transparent),transparent 30%,color-mix(in srgb,var(--a2,var(--gl)) 46%,transparent),transparent 62%);opacity:.5;mix-blend-mode:screen;animation:spin360 5s linear infinite;}
+.fxm.beam{inset:-22%;border-radius:50%;background:conic-gradient(from 0deg,color-mix(in srgb,var(--gl) 55%,transparent) 0 7%,transparent 7% 100%);opacity:.5;mix-blend-mode:screen;animation:spin360 2.6s linear infinite;}
+@keyframes spin360{to{transform:rotate(360deg);}}
+.fxm.spark{width:3px;height:3px;border-radius:50%;background:#fff;box-shadow:0 0 5px var(--gl);animation:twinkle 2s ease-in-out infinite;}
+.fxm.spark.k1{top:4px;left:4px}.fxm.spark.k2{top:4px;right:4px;animation-delay:.5s}.fxm.spark.k3{bottom:4px;left:4px;animation-delay:1s}.fxm.spark.k4{bottom:4px;right:4px;animation-delay:1.5s}
+@keyframes twinkle{0%,100%{opacity:.25;transform:scale(.7)}50%{opacity:1;transform:scale(1.3)}}
+.fxm.marquee{top:3px;left:6px;right:6px;height:4px;border-radius:2px;background:repeating-linear-gradient(90deg,var(--gl) 0 4px,transparent 4px 9px);animation:marqRun .55s linear infinite;}
 @keyframes marqRun{to{background-position:9px 0;}}
-@media (prefers-reduced-motion:reduce){.fov.special i,.fov.special b,.fov.special,.fov.pix.pixa-pulse,.fov.pix .pixsheen::before{animation:none!important;}}
+.fxm.glitch{inset:5px;border-radius:10px;background:repeating-linear-gradient(0deg,transparent 0 7px,color-mix(in srgb,var(--gl) 22%,transparent) 7px 8px);mix-blend-mode:screen;opacity:.5;animation:glitchy 3.5s steps(1,end) infinite;}
+@keyframes glitchy{0%,82%,100%{transform:translateX(0);opacity:.5}84%{transform:translateX(-3px);opacity:.9}86%{transform:translateX(3px)}88%{transform:translateX(-2px)}90%{transform:translateX(0);opacity:.5}}
+.fxm.sheen{inset:0;overflow:hidden;}
+.fxm.sheen::before{content:"";position:absolute;top:-30%;bottom:-30%;left:-50%;width:28%;transform:skewX(-18deg);background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--gl) 55%,#fff),transparent);mix-blend-mode:screen;animation:pixSheen 3.4s ease-in-out infinite;}
+.fxm.grid{left:0;right:0;bottom:0;height:46%;background-image:linear-gradient(color-mix(in srgb,var(--gl) 32%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--gl) 32%,transparent) 1px,transparent 1px);background-size:16px 12px;opacity:.5;transform:perspective(60px) rotateX(46deg);transform-origin:bottom;animation:gridRoll 1.5s linear infinite;}
+@keyframes gridRoll{to{background-position:0 12px,0 0;}}
+.fxm.ringpulse{inset:30%;border-radius:50%;border:1.5px solid var(--gl);opacity:0;animation:ringPulse 2.4s ease-out infinite;}
+.fxm.ringpulse.r2{animation-delay:1.2s}
+@keyframes ringPulse{0%{transform:scale(.3);opacity:.8}100%{transform:scale(1.8);opacity:0}}
+.fxm.perf{top:6px;bottom:6px;width:8px;background:repeating-linear-gradient(180deg,transparent 0 5px,color-mix(in srgb,var(--gl) 85%,transparent) 5px 9px,transparent 9px 14px);background-size:8px 14px;animation:filmRoll 2.4s linear infinite;}
+.fxm.perf.pl{left:0}.fxm.perf.pr{right:0}
+@keyframes filmRoll{to{background-position:0 14px;}}
+.fxm.star{width:2px;height:2px;border-radius:50%;background:#fff;box-shadow:0 0 3px var(--gl);opacity:.4;animation:twinkle 2.4s ease-in-out infinite;}
+.fxm.bubble{bottom:5px;width:5px;height:5px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,color-mix(in srgb,var(--gl) 50%,transparent));opacity:0;animation:bubUp 4.2s linear infinite;}
+@keyframes bubUp{0%{transform:translateY(0);opacity:0}12%{opacity:.8}86%{opacity:.6}100%{transform:translateY(-88px);opacity:0}}
+.fxm.rain{top:-12%;width:2px;height:13px;border-radius:2px;background:linear-gradient(180deg,transparent,var(--gl));opacity:0;animation:rainDown 1.4s linear infinite;}
+@keyframes rainDown{0%{transform:translateY(0);opacity:0}10%{opacity:.6}100%{transform:translateY(150px);opacity:0}}
+.fxm.ember{bottom:2px;width:3px;height:3px;border-radius:50%;background:var(--gl);box-shadow:0 0 4px var(--gl);opacity:0;animation:emberUp 3.2s linear infinite;}
+@keyframes emberUp{0%{transform:translate(0,0);opacity:0}15%{opacity:.9}100%{transform:translate(6px,-92px);opacity:0}}
+.fxm.snow{top:-10%;width:4px;height:4px;border-radius:50%;background:var(--gl);opacity:0;animation:snowDown 3.6s linear infinite;}
+@keyframes snowDown{0%{transform:translateY(0);opacity:0}12%{opacity:.85}100%{transform:translateY(150px);opacity:.1}}
+@media (prefers-reduced-motion:reduce){.fov.special i,.fov.special b,.fov.special,.fov.special .fxm.sheen::before,.fov.pix.pixa-pulse,.fov.pix .pixsheen::before{animation:none!important;}}
 /* 預覽:外框貼齊預覽框內緣(inset:0),寵物/背景/折線維持裁切;預覽一律靜態(省效能) */
 .fprev.hasframe{overflow:visible;}
 .fprev .fov.ring{inset:0;border-radius:inherit;}
 .fprev .fov.pix{inset:0;}
 .fprev .fov.special{inset:0;}
-.fprev .fov.special i,.fprev .fov.special b,.fprev .fov.special,.fprev .fov.pix.pixa-pulse,.fprev .fov.pix .pixsheen::before{animation:none!important;}
+.fprev .fov.special i,.fprev .fov.special b,.fprev .fov.special,.fprev .fov.special .fxm.sheen::before,.fprev .fov.pix.pixa-pulse,.fprev .fov.pix .pixsheen::before{animation:none!important;}
 /* 折線動態 */
 .chart-line.line-pulse{animation:neonPulse 1.7s ease-in-out infinite;}
 @keyframes neonPulse{0%,100%{opacity:.78;}50%{opacity:1;}}
@@ -675,16 +690,38 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 .gc-draw10:disabled{opacity:.5;}
 .gc-reel.rush::before,.gc-reel.rush::after{opacity:.35;}
 .gc-reel.rush{box-shadow:inset 0 0 24px 4px rgba(176,111,239,.28);}
-.gc-reveal.ten.show{position:relative;display:flex;flex-direction:column;align-items:center;padding:12px 8px 8px;margin-bottom:6px;border-radius:16px;overflow:hidden;box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--rc) 55%,transparent);background:color-mix(in srgb,var(--rc) 8%,transparent);animation:gcrPop .5s var(--spring);}
-.t10-cap{font-family:var(--mono);font-size:12px;font-weight:700;margin-bottom:10px;z-index:1;text-align:center;}
-.t10-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;width:100%;z-index:1;}
-.t10{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;height:62px;border-radius:10px;box-shadow:inset 0 0 0 1.4px color-mix(in srgb,var(--rc) 62%,transparent);background:color-mix(in srgb,var(--rc) 12%,transparent);opacity:0;transform:scale(.55) translateY(6px);animation:t10pop .44s var(--spring) forwards;}
-.t10.rar-l{box-shadow:inset 0 0 0 1.6px var(--rc),0 0 12px -2px color-mix(in srgb,var(--rc) 70%,transparent);}
+.gc-reveal.ten.show{position:relative;display:flex;flex-direction:column;align-items:center;padding:12px 8px 8px;margin-bottom:6px;border-radius:16px;overflow:visible;box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--rc) 55%,transparent);background:color-mix(in srgb,var(--rc) 8%,transparent);animation:gcrPop .5s var(--spring);}
+.t10-cap{font-family:var(--mono);font-size:12.5px;font-weight:700;margin-bottom:10px;z-index:1;text-align:center;}
+.t10-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;width:100%;z-index:1;}
+.t10{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;height:74px;min-width:0;overflow:hidden;border-radius:11px;box-shadow:inset 0 0 0 1.4px color-mix(in srgb,var(--rc) 62%,transparent);background:color-mix(in srgb,var(--rc) 12%,transparent);opacity:0;transform:scale(.5) translateY(8px);animation:t10pop .46s var(--spring) forwards;}
+.t10.rar-l{box-shadow:inset 0 0 0 1.7px var(--rc),0 0 13px -1px color-mix(in srgb,var(--rc) 75%,transparent);}
+.t10.rar-e{box-shadow:inset 0 0 0 1.6px var(--rc),0 0 9px -2px color-mix(in srgb,var(--rc) 55%,transparent);}
 @keyframes t10pop{to{opacity:1;transform:none;}}
-.t10-prev{transform:scale(.42);pointer-events:none;}
+.t10-prev{transform:scale(.5);pointer-events:none;}
 .t10-coin{display:flex;flex-direction:column;align-items:center;}
-.t10-coin .coin-ic{width:22px;height:22px;display:inline-flex;} .t10-coin b{font-family:var(--mono);font-size:11px;color:#c79cf0;margin-top:1px;}
-.t10-rar{font-family:var(--mono);font-size:8px;font-weight:800;letter-spacing:.04em;}
+.t10-coin .coin-ic{width:26px;height:26px;display:inline-flex;} .t10-coin b{font-family:var(--mono);font-size:12px;color:#c79cf0;margin-top:1px;}
+.t10-rar{font-family:var(--mono);font-size:8.5px;font-weight:800;letter-spacing:.04em;}
+/* v1.48 十連抽小動畫:扭蛋掉落→晃動→裂開爆光 */
+.gc-reveal.ten-stage{position:relative;display:flex;align-items:center;justify-content:center;min-height:158px;padding:10px 0;margin-bottom:6px;border-radius:16px;overflow:hidden;box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--rc) 45%,transparent);background:color-mix(in srgb,var(--rc) 7%,transparent);}
+.g10stage{position:relative;width:100%;display:flex;flex-direction:column;align-items:center;}
+.g10cap{position:relative;width:90px;height:90px;margin:4px auto 10px;animation:capShake 1.05s cubic-bezier(.3,.1,.3,1);will-change:transform;}
+.g10cap span{position:absolute;left:0;right:0;}
+.g10cap-top{top:0;height:50%;border-radius:90px 90px 7px 7px;background:linear-gradient(160deg,color-mix(in srgb,var(--cc,#ffd76a) 55%,#fff),var(--cc,#ffd76a));box-shadow:inset 0 3px 6px rgba(255,255,255,.4);}
+.g10cap-bot{bottom:0;height:50%;border-radius:7px 7px 90px 90px;background:linear-gradient(20deg,#eef1f6,#c2c7d2);box-shadow:inset 0 -3px 6px rgba(0,0,0,.15);}
+.g10cap::after{content:"";position:absolute;left:2px;right:2px;top:calc(50% - 2px);height:4px;border-radius:2px;background:rgba(0,0,0,.28);z-index:2;}
+.g10cap-shine{top:13%;left:18%;width:26px;height:15px;border-radius:50%;background:rgba(255,255,255,.6);filter:blur(1.5px);z-index:1;}
+.g10cap.burst{animation:capBurst .46s ease-out forwards;}
+.g10cap.burst .g10cap-top{animation:capTop .46s ease-out forwards;}
+.g10cap.burst .g10cap-bot{animation:capBot .46s ease-out forwards;}
+@keyframes capShake{0%{transform:translateY(-48px) scale(.5);opacity:0}16%{transform:translateY(0) scale(1);opacity:1}30%{transform:rotate(-8deg)}44%{transform:rotate(8deg)}58%{transform:rotate(-11deg) scale(1.05)}72%{transform:rotate(11deg) scale(1.06)}86%{transform:rotate(-7deg) scale(1.12)}100%{transform:rotate(0) scale(1.16)}}
+@keyframes capBurst{0%{transform:scale(1.16)}30%{transform:scale(1.32)}100%{transform:scale(1.5);opacity:0}}
+@keyframes capTop{to{transform:translateY(-42px) rotate(-22deg);opacity:0}}
+@keyframes capBot{to{transform:translateY(42px) rotate(22deg);opacity:0}}
+.g10flash{position:absolute;inset:-30%;background:radial-gradient(circle at 50% 42%,#fff,transparent 58%);opacity:0;pointer-events:none;}
+.g10flash.on{animation:g10flash .5s ease-out;}
+@keyframes g10flash{0%{opacity:0}22%{opacity:.92}100%{opacity:0}}
+.g10cap-label{font-family:var(--mono);font-size:12px;color:var(--ink-3);letter-spacing:.1em;}
+@media (prefers-reduced-motion:reduce){.g10cap,.g10cap.burst,.g10cap.burst .g10cap-top,.g10cap.burst .g10cap-bot,.g10flash.on{animation-duration:.001s!important;}}
 .tk-gain{position:fixed;left:50%;top:28%;transform:translate(-50%,20px);z-index:90;display:flex;align-items:center;gap:8px;background:var(--surface-hi);border:1px solid color-mix(in srgb,var(--gold) 50%,var(--hair));border-radius:14px;padding:11px 18px;font-size:15px;font-weight:700;color:var(--gold);box-shadow:0 14px 40px rgba(0,0,0,.5);opacity:0;transition:transform .4s var(--spring),opacity .3s;pointer-events:none;}
 .tk-gain.on{transform:translate(-50%,0);opacity:1;}
 .tk-gain .tk-ic{width:24px;height:24px;display:inline-flex;}
@@ -998,10 +1035,16 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 
 <script>
 "use strict";
-const VERSION="1.47";
+const VERSION="1.48";
 const KEY="friendship-meter-v1";
 /* 更新紀錄:每次改版就在最前面加一筆(v 由大到小,設定頁「更新紀錄」會照這個順序顯示) */
 const CHANGELOG=[
+  {v:"1.48",date:"2026-08-16",items:[
+    "新增約 50 種更大膽的動態特殊框(星際之門、黑洞、超新星、賽博龐克、故障藝術、烈焰漩渦、聖光、鳳凰之翼、合成波、雷電交加… 一路到雨夜、雪國、魔法陣),用可組合的動態模組拼出來",
+    "大砍長很像的線條與環形框:每個色系只留一個最好看的,其餘全刪(折線只剩 8 條、環形框只剩幾個有特色的)",
+    "抽到代幣改成「揭曉動畫跳出來的那一刻」才入帳(輪盤還在轉時不會偷偷先加,更有驚喜感);單抽的造型也一樣等揭曉才入收藏",
+    "十連抽重做成一段小動畫:扭蛋掉下 → 越晃越用力 → 裂開爆光 → 十顆一次亮相(全部看得到,不再看不完)",
+  ]},
   {v:"1.47",date:"2026-08-16",items:[
     "大量新增外框,尤其是像素框:電路板、糖果、寶石陣、皇家金、骷髏、海波、蘑菇、符文、太空侵略者(共 18 種像素框)",
     "很多像素框加了動態:光掃過 / 呼吸,和特殊框都是合成層動畫、不掉幀",
@@ -2419,27 +2462,14 @@ function _ladderCount(){ if(_ladderCache!=null)return _ladderCache; const s=_lad
 function _achvDef(id){ return ACHV.find(a=>a.id===id); }
 /* ===== v1.35 外觀系統:外框 / 折線 / 寵物 / 背景(用造型成就 FACHV 解鎖,可預覽、套到某個好友) ===== */
 const FRAMES=[
-  /* 金屬寶石環(留下差異明顯的,拿掉一堆只是變色的) */
+  /* 金屬寶石環(大砍:每個色系只留一個最好看的,其餘刪掉) */
   {id:"gold",name:"尊爵金框",kind:"glow"},
-  {id:"sky",name:"晴空",kind:"glow"},
-  {id:"violet",name:"紫晶",kind:"glow"},
   {id:"crown",name:"王者金冠",kind:"glow"},
   {id:"aurora",name:"極光",kind:"grad"},
-  {id:"candy",name:"糖果",kind:"grad"},
   {id:"blackgold",name:"黑金",kind:"grad"},
   {id:"rainbowspin",name:"彩虹旋轉",kind:"spin"},
-  {id:"neonspin",name:"霓虹旋轉",kind:"spin"},
-  {id:"pulsegold",name:"呼吸金",kind:"pulse"},
   {id:"s67",name:"67 專屬",req:"fortune67",kind:"spin"},
-  {id:"prisma",name:"流光稜鏡",kind:"ring"},
-  {id:"electric",name:"電流",kind:"ring"},
-  {id:"halo",name:"光暈",kind:"ring"},
-  {id:"sakuraflow",name:"落櫻流光",kind:"ring"},
-  {id:"abyss",name:"深淵漩渦",kind:"ring"},
-  {id:"royalspin",name:"紫金旋",kind:"ring"},
   {id:"obsidian",name:"曜石銀",kind:"ring",shop:true},
-  {id:"moltencore",name:"熔核",kind:"ring",shop:true},
-  {id:"innerglow",name:"燼芯",kind:"design"},
   {id:"cornerbloom",name:"綻放",kind:"design"},
   /* 像素框(手刻,整圈包滿;★ = 有動態效果) */
   {id:"artsakura",name:"櫻花框",kind:"art"},
@@ -2461,12 +2491,58 @@ const FRAMES=[
   {id:"artmush",name:"蘑菇",kind:"art"},
   {id:"artrune",name:"符文",kind:"art",shop:true},
   {id:"artspace",name:"太空侵略者",kind:"art"},
-  /* v1.47 特殊框:非像素、非線條,框內有低調視覺效果(不擋字) */
+  /* v1.47/48 特殊框:非像素、非線條,框內有大膽動態視覺(全用合成層,低透明不擋分數)。ids 對應 SPECIAL_DEF */
   {id:"tv",name:"復古電視",kind:"special"},
   {id:"hologram",name:"全息投影",kind:"special"},
   {id:"aquarium",name:"水族箱",kind:"special"},
   {id:"film",name:"底片",kind:"special"},
   {id:"arcade",name:"街機霓虹",kind:"special",shop:true},
+  {id:"portal",name:"星際之門",kind:"special"},
+  {id:"blackhole",name:"黑洞",kind:"special"},
+  {id:"supernova",name:"超新星",kind:"special"},
+  {id:"galaxyswirl",name:"銀河漩渦",kind:"special"},
+  {id:"meteor",name:"流星雨",kind:"special"},
+  {id:"aurorastorm",name:"極光風暴",kind:"special"},
+  {id:"pulsar",name:"脈衝星",kind:"special"},
+  {id:"wormhole",name:"蟲洞",kind:"special",shop:true},
+  {id:"cyberpunk",name:"賽博龐克",kind:"special"},
+  {id:"glitchart",name:"故障藝術",kind:"special"},
+  {id:"datastream",name:"數據洪流",kind:"special"},
+  {id:"hologrid",name:"全息網格",kind:"special"},
+  {id:"radar",name:"掃描雷達",kind:"special"},
+  {id:"forcefield",name:"能量護盾",kind:"special"},
+  {id:"plasmaring",name:"電漿環",kind:"special"},
+  {id:"neoncircuit",name:"霓虹迴路",kind:"special"},
+  {id:"terminal",name:"駭客終端",kind:"special"},
+  {id:"inferno",name:"烈焰漩渦",kind:"special"},
+  {id:"frostward",name:"冰霜結界",kind:"special"},
+  {id:"thunderstorm",name:"雷暴",kind:"special"},
+  {id:"tornado",name:"龍捲風",kind:"special"},
+  {id:"volcano",name:"火山",kind:"special"},
+  {id:"abyssswirl",name:"深海漩渦",kind:"special"},
+  {id:"firefly",name:"螢火之森",kind:"special"},
+  {id:"petalrain",name:"落櫻雨",kind:"special"},
+  {id:"maplerain",name:"楓紅雨",kind:"special"},
+  {id:"auroraveil",name:"極光帷幕",kind:"special"},
+  {id:"magiccircle",name:"魔法陣",kind:"special"},
+  {id:"runeward",name:"符文結界",kind:"special"},
+  {id:"holylight",name:"聖光",kind:"special"},
+  {id:"shadow",name:"暗影",kind:"special"},
+  {id:"soulfire",name:"靈魂之火",kind:"special"},
+  {id:"starryward",name:"星辰結界",kind:"special"},
+  {id:"crystalreso",name:"水晶共鳴",kind:"special"},
+  {id:"phoenix",name:"鳳凰之翼",kind:"special",shop:true},
+  {id:"synthwave",name:"合成波",kind:"special"},
+  {id:"vhs",name:"VHS 錄影帶",kind:"special"},
+  {id:"disco",name:"迪斯可",kind:"special"},
+  {id:"goldtemple",name:"黃金聖殿",kind:"special",shop:true},
+  {id:"diamond",name:"鑽石光輝",kind:"special"},
+  {id:"royalcrest",name:"皇家紋章",kind:"special"},
+  {id:"stardust",name:"星塵",kind:"special"},
+  {id:"rainynight",name:"雨夜",kind:"special"},
+  {id:"snowland",name:"雪國",kind:"special"},
+  {id:"lightning",name:"雷電交加",kind:"special"},
+  {id:"embermoon",name:"餘燼之月",kind:"special"},
 ];
 /* 背景:點進某位好友的詳情時整個畫面的氛圍(CSS,低耗效、不影響閱讀)。friend.bg */
 const BGS=[
@@ -2493,42 +2569,27 @@ const PETS=[
   {id:"dragon",name:"小龍",spr:"dragon",tc:"#7ee08a",shop:true},
 ];
 const LINE_GRADS={rainbow:["#ff5a4a","#ffcf6a","#7ee08a","#5b8def","#c77dff"],sunset:["#ff4d6d","#ff9d3c","#ffd76a"],ocean:["#3a7bd5","#00d2ff","#7ee0d0"],aurora:["#7ee08a","#5b8def","#c77dff"],fire:["#c81810","#ff5a4a","#ff9d3c"],ice:["#8fd4ff","#c9f0ff","#5b8def"],forest:["#2f7a4d","#7ee08a","#d7f06a"],candy:["#ff6fae","#ffd76a","#7ee0ff"],gold:["#e08a1e","#ffd76a","#fff3cf"],violet:["#7d3cff","#c77dff","#ff6fae"],mono:["#f0f0f0","#8a8a8a","#f0f0f0"],sky:["#5b8def","#8fd4ff"]};
+/* v1.48 大砍:每個色系只留一條最好看的(多半是會跑動的),其餘全刪 */
 const LINES=[
-  {id:"rainbow",name:"彩虹流光",req:"F8",grad:"rainbow"},
-  {id:"neon",name:"霓虹脈衝",req:"F16",solid:"#7ee0ff",glow:1,flow:1},
-  {id:"sunset",name:"夕陽",req:"F6",grad:"sunset"},
-  {id:"ocean",name:"海洋",req:"F7",grad:"ocean"},
-  {id:"aurora",name:"極光",req:"F12",grad:"aurora"},
-  {id:"fire",name:"火焰",req:"F14",grad:"fire",glow:1},
-  {id:"ice",name:"冰霜",req:"F5",grad:"ice"},
-  {id:"forest",name:"森林",req:"F9",grad:"forest"},
-  {id:"candy",name:"糖果",req:"F10",grad:"candy"},
-  {id:"gold",name:"流金",req:"F1",grad:"gold",glow:1},
-  {id:"violet",name:"紫電",req:"F11",grad:"violet"},
-  {id:"sky",name:"天空",req:"F2",grad:"sky"},
-  {id:"dash",name:"流動虛線",req:"F3",solid:"#ff9d3c",dash:"7 6",flow:1},
-  {id:"dot",name:"點點",req:"F2",solid:"#5b8def",dash:"1 7"},
-  {id:"thick",name:"粗筆",req:"F6",solid:"#ff9d3c",width:4.4},
-  {id:"glowline",name:"柔光",req:"F3",solid:"#ffd76a",glow:1},
-  {id:"pulsegold",name:"金脈衝",req:"F14",grad:"gold",flow:1},
-  {id:"auroraflow",name:"極光跑動",req:"F12",grad:"aurora",flow:1,dash:"9 7"},
-  {id:"fireflow",name:"火焰跑動",req:"F8",grad:"fire",flow:1,dash:"8 6"},
-  {id:"rainbowflow",name:"彩虹跑動",req:"F16",grad:"rainbow",flow:1,dash:"10 7"},
-  {id:"midnight",name:"午夜藍",req:"F5",solid:"#5b8def",glow:1,width:3},
-  {id:"blossom",name:"櫻粉",req:"F11",solid:"#ff6fae",glow:1},
-  /* v1.46 新折線 */
-  {id:"plasma",name:"電漿",solid:"#ff4fd8",glow:1,flow:1,dash:"6 5",width:3},
+  {id:"rainbowflow",name:"彩虹跑動",grad:"rainbow",flow:1,dash:"10 7"},
+  {id:"auroraflow",name:"極光跑動",grad:"aurora",flow:1,dash:"9 7"},
+  {id:"fireflow",name:"火焰跑動",grad:"fire",flow:1,dash:"8 6",glow:1},
+  {id:"frostflow",name:"霜流",grad:"ice",glow:1,flow:1,dash:"7 6"},
   {id:"emeraldflow",name:"翠流",grad:"forest",flow:1,dash:"9 6"},
-  {id:"frostflow",name:"霜流",grad:"ice",glow:1,flow:1,dash:"7 6",shop:true},
-  {id:"sakuraline",name:"櫻吹雪",solid:"#ff8fbf",glow:1,flow:1,dash:"3 6",shop:true},
+  {id:"plasma",name:"電漿",solid:"#ff4fd8",glow:1,flow:1,dash:"6 5",width:3},
+  {id:"violet",name:"紫電",grad:"violet",glow:1},
+  {id:"neon",name:"霓虹脈衝",solid:"#7ee0ff",glow:1,flow:1},
 ];
 /* v1.40 造型解鎖順序:四類交錯排(框/線/背景/寵物),每類內部由樸素到華麗;s67 不進階梯(用今日運勢彩蛋解) */
 const COSMETIC_ORDER=(()=>{ const arrs=[FRAMES.filter(f=>f.id!=="s67"),LINES,BGS,PETS],ty=["frame","line","bg","pet"],idx=[0,0,0,0],out=[]; let any=true;
   while(any){ any=false; for(let i=0;i<4;i++){ if(idx[i]<arrs[i].length){ out.push({t:ty[i],id:arrs[i][idx[i]].id}); idx[i]++; any=true; } } } return out; })();
 /* v1.44 稀有度 + 每個造型唯一 key(擁有 / 抽獎用)。普通藍 / 稀有紫 / 史詩粉 / 傳奇金 */
 const RAR_DEF={
- frame:{c:["gold","sky","violet"],r:["aurora","candy","sakuraflow","innerglow","cornerbloom","artsakura","arthearts","artsnow","artcandy","artskull","artwave","artmush","film"],e:["blackgold","pulsegold","electric","abyss","obsidian","artstars","artvine","crystalpix","artcircuit","artroyal","artrune","artspace","hologram","aquarium"],l:["crown","rainbowspin","neonspin","prisma","halo","s67","royalspin","moltencore","artcat","artfire","artbolt","artgem","tv","arcade"]},
- line:{c:["sky","dot","thick","glowline"],r:["sunset","ocean","ice","forest","candy","gold","midnight","blossom","dash","emeraldflow","frostflow","sakuraline"],e:["rainbow","aurora","fire","violet","neon","pulsegold","plasma"],l:["auroraflow","fireflow","rainbowflow"]},
+ frame:{c:["gold","artsnow","artcandy","artmush","artskull"],
+   r:["aurora","cornerbloom","artsakura","arthearts","artwave","artcircuit","artvine","film","meteor","radar","neoncircuit","terminal","tornado","firefly","petalrain","maplerain","starryward","crystalreso","vhs","disco","stardust","rainynight","snowland"],
+   e:["blackgold","obsidian","artstars","crystalpix","artroyal","artrune","artspace","hologram","aquarium","galaxyswirl","aurorastorm","pulsar","glitchart","datastream","hologrid","forcefield","plasmaring","inferno","frostward","thunderstorm","volcano","abyssswirl","auroraveil","magiccircle","runeward","shadow","soulfire","royalcrest","embermoon","blackhole"],
+   l:["crown","rainbowspin","s67","artcat","artfire","artbolt","artgem","tv","arcade","portal","supernova","wormhole","cyberpunk","holylight","phoenix","synthwave","goldtemple","diamond","lightning"]},
+ line:{r:["frostflow","emeraldflow","violet"],e:["neon","plasma"],l:["rainbowflow","auroraflow","fireflow"]},
  bg:{c:["night"],r:["ocean","maya","forest"],e:["sakura","aurora","ember","matrix","galaxy"],l:["neon"]},
  pet:{c:["dog","bird","chick"],r:["fish","bunny","hamster"],e:["cat","fox","penguin"],l:["ghost","dragon"]},
 };
@@ -2584,11 +2645,8 @@ function renderGacha(){ _renderGachaHead(); if(!$("greelStrip")) $("gachaReel").
   if(b10){ b10.disabled=_gachaSpinning||n<10; b10.innerHTML=`<span class="tk-ic">${TICKET_SVG}</span> 十連抽 <b class="gc10x">×10</b>`; } }
 function gachaDraw(){ if(_gachaSpinning)return; const n=(DB.settings._tickets)||0, pool=_gachaPool();
   if(n<=0){ toast("沒有抽獎卷,完成成就會拿到"); return; }
-  _gachaSpinning=true; DB.settings._tickets=n-1;
+  _gachaSpinning=true; DB.settings._tickets=n-1; save(DB); refreshTicketUI();   /* 只先扣卷;獎勵(代幣/造型)等揭曉時才入帳 */
   const winner=_drawOutcome(pool);
-  if(winner._type==="coin"){ DB.settings._coins=(DB.settings._coins||0)+winner.coin; }
-  else { if(!DB.settings.owned)DB.settings.owned={}; DB.settings.owned[winner._key]=Date.now(); }
-  save(DB); refreshTicketUI();
   $("gachaReveal").className="gc-reveal"; $("gachaReveal").innerHTML=""; const btn=$("gachaDrawBtn"); if(btn)btn.disabled=true;
   const WINPOS=44, strip=$("greelStrip"); const tiles=[];
   for(let i=0;i<WINPOS+7;i++){ tiles.push(i===WINPOS?winner:_reelFiller()); }
@@ -2601,49 +2659,51 @@ function gachaDraw(){ if(_gachaSpinning)return; const n=(DB.settings._tickets)||
   const dest=-(winCenter - center + jitter);
   strip.style.transition="transform 4.7s cubic-bezier(.11,.75,.05,1)"; strip.style.transform=`translateX(${dest}px)`;
   if(navigator.vibrate&&!_reduce()){ let d=90; const tick=()=>{ if(!_gachaSpinning)return; try{navigator.vibrate(6);}catch(e){} d*=1.12; if(d<520)setTimeout(tick,d); }; setTimeout(tick,260); }
-  setTimeout(()=>{ _gachaSpinning=false; haptic(); _gachaRevealCard(winner); if(!_reduce())fxBurst(innerWidth/2,innerHeight*0.4,{n:winner._rar==="l"?64:winner._rar==="e"?44:30,pal:_rarFx(winner._rar),spd:winner._rar==="l"?5.2:3.8,up:1.2,life:82,sz:3.1}); renderGacha(); }, 4760);
+  setTimeout(()=>{ _gachaSpinning=false; haptic();
+    /* v1.48:獎勵在揭曉這一刻才入帳(代幣要等動畫跳出來才加,才有驚喜感) */
+    if(winner._type==="coin"){ DB.settings._coins=(DB.settings._coins||0)+winner.coin; }
+    else { if(!DB.settings.owned)DB.settings.owned={}; DB.settings.owned[winner._key]=Date.now(); }
+    save(DB); refreshTicketUI(); _gachaRevealCard(winner);
+    if(!_reduce())fxBurst(innerWidth/2,innerHeight*0.4,{n:winner._rar==="l"?64:winner._rar==="e"?44:30,pal:_rarFx(winner._rar),spd:winner._rar==="l"?5.2:3.8,up:1.2,life:82,sz:3.1}); renderGacha(); }, 4760);
 }
 function _gachaRevealCard(o){ const rm=RAR_META[o._rar]||RAR_META.c;
   const box=$("gachaReveal"); if(!box)return; box.className="gc-reveal rar-"+o._rar+" show";
   if(o._type==="coin"){ box.innerHTML=`<div class="gcr-glow"></div><div class="gcr-rar" style="color:${rm.col}">${rm.name} · 代幣</div><div class="gcr-prev coinbig"><span class="coin-ic">${COIN_SVG}</span></div><div class="gcr-name">+${o.coin} 代幣</div><div class="gcr-hint">到「商店」分頁用代幣換造型</div>`; return; }
   const tname={frame:"外框",line:"折線",bg:"背景",pet:"寵物"}[o._type]||"";
   box.innerHTML=`<div class="gcr-glow"></div><div class="gcr-rar" style="color:${rm.col}">${rm.name} · ${tname}</div><div class="gcr-prev">${_cosmMini(o)}</div><div class="gcr-name">${escapeHtml(o.name)}</div><div class="gcr-hint">已加入收藏 · 長按好友卡片可套上</div>`; }
-/* ===== v1.47 十連抽:動畫和單抽完全不同 —— 高速衝刺 → 十格一次爆開,最高稀有度大放光 ===== */
+/* ===== v1.48 十連抽:一段小動畫(扭蛋掉下→晃動→裂開爆光→十顆一次亮相),和單抽完全不同 ===== */
 function _rarRank(r){ const i=RAR_ORDER.indexOf(r); return i<0?9:i; }  /* 越小越稀有(l=0) */
 function _tenTileHTML(o,idx){ const rm=RAR_META[o._rar]||RAR_META.c;
   const inner=o._type==="coin"?`<div class="t10-coin"><span class="coin-ic">${COIN_SVG}</span><b>+${o.coin}</b></div>`:`<div class="t10-prev">${_cosmMini(o)}</div>`;
-  return `<div class="t10 rar-${o._rar}" style="animation-delay:${(idx*0.075).toFixed(3)}s">${inner}<span class="t10-rar" style="color:${rm.col}">${rm.name}</span></div>`; }
+  return `<div class="t10 rar-${o._rar}" style="animation-delay:${(0.9+idx*0.07).toFixed(3)}s">${inner}<span class="t10-rar" style="color:${rm.col}">${rm.name}</span></div>`; }
 function gachaDraw10(){ if(_gachaSpinning)return; const n=(DB.settings._tickets)||0;
   if(n<10){ toast("十連抽需要 10 張抽獎卷"); return; }
-  _gachaSpinning=true; DB.settings._tickets=n-10;
-  const won=new Set(); const results=[];
+  _gachaSpinning=true; DB.settings._tickets=n-10; save(DB); refreshTicketUI();
+  /* 先決定十抽(同批不重複),但獎勵等揭曉才入帳 */
+  const won=new Set(), results=[];
   for(let i=0;i<10;i++){ const pool=_allCosms().filter(o=>!o.shop&&!_isOwned(o._key)&&!won.has(o._key));
-    const out=_drawOutcome(pool);
-    if(out._type==="coin"){ DB.settings._coins=(DB.settings._coins||0)+out.coin; }
-    else { if(!DB.settings.owned)DB.settings.owned={}; won.add(out._key); DB.settings.owned[out._key]=Date.now(); }
-    results.push(out); }
-  save(DB); refreshTicketUI();
-  const reveal=$("gachaReveal"); reveal.className="gc-reveal"; reveal.innerHTML="";
+    const out=_drawOutcome(pool); if(out._type!=="coin")won.add(out._key); results.push(out); }
+  const best=results.reduce((a,b)=>_rarRank(a._rar)<=_rarRank(b._rar)?a:b), bm=RAR_META[best._rar]||RAR_META.c;
+  const reel=$("gachaReel"); if(reel)reel.style.display="none";   /* 十連抽不用輪盤,改播扭蛋小動畫 */
   const b1=$("gachaDrawBtn"),b10=$("gachaDraw10Btn"); if(b1)b1.disabled=true; if(b10)b10.disabled=true;
-  /* 衝刺階段:輪盤高速掃過(只用 transform,便宜) */
-  const strip=$("greelStrip"),reel=$("gachaReel"); const tiles=[]; for(let i=0;i<46;i++)tiles.push(_reelFiller());
-  strip.style.transition="none"; strip.style.transform="translateX(0)"; strip.innerHTML=tiles.map(_reelTile).join("");
-  reel.classList.add("rush"); void strip.offsetWidth;
-  const tw=(strip.children[10]&&strip.children[10].offsetWidth)||90;
-  strip.style.transition="transform 1.05s cubic-bezier(.16,.7,.12,1)"; strip.style.transform=`translateX(${-(tiles.length-5)*tw}px)`;
-  if(navigator.vibrate&&!_reduce()){ let d=55; const tick=()=>{ if(!_gachaSpinning)return; try{navigator.vibrate(5);}catch(e){} d*=1.16; if(d<420)setTimeout(tick,d); }; setTimeout(tick,110); }
+  const box=$("gachaReveal"); box.className="gc-reveal ten-stage rar-"+best._rar; box.style.setProperty("--cc",bm.col);
+  box.innerHTML=`<div class="g10stage"><div class="g10cap"><span class="g10cap-top"></span><span class="g10cap-bot"></span><span class="g10cap-shine"></span></div><div class="g10flash"></div><div class="g10cap-label">十連抽 · 開啟中…</div></div>`;
+  if(navigator.vibrate&&!_reduce()){ [220,480,720,940].forEach(t=>setTimeout(()=>{try{navigator.vibrate(8)}catch(e){}},t)); }
+  /* 1.05s:扭蛋裂開爆光 */
+  setTimeout(()=>{ const cap=box.querySelector(".g10cap"),fl=box.querySelector(".g10flash");
+    if(cap)cap.classList.add("burst"); if(fl)fl.classList.add("on"); haptic();
+    if(!_reduce())fxBurst(innerWidth/2,innerHeight*0.4,{n:best._rar==="l"?116:74,pal:_rarFx(best._rar),spd:best._rar==="l"?6.6:4.7,up:1.2,life:98,sz:3.7}); },1050);
+  /* 1.5s:入帳 + 十格一次亮相(全部看得到) */
   setTimeout(()=>{
-    reel.classList.remove("rush");
-    const best=results.reduce((a,b)=>_rarRank(a._rar)<=_rarRank(b._rar)?a:b);
-    const bm=RAR_META[best._rar]||RAR_META.c;
-    const coins=results.filter(r=>r._type==="coin").reduce((a,r)=>a+r.coin,0);
-    const newCosm=results.filter(r=>r._type!=="coin").length;
-    reveal.className="gc-reveal ten show rar-"+best._rar;
-    reveal.innerHTML=`<div class="gcr-glow"></div><div class="t10-cap">十連結果 · 最高 <b style="color:${bm.col}">${bm.name}</b>${coins?` · <span style="color:#c79cf0">+${coins} 代幣</span>`:""}</div><div class="t10-grid">${results.map(_tenTileHTML).join("")}</div><div class="gcr-hint">新造型 ${newCosm} 件已入收藏 · 長按好友卡片套上</div>`;
-    haptic(); setTimeout(haptic,120);
-    if(!_reduce())fxBurst(innerWidth/2,innerHeight*0.4,{n:best._rar==="l"?96:best._rar==="e"?66:46,pal:_rarFx(best._rar),spd:best._rar==="l"?6.2:4.4,up:1.25,life:94,sz:3.5});
-    _gachaSpinning=false; renderGacha();
-  }, 1080);
+    results.forEach(o=>{ if(o._type==="coin")DB.settings._coins=(DB.settings._coins||0)+o.coin; else { if(!DB.settings.owned)DB.settings.owned={}; DB.settings.owned[o._key]=Date.now(); } });
+    save(DB); refreshTicketUI();
+    const coins=results.filter(r=>r._type==="coin").reduce((a,r)=>a+r.coin,0), newCosm=results.filter(r=>r._type!=="coin").length;
+    box.className="gc-reveal ten show rar-"+best._rar;
+    box.innerHTML=`<div class="gcr-glow"></div><div class="t10-cap">十連結果 · 最高 <b style="color:${bm.col}">${bm.name}</b>${coins?` · <span style="color:#c79cf0">+${coins} 代幣</span>`:""}</div><div class="t10-grid">${results.map(_tenTileHTML).join("")}</div><div class="gcr-hint">新造型 ${newCosm} 件已入收藏 · 長按好友卡片套上</div>`;
+    haptic(); setTimeout(haptic,140);
+    const strip=$("greelStrip"); if(strip){ strip.style.transition="none"; strip.style.transform="translateX(0)"; strip.innerHTML=""; }
+    _gachaSpinning=false; if(reel)reel.style.display=""; renderGacha();
+  }, 1500);
 }
 /* ===== v1.46 代幣商店:部分造型只能用代幣買,價格依稀有度 ===== */
 const SHOP_PRICE={c:80,r:200,e:450,l:1000};
@@ -2735,25 +2795,12 @@ function pixFrameHTML(theme){const t=PIX_FRAME[theme];if(!t)return"";const base=
 const _CROWN=`<svg width="28" height="15" viewBox="0 0 28 15"><path d="M2 13 L1 4 L7 8 L14 1 L21 8 L27 4 L26 13 Z" fill="#ffd76a" stroke="#b8860b" stroke-width="0.8"/><circle cx="14" cy="4" r="1.6" fill="#ff5a4a"/><circle cx="4" cy="6" r="1.1" fill="#7ee0ff"/><circle cx="24" cy="6" r="1.1" fill="#7ee0ff"/></svg>`;
 const FRAME_STYLE={
  gold:{type:"ring",base:"#e6b53c",hi:"#fff3c0",lo:"#a9781a",glow:"#ffcf6a",gem:"#ffe08a"},
- sky:{type:"ring",base:"#6ba0ef",hi:"#dbe9ff",lo:"#3a63b0",glow:"#8fbaff",gem:"#cfe0ff"},
- violet:{type:"ring",base:"#b06fef",hi:"#e9d4ff",lo:"#6a35b0",glow:"#c77dff",gem:"#e0c8ff"},
  crown:{type:"ring",base:"#e6b53c",hi:"#fff3c0",lo:"#a9781a",glow:"#ffcf6a",gem:"#ffe08a",crown:1},
  aurora:{type:"ring",band:"linear-gradient(135deg,#7ee08a,#5b8def,#c77dff)",glow:"#8fd4b0",gem:"#c7ffe0"},
- candy:{type:"ring",band:"linear-gradient(135deg,#ff6fae,#ffd76a,#7ee0ff)",glow:"#ff9ec4",gem:"#ffe0f0"},
  blackgold:{type:"ring",band:"linear-gradient(135deg,#2a2418,#ffd76a,#2a2418)",glow:"#ffd76a",gem:"#ffe8a8"},
  rainbowspin:{type:"ring",band:"conic-gradient(from 0deg,#ff5a4a,#ffcf6a,#7ee08a,#5b8def,#c77dff,#ff5a4a)",glow:"#ffd76a",gem:"#ffffff",spin:1},
- neonspin:{type:"ring",band:"conic-gradient(from 0deg,#7ee0ff,#c77dff,#7ee0ff)",glow:"#9ee8ff",gem:"#d0f4ff",spin:1},
- pulsegold:{type:"ring",base:"#e6b53c",hi:"#fff3c0",lo:"#a9781a",glow:"#ffe08a",gem:"#ffe08a",pulse:1},
  s67:{type:"ring",band:"conic-gradient(from 0deg,#ffd76a,#ff9d3c,#ff6fae,#c77dff,#ffd76a)",glow:"#ffd76a",gem:"#ffd76a",spin:1,badge:1},
- prisma:{type:"ring",band:"linear-gradient(90deg,#ff5a4a,#ffcf6a,#7ee08a,#5b8def,#c77dff,#ff5a4a)",glow:"#c9d4ff",gem:"#ffffff",flow:1},
- electric:{type:"ring",base:"#2aa0c8",hi:"#d6f7ff",lo:"#186a90",glow:"#5be0ff",gem:"#d0f4ff",flicker:1},
- halo:{type:"ring",band:"linear-gradient(90deg,#ffd9ea,#ffb0d4,#ffffff,#ffb0d4,#ffd9ea)",glow:"#ffb0d4",gem:"#ffe0ee",flow:1,pulse:1},
- sakuraflow:{type:"ring",band:"linear-gradient(90deg,#ff9ec4,#ffd9ea,#ffffff,#ffd9ea,#ff9ec4)",glow:"#ff9ec4",gem:"#ffe0ee",flow:1},
- abyss:{type:"ring",band:"conic-gradient(from 0deg,#04212e,#0a6a8c,#3fd0e8,#0a6a8c,#04212e)",glow:"#3fd0e8",gem:"#bfefff",spin:1},
- royalspin:{type:"ring",band:"conic-gradient(from 0deg,#2f1258,#b06fef,#ffd76a,#b06fef,#2f1258)",glow:"#c79cf0",gem:"#ffe08a",spin:1},
  obsidian:{type:"ring",band:"linear-gradient(90deg,#141416,#8a8f99,#eef1f6,#8a8f99,#141416)",glow:"#c0c6d0",gem:"#eef1f6",flow:1},
- moltencore:{type:"ring",band:"linear-gradient(90deg,#3a0f04,#ff6a1e,#ffd07a,#ff6a1e,#3a0f04)",glow:"#ff7a2a",gem:"#ffd07a",flow:1,pulse:1},
- innerglow:{type:"design",variant:"glow",base:"#e6b53c",hi:"#fff3c0",lo:"#a9781a",glow:"#ffcf6a",gem:"#ffe08a"},
  cornerbloom:{type:"design",variant:"bloom",base:"#5fc7a8",hi:"#d6fff0",lo:"#2f8467",glow:"#7ee0c0",gem:"#c9fff0"},
  /* 像素框 */
  artsakura:{type:"pix",theme:"sakura"}, artcat:{type:"pix",theme:"cat"}, arthearts:{type:"pix",theme:"hearts"}, artfire:{type:"pix",theme:"fire"},
@@ -2761,19 +2808,94 @@ const FRAME_STYLE={
  crystalpix:{type:"pix",theme:"crystal"},
  artcircuit:{type:"pix",theme:"circuit"}, artcandy:{type:"pix",theme:"candy2"}, artgem:{type:"pix",theme:"gem"}, artroyal:{type:"pix",theme:"royal"},
  artskull:{type:"pix",theme:"skull"}, artwave:{type:"pix",theme:"wave"}, artmush:{type:"pix",theme:"mush"}, artrune:{type:"pix",theme:"rune"}, artspace:{type:"pix",theme:"space"},
- /* 特殊框 */
- tv:{type:"special",sp:"tv"}, hologram:{type:"special",sp:"hologram"}, aquarium:{type:"special",sp:"aquarium"}, film:{type:"special",sp:"film"}, arcade:{type:"special",sp:"arcade"},
 };
-/* v1.47 特殊框:電視雜訊 / 全息掃描 / 水族箱氣泡 / 底片孔 / 街機霓虹。框內效果一律低透明、pointer-events:none,不擋分數 */
+/* ===== v1.48 特殊框引擎:資料驅動,用可組合的動態「模組」拼出大膽外框 =====
+   每個框 = { bz:邊框色, gl:光/特效色, a2:第二色, mods:[模組...], tint?:框內底色 }。
+   所有模組都用合成層(transform / opacity),低透明、pointer-events:none,絕不擋分數。 */
 const _TVNOISE="data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="42" height="42"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"/></filter><rect width="42" height="42" filter="url(#n)"/></svg>');
-function specialFrameHTML(sp){
-  if(sp==="tv") return `<div class="fov special sp-tv"><i class="sp-screen"></i><i class="sp-scan"></i><i class="sp-noise" style="background-image:url('${_TVNOISE}')"></i><b class="sp-led"></b></div>`;
-  if(sp==="hologram") return `<div class="fov special sp-holo"><i class="sp-hscan"></i><i class="sp-hglow"></i></div>`;
-  if(sp==="aquarium") return `<div class="fov special sp-aq"><i class="bub b1"></i><i class="bub b2"></i><i class="bub b3"></i><i class="bub b4"></i><i class="bub b5"></i></div>`;
-  if(sp==="film") return `<div class="fov special sp-film"><i class="perf pl"></i><i class="perf pr"></i></div>`;
-  if(sp==="arcade") return `<div class="fov special sp-arc"><i class="marq"></i></div>`;
+const SPECIAL_DEF={
+ tv:{bz:"#4a515c",gl:"#8fd4ff",mods:["hscan","scan","noise","led"]},
+ hologram:{bz:"#5ae0ff",gl:"#7fe6ff",mods:["hscan","scan","breathe"]},
+ aquarium:{bz:"#5ab4e6",gl:"#9fdcff",tint:"linear-gradient(180deg,rgba(40,120,170,.07),rgba(20,60,100,.12))",mods:["bubbles"]},
+ film:{bz:"#0b0b0e",gl:"#cdcdd6",mods:["perf"]},
+ arcade:{bz:"#ff2f9e",gl:"#ffe14a",mods:["marquee","breathe"]},
+ portal:{bz:"#b06fef",gl:"#c79cf0",a2:"#3fd0e8",mods:["conic","beam","sparks"]},
+ blackhole:{bz:"#6a4cff",gl:"#b09cff",tint:"radial-gradient(circle at 50% 50%,rgba(0,0,0,.35),transparent 70%)",mods:["conic","beam"]},
+ supernova:{bz:"#ffd76a",gl:"#ffb060",mods:["beam","sparks","breathe"]},
+ galaxyswirl:{bz:"#7d3cff",gl:"#3fd0e8",mods:["conic","stars"]},
+ meteor:{bz:"#5b8def",gl:"#ffd76a",mods:["rain","stars"]},
+ aurorastorm:{bz:"#7ee08a",gl:"#c77dff",mods:["scan","breathe","stars"]},
+ pulsar:{bz:"#5be0ff",gl:"#ffffff",mods:["ringpulse","breathe"]},
+ wormhole:{bz:"#3fd0e8",gl:"#b06fef",mods:["conic","beam"]},
+ cyberpunk:{bz:"#ff2f9e",gl:"#00e0ff",mods:["hscan","glitch","scan"]},
+ glitchart:{bz:"#00e0ff",gl:"#ff2f9e",mods:["glitch","noise"]},
+ datastream:{bz:"#39d353",gl:"#8affb0",mods:["rain"]},
+ hologrid:{bz:"#5ae0ff",gl:"#7fe6ff",mods:["grid","hscan"]},
+ radar:{bz:"#39d353",gl:"#8affb0",mods:["beam","conic"]},
+ forcefield:{bz:"#5be0ff",gl:"#9ee8ff",mods:["conic","breathe"]},
+ plasmaring:{bz:"#ff4fd8",gl:"#ff9cf0",mods:["conic","breathe"]},
+ neoncircuit:{bz:"#00e0ff",gl:"#ffe14a",mods:["marquee","hscan"]},
+ terminal:{bz:"#39d353",gl:"#8affb0",mods:["hscan","noise"]},
+ inferno:{bz:"#ff6a1e",gl:"#ffd07a",mods:["embers","conic","breathe"]},
+ frostward:{bz:"#7ec8ff",gl:"#eaf7ff",mods:["snow","breathe"]},
+ thunderstorm:{bz:"#5b6bff",gl:"#ffe14a",mods:["glitch","noise","scan"]},
+ tornado:{bz:"#8fa8e8",gl:"#dfeaff",mods:["conic","beam"]},
+ volcano:{bz:"#c81810",gl:"#ff7a2a",mods:["embers","breathe"]},
+ abyssswirl:{bz:"#0a6a8c",gl:"#3fd0e8",mods:["conic","bubbles"]},
+ firefly:{bz:"#2f7a4d",gl:"#c8ff8a",mods:["embers","sparks"]},
+ petalrain:{bz:"#ff9ec4",gl:"#ffd9ea",mods:["rain"]},
+ maplerain:{bz:"#e0662f",gl:"#ffb060",mods:["rain"]},
+ auroraveil:{bz:"#7ee08a",gl:"#5b8def",mods:["scan","stars"]},
+ magiccircle:{bz:"#b06fef",gl:"#ffd76a",mods:["conic","sparks"]},
+ runeward:{bz:"#8affd0",gl:"#c7b0ff",mods:["conic","breathe"]},
+ holylight:{bz:"#ffe08a",gl:"#fff3c0",mods:["beam","sparks","breathe"]},
+ shadow:{bz:"#2a2f3a",gl:"#7d3cff",tint:"radial-gradient(circle at 50% 50%,rgba(0,0,0,.4),transparent 72%)",mods:["conic","breathe"]},
+ soulfire:{bz:"#3fd0e8",gl:"#8affd0",mods:["embers","breathe"]},
+ starryward:{bz:"#3a4a80",gl:"#ffffff",mods:["stars","breathe"]},
+ crystalreso:{bz:"#9ee8ff",gl:"#bfefff",mods:["sparks","breathe"]},
+ phoenix:{bz:"#ff6a1e",gl:"#ffd76a",mods:["embers","beam"]},
+ synthwave:{bz:"#ff2f9e",gl:"#00e0ff",mods:["grid","hscan"]},
+ vhs:{bz:"#4a4a55",gl:"#ff2f9e",mods:["hscan","glitch","noise"]},
+ disco:{bz:"#c77dff",gl:"#ffd76a",mods:["conic","sparks"]},
+ goldtemple:{bz:"#e6b53c",gl:"#fff3c0",mods:["beam","sparks"]},
+ diamond:{bz:"#bfefff",gl:"#ffffff",mods:["sparks","sheen","breathe"]},
+ royalcrest:{bz:"#b06fef",gl:"#ffd76a",mods:["conic","sparks"]},
+ stardust:{bz:"#c9d6ff",gl:"#ffffff",mods:["stars","sheen"]},
+ rainynight:{bz:"#3a4a6a",gl:"#8fbaff",mods:["rain","breathe"]},
+ snowland:{bz:"#bfe6ff",gl:"#eaf7ff",mods:["snow"]},
+ lightning:{bz:"#5b6bff",gl:"#ffe14a",mods:["glitch","scan","noise"]},
+ embermoon:{bz:"#ff9d3c",gl:"#ffd76a",mods:["embers","breathe"]},
+};
+function _fxParticles(cls,n,dur){ let s=""; for(let i=0;i<n;i++){ const left=(6+i*(88/(n-1))).toFixed(1),delay=(-(i*dur/n)).toFixed(2); s+=`<i class="fxm ${cls}" style="left:${left}%;animation-delay:${delay}s"></i>`; } return s; }
+function _fxStars(n){ let s=""; const P=[[14,20],[30,60],[48,28],[66,66],[80,18],[22,78],[58,14],[88,50],[40,44],[10,54]]; for(let i=0;i<n;i++){ const p=P[i%P.length],delay=(-(i*0.4)).toFixed(2); s+=`<i class="fxm star" style="left:${p[0]}%;top:${p[1]}%;animation-delay:${delay}s"></i>`; } return s; }
+function _fxModule(m){
+  switch(m){
+   case "hscan": return `<i class="fxm hscan"></i>`;
+   case "scan": return `<i class="fxm scan"></i>`;
+   case "noise": return `<i class="fxm noise" style="background-image:url('${_TVNOISE}')"></i>`;
+   case "led": return `<b class="fxm led"></b>`;
+   case "breathe": return `<i class="fxm breathe"></i>`;
+   case "conic": return `<i class="fxm conic"></i>`;
+   case "beam": return `<i class="fxm beam"></i>`;
+   case "sparks": return `<i class="fxm spark k1"></i><i class="fxm spark k2"></i><i class="fxm spark k3"></i><i class="fxm spark k4"></i>`;
+   case "marquee": return `<i class="fxm marquee"></i>`;
+   case "glitch": return `<i class="fxm glitch"></i>`;
+   case "sheen": return `<i class="fxm sheen"></i>`;
+   case "grid": return `<i class="fxm grid"></i>`;
+   case "ringpulse": return `<i class="fxm ringpulse r1"></i><i class="fxm ringpulse r2"></i>`;
+   case "perf": return `<i class="fxm perf pl"></i><i class="fxm perf pr"></i>`;
+   case "stars": return _fxStars(9);
+   case "bubbles": return _fxParticles("bubble",6,4.2);
+   case "rain": return _fxParticles("rain",7,1.4);
+   case "embers": return _fxParticles("ember",6,3.2);
+   case "snow": return _fxParticles("snow",7,3.6);
+  }
   return "";
 }
+function specialFrameHTML(id){ const d=SPECIAL_DEF[id]; if(!d)return"";
+  const layers=(d.mods||[]).map(_fxModule).join("");
+  const tint=d.tint?`<i class="fxm sptint" style="background:${d.tint}"></i>`:"";
+  return `<div class="fov special sp-${id}" style="--bz:${d.bz};--gl:${d.gl}${d.a2?';--a2:'+d.a2:''}">${tint}${layers}</div>`; }
 function ringHTML(s){
   const band=s.band||`linear-gradient(135deg,${s.hi},${s.base} 42%,${s.lo} 74%,${s.base})`;
   const gem=s.gem||s.base,glow=s.glow||s.base;
@@ -2792,7 +2914,7 @@ function designFrameHTML(id,s){
   else if(s.variant==="bloom") inner=`<div class="fov-bleed bleed-corner" style="--glow:${s.glow}"><i class="bc bc-tl">${_BLOOM}</i><i class="bc bc-tr">${_BLOOM}</i><i class="bc bc-bl">${_BLOOM}</i><i class="bc bc-br">${_BLOOM}</i></div>`;
   return inner+ring;
 }
-function frameCosmHTML(id){const s=FRAME_STYLE[id];if(!s)return"";return s.type==="pix"?pixFrameHTML(s.theme):(s.type==="design"?designFrameHTML(id,s):(s.type==="special"?specialFrameHTML(s.sp):ringHTML(s)));}
+function frameCosmHTML(id){ if(SPECIAL_DEF[id])return specialFrameHTML(id); const s=FRAME_STYLE[id];if(!s)return"";return s.type==="pix"?pixFrameHTML(s.theme):(s.type==="design"?designFrameHTML(id,s):ringHTML(s));}
 /* ===== v1.38 像素精靈:用 SVG rect 手刻,無 emoji ===== */
 function pixelSVG(rows,pal,cls){ const w=rows[0].length,h=rows.length; let r="";
   for(let y=0;y<h;y++)for(let x=0;x<rows[y].length;x++){ const ch=rows[y][x]; if(ch===" "||ch===".")continue; const col=pal[ch]; if(!col)continue; r+=`<rect x="${x}" y="${y}" width="1.03" height="1.03" fill="${col}"/>`; }
