@@ -476,10 +476,44 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 .fov.pix .pc{position:absolute;background-size:100% 100%;background-repeat:no-repeat;image-rendering:pixelated;}
 .fov.pix .pc-tl{top:0;left:0;}.fov.pix .pc-tr{top:0;right:0;}.fov.pix .pc-bl{bottom:0;left:0;}.fov.pix .pc-br{bottom:0;right:0;}
 .fov.pix .orn{position:absolute;image-rendering:pixelated;background-size:100% 100%;background-repeat:no-repeat;z-index:2;}
-/* 預覽:外框貼齊預覽框內緣(inset:0),寵物/背景/折線維持裁切 */
+/* v1.47 像素框動態(便宜:opacity / transform,合成層) */
+.fov.pix.pixa-pulse{animation:fovPulse 2.7s ease-in-out infinite;}
+.fov.pix .pixsheen{position:absolute;inset:0;overflow:hidden;pointer-events:none;border-radius:7px;}
+.fov.pix .pixsheen::before{content:"";position:absolute;top:-25%;bottom:-25%;left:-50%;width:30%;transform:skewX(-18deg);background:linear-gradient(90deg,transparent,rgba(255,255,255,.42),transparent);mix-blend-mode:screen;animation:pixSheen 3.6s ease-in-out infinite;}
+@keyframes pixSheen{0%{left:-50%;}58%,100%{left:135%;}}
+/* v1.47 特殊框:電視 / 全息 / 水族箱 / 底片 / 街機。框內效果低透明、pointer-events:none,不擋分數 */
+.fov.special{inset:-3px;border-radius:16px;overflow:hidden;pointer-events:none;z-index:5;}
+.fov.special i,.fov.special b{position:absolute;pointer-events:none;}
+.sp-tv{box-shadow:inset 0 0 0 2px #3a4048,inset 0 0 0 5px #0c0e13,inset 0 0 0 6px #4a515c,inset 0 0 16px 5px rgba(0,0,0,.4);}
+.sp-tv .sp-screen{inset:6px;border-radius:9px;background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(130,200,255,.05) 2px 3px);}
+.sp-tv .sp-scan{left:6px;right:6px;top:0;height:16px;border-radius:9px;background:linear-gradient(180deg,transparent,rgba(180,230,255,.16),transparent);animation:spScan 3.4s linear infinite;}
+.sp-tv .sp-noise{inset:6px;border-radius:9px;opacity:0;mix-blend-mode:screen;background-size:58px 58px;animation:tvNoise 7s steps(1,end) infinite;}
+@keyframes tvNoise{0%,89%,100%{opacity:0}91%{opacity:.16}93%{opacity:.04}95%{opacity:.14}97%{opacity:.03}}
+.sp-tv .sp-led{right:9px;bottom:3px;width:4px;height:4px;border-radius:50%;background:#37e07a;box-shadow:0 0 5px #37e07a;animation:spLed 2.6s ease-in-out infinite;}
+@keyframes spScan{0%{top:-8%}100%{top:100%}}
+@keyframes spLed{0%,100%{opacity:.45}50%{opacity:1}}
+.sp-holo{box-shadow:inset 0 0 0 1.6px rgba(90,224,255,.9),inset 0 0 12px 2px rgba(90,224,255,.3);animation:holoFlick 3.6s ease-in-out infinite;}
+@keyframes holoFlick{0%,100%{opacity:1}47%{opacity:.82}50%{opacity:1}72%{opacity:.9}}
+.sp-holo .sp-hscan{inset:4px;border-radius:11px;background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(120,230,255,.07) 3px 4px);}
+.sp-holo .sp-hglow{left:4px;right:4px;top:0;height:20px;background:linear-gradient(180deg,transparent,rgba(120,230,255,.15),transparent);animation:spScan 2.6s linear infinite;}
+.sp-aq{box-shadow:inset 0 0 0 2px rgba(90,180,230,.55),inset 0 0 0 4px rgba(18,58,88,.6),inset 0 0 14px 3px rgba(70,180,230,.25);background:linear-gradient(180deg,rgba(40,120,170,.07),rgba(20,60,100,.12));}
+.sp-aq .bub{bottom:5px;width:5px;height:5px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,rgba(180,230,255,.5));opacity:0;animation:bubUp 4.2s linear infinite;}
+.sp-aq .b1{left:12%}.sp-aq .b2{left:30%;width:4px;height:4px;animation-delay:1.2s}.sp-aq .b3{left:52%;animation-delay:2.1s}.sp-aq .b4{left:73%;width:3px;height:3px;animation-delay:.7s}.sp-aq .b5{left:88%;animation-delay:3s}
+@keyframes bubUp{0%{transform:translateY(0);opacity:0}12%{opacity:.85}86%{opacity:.65}100%{transform:translateY(-84px);opacity:0}}
+.sp-film{box-shadow:inset 0 0 0 8px #0b0b0e;}
+.sp-film .perf{top:6px;bottom:6px;width:8px;background:repeating-linear-gradient(180deg,transparent 0 5px,rgba(205,205,214,.85) 5px 9px,transparent 9px 14px);background-size:8px 14px;animation:filmRoll 2.4s linear infinite;}
+.sp-film .pl{left:0}.sp-film .pr{right:0}
+@keyframes filmRoll{to{background-position:0 14px;}}
+.sp-arc{box-shadow:inset 0 0 0 2px #ff2f9e,inset 0 0 0 4px #12061f,inset 0 0 12px 2px rgba(255,47,158,.4);}
+.sp-arc .marq{top:3px;left:6px;right:6px;height:4px;border-radius:2px;background:repeating-linear-gradient(90deg,#ffe14a 0 4px,transparent 4px 9px);animation:marqRun .55s linear infinite;}
+@keyframes marqRun{to{background-position:9px 0;}}
+@media (prefers-reduced-motion:reduce){.fov.special i,.fov.special b,.fov.special,.fov.pix.pixa-pulse,.fov.pix .pixsheen::before{animation:none!important;}}
+/* 預覽:外框貼齊預覽框內緣(inset:0),寵物/背景/折線維持裁切;預覽一律靜態(省效能) */
 .fprev.hasframe{overflow:visible;}
 .fprev .fov.ring{inset:0;border-radius:inherit;}
 .fprev .fov.pix{inset:0;}
+.fprev .fov.special{inset:0;}
+.fprev .fov.special i,.fprev .fov.special b,.fprev .fov.special,.fprev .fov.pix.pixa-pulse,.fprev .fov.pix .pixsheen::before{animation:none!important;}
 /* 折線動態 */
 .chart-line.line-pulse{animation:neonPulse 1.7s ease-in-out infinite;}
 @keyframes neonPulse{0%,100%{opacity:.78;}50%{opacity:1;}}
@@ -633,6 +667,24 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 .gcr-hint{font-size:11px;color:var(--ink-3);margin-top:4px;z-index:1;}
 .gc-draw{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;}
 .gc-draw .tk-ic{width:20px;height:20px;color:currentColor;display:inline-flex;}
+/* v1.47 十連抽 */
+.gc-drawrow{display:flex;gap:9px;}
+.gc-drawrow .gc-draw{flex:1;padding-left:6px;padding-right:6px;}
+.gc-draw10{background:linear-gradient(180deg,#b06fef,#7a3fd0)!important;color:#fff!important;box-shadow:0 6px 20px -6px #7a3fd0!important;}
+.gc-draw10 .gc10x{font-family:var(--mono);font-size:12px;opacity:.9;}
+.gc-draw10:disabled{opacity:.5;}
+.gc-reel.rush::before,.gc-reel.rush::after{opacity:.35;}
+.gc-reel.rush{box-shadow:inset 0 0 24px 4px rgba(176,111,239,.28);}
+.gc-reveal.ten.show{position:relative;display:flex;flex-direction:column;align-items:center;padding:12px 8px 8px;margin-bottom:6px;border-radius:16px;overflow:hidden;box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--rc) 55%,transparent);background:color-mix(in srgb,var(--rc) 8%,transparent);animation:gcrPop .5s var(--spring);}
+.t10-cap{font-family:var(--mono);font-size:12px;font-weight:700;margin-bottom:10px;z-index:1;text-align:center;}
+.t10-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;width:100%;z-index:1;}
+.t10{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;height:62px;border-radius:10px;box-shadow:inset 0 0 0 1.4px color-mix(in srgb,var(--rc) 62%,transparent);background:color-mix(in srgb,var(--rc) 12%,transparent);opacity:0;transform:scale(.55) translateY(6px);animation:t10pop .44s var(--spring) forwards;}
+.t10.rar-l{box-shadow:inset 0 0 0 1.6px var(--rc),0 0 12px -2px color-mix(in srgb,var(--rc) 70%,transparent);}
+@keyframes t10pop{to{opacity:1;transform:none;}}
+.t10-prev{transform:scale(.42);pointer-events:none;}
+.t10-coin{display:flex;flex-direction:column;align-items:center;}
+.t10-coin .coin-ic{width:22px;height:22px;display:inline-flex;} .t10-coin b{font-family:var(--mono);font-size:11px;color:#c79cf0;margin-top:1px;}
+.t10-rar{font-family:var(--mono);font-size:8px;font-weight:800;letter-spacing:.04em;}
 .tk-gain{position:fixed;left:50%;top:28%;transform:translate(-50%,20px);z-index:90;display:flex;align-items:center;gap:8px;background:var(--surface-hi);border:1px solid color-mix(in srgb,var(--gold) 50%,var(--hair));border-radius:14px;padding:11px 18px;font-size:15px;font-weight:700;color:var(--gold);box-shadow:0 14px 40px rgba(0,0,0,.5);opacity:0;transition:transform .4s var(--spring),opacity .3s;pointer-events:none;}
 .tk-gain.on{transform:translate(-50%,0);opacity:1;}
 .tk-gain .tk-ic{width:24px;height:24px;display:inline-flex;}
@@ -902,8 +954,11 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
   <div id="gcPanelDraw">
     <div class="gc-reel" id="gachaReel"><div class="greel-strip" id="greelStrip"></div><div class="greel-marker"></div></div>
     <div class="gc-reveal" id="gachaReveal"></div>
-    <button class="btn primary gc-draw" id="gachaDrawBtn" data-press onclick="gachaDraw()">抽一張</button>
-    <div class="hint" style="margin-top:12px;text-align:center;">完成成就會拿到抽獎卷(1~3 張),抽獎有機會抽到造型或紫色代幣。抽到的造型長按好友卡片就能套上。</div>
+    <div class="gc-drawrow">
+      <button class="btn primary gc-draw" id="gachaDrawBtn" data-press onclick="gachaDraw()">抽一張</button>
+      <button class="btn primary gc-draw gc-draw10" id="gachaDraw10Btn" data-press onclick="gachaDraw10()">十連抽</button>
+    </div>
+    <div class="hint" style="margin-top:12px;text-align:center;">完成成就會拿到抽獎卷(1~3 張),抽獎有機會抽到造型或紫色代幣。十連抽一次消耗 10 張、動畫更爽。抽到的造型長按好友卡片就能套上。</div>
   </div>
   <div id="gcPanelShop" style="display:none"></div>
   <div class="sheet-actions"><button class="btn" data-press onclick="openGallery()">看全部圖鑑</button><button class="btn" data-press onclick="closeSheet()">關閉</button></div>
@@ -943,10 +998,18 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 
 <script>
 "use strict";
-const VERSION="1.46";
+const VERSION="1.47";
 const KEY="friendship-meter-v1";
 /* 更新紀錄:每次改版就在最前面加一筆(v 由大到小,設定頁「更新紀錄」會照這個順序顯示) */
 const CHANGELOG=[
+  {v:"1.47",date:"2026-08-16",items:[
+    "大量新增外框,尤其是像素框:電路板、糖果、寶石陣、皇家金、骷髏、海波、蘑菇、符文、太空侵略者(共 18 種像素框)",
+    "很多像素框加了動態:光掃過 / 呼吸,和特殊框都是合成層動畫、不掉幀",
+    "全新「特殊框」類型(非像素、非線條):復古電視(框內偶爾雜訊 + 掃描線 + 電源燈)、全息投影、水族箱(氣泡上升)、底片、街機霓虹",
+    "刪掉一堆只是變色、長很像的環形框(熔岩、夕陽、海洋、森林、紅鶴、蜜桃、餘燼旋轉、流焰、呼吸粉)",
+    "輪盤滾動時「看起來」普通/稀有超多、史詩/傳奇超少,讓稀有度更有感 —— 但實際中獎機率完全不變",
+    "新增「十連抽」按鈕:一次消耗 10 張抽獎卷,高速衝刺後十格一次爆開,動畫和單抽完全不同",
+  ]},
   {v:"1.46",date:"2026-08-16",items:[
     "修好抽獎轉盤:指針停在哪一格,拿到的就是那一格(之前格子實寬和程式假設不同,導致停點對不上)",
     "轉盤故意不會停在兩格中間的縫隙,永遠清楚停在一個物品上",
@@ -2356,46 +2419,54 @@ function _ladderCount(){ if(_ladderCache!=null)return _ladderCache; const s=_lad
 function _achvDef(id){ return ACHV.find(a=>a.id===id); }
 /* ===== v1.35 外觀系統:外框 / 折線 / 寵物 / 背景(用造型成就 FACHV 解鎖,可預覽、套到某個好友) ===== */
 const FRAMES=[
-  {id:"gold",name:"尊爵金框",req:"F1",kind:"glow"},
-  {id:"sky",name:"晴空",req:"F2",kind:"glow"},
-  {id:"violet",name:"紫晶",req:"F11",kind:"glow"},
-  {id:"crown",name:"王者金冠",req:"F15",kind:"glow"},
-  {id:"lava",name:"熔岩火焰",req:"F14",kind:"glow"},
-  {id:"sunset",name:"夕陽漸層",req:"F6",kind:"grad"},
-  {id:"ocean",name:"海洋漸層",req:"F7",kind:"grad"},
-  {id:"aurora",name:"極光",req:"F12",kind:"grad"},
-  {id:"candy",name:"糖果",req:"F10",kind:"grad"},
-  {id:"forest",name:"森林",req:"F9",kind:"grad"},
-  {id:"flamingo",name:"紅鶴",req:"F9",kind:"grad"},
-  {id:"blackgold",name:"黑金",req:"F13",kind:"grad"},
-  {id:"peach",name:"蜜桃",req:"F3",kind:"grad"},
-  {id:"rainbowspin",name:"彩虹旋轉",req:"F13",kind:"spin"},
-  {id:"emberspin",name:"餘燼旋轉",req:"F8",kind:"spin"},
-  {id:"neonspin",name:"霓虹旋轉",req:"F16",kind:"spin"},
-  {id:"pulsegold",name:"呼吸金",req:"F14",kind:"pulse"},
-  {id:"pulserose",name:"呼吸粉",req:"F11",kind:"pulse"},
+  /* 金屬寶石環(留下差異明顯的,拿掉一堆只是變色的) */
+  {id:"gold",name:"尊爵金框",kind:"glow"},
+  {id:"sky",name:"晴空",kind:"glow"},
+  {id:"violet",name:"紫晶",kind:"glow"},
+  {id:"crown",name:"王者金冠",kind:"glow"},
+  {id:"aurora",name:"極光",kind:"grad"},
+  {id:"candy",name:"糖果",kind:"grad"},
+  {id:"blackgold",name:"黑金",kind:"grad"},
+  {id:"rainbowspin",name:"彩虹旋轉",kind:"spin"},
+  {id:"neonspin",name:"霓虹旋轉",kind:"spin"},
+  {id:"pulsegold",name:"呼吸金",kind:"pulse"},
   {id:"s67",name:"67 專屬",req:"fortune67",kind:"spin"},
-  {id:"artsakura",name:"櫻花框",req:"F4",kind:"art"},
-  {id:"artcat",name:"貓耳",req:"F15",kind:"art"},
-  {id:"arthearts",name:"愛心",req:"F7",kind:"art"},
-  {id:"artfire",name:"像素火焰",req:"F14",kind:"art"},
-  {id:"artbolt",name:"閃電",req:"F8",kind:"art"},
-  {id:"artsnow",name:"雪花",req:"F5",kind:"art"},
-  {id:"artstars",name:"星月",req:"F2",kind:"art"},
-  {id:"artvine",name:"藤蔓",req:"F9",kind:"art"},
-  {id:"innerglow",name:"燼芯",kind:"design"},
-  {id:"cornerbloom",name:"綻放",kind:"design"},
-  {id:"emberflow",name:"流焰",kind:"ring"},
   {id:"prisma",name:"流光稜鏡",kind:"ring"},
   {id:"electric",name:"電流",kind:"ring"},
   {id:"halo",name:"光暈",kind:"ring"},
-  /* v1.46 新框 */
   {id:"sakuraflow",name:"落櫻流光",kind:"ring"},
   {id:"abyss",name:"深淵漩渦",kind:"ring"},
-  {id:"crystalpix",name:"水晶像素",kind:"art"},
   {id:"royalspin",name:"紫金旋",kind:"ring"},
   {id:"obsidian",name:"曜石銀",kind:"ring",shop:true},
   {id:"moltencore",name:"熔核",kind:"ring",shop:true},
+  {id:"innerglow",name:"燼芯",kind:"design"},
+  {id:"cornerbloom",name:"綻放",kind:"design"},
+  /* 像素框(手刻,整圈包滿;★ = 有動態效果) */
+  {id:"artsakura",name:"櫻花框",kind:"art"},
+  {id:"artcat",name:"貓耳",kind:"art"},
+  {id:"arthearts",name:"愛心",kind:"art"},
+  {id:"artfire",name:"像素火焰",kind:"art"},
+  {id:"artbolt",name:"閃電",kind:"art"},
+  {id:"artsnow",name:"雪花",kind:"art"},
+  {id:"artstars",name:"星月",kind:"art"},
+  {id:"artvine",name:"藤蔓",kind:"art"},
+  {id:"crystalpix",name:"水晶像素",kind:"art"},
+  /* v1.47 新增像素框 */
+  {id:"artcircuit",name:"電路板",kind:"art"},
+  {id:"artcandy",name:"糖果像素",kind:"art"},
+  {id:"artgem",name:"寶石陣",kind:"art",shop:true},
+  {id:"artroyal",name:"皇家金",kind:"art"},
+  {id:"artskull",name:"骷髏",kind:"art"},
+  {id:"artwave",name:"海波",kind:"art"},
+  {id:"artmush",name:"蘑菇",kind:"art"},
+  {id:"artrune",name:"符文",kind:"art",shop:true},
+  {id:"artspace",name:"太空侵略者",kind:"art"},
+  /* v1.47 特殊框:非像素、非線條,框內有低調視覺效果(不擋字) */
+  {id:"tv",name:"復古電視",kind:"special"},
+  {id:"hologram",name:"全息投影",kind:"special"},
+  {id:"aquarium",name:"水族箱",kind:"special"},
+  {id:"film",name:"底片",kind:"special"},
+  {id:"arcade",name:"街機霓虹",kind:"special",shop:true},
 ];
 /* 背景:點進某位好友的詳情時整個畫面的氛圍(CSS,低耗效、不影響閱讀)。friend.bg */
 const BGS=[
@@ -2456,7 +2527,7 @@ const COSMETIC_ORDER=(()=>{ const arrs=[FRAMES.filter(f=>f.id!=="s67"),LINES,BGS
   while(any){ any=false; for(let i=0;i<4;i++){ if(idx[i]<arrs[i].length){ out.push({t:ty[i],id:arrs[i][idx[i]].id}); idx[i]++; any=true; } } } return out; })();
 /* v1.44 稀有度 + 每個造型唯一 key(擁有 / 抽獎用)。普通藍 / 稀有紫 / 史詩粉 / 傳奇金 */
 const RAR_DEF={
- frame:{c:["gold","sky","violet"],r:["sunset","ocean","aurora","candy","forest","flamingo","peach","innerglow","cornerbloom","pulserose","sakuraflow"],e:["blackgold","lava","artsakura","arthearts","artsnow","artstars","artvine","pulsegold","emberspin","abyss","crystalpix","obsidian"],l:["crown","rainbowspin","neonspin","artfire","artcat","artbolt","emberflow","prisma","electric","halo","s67","royalspin","moltencore"]},
+ frame:{c:["gold","sky","violet"],r:["aurora","candy","sakuraflow","innerglow","cornerbloom","artsakura","arthearts","artsnow","artcandy","artskull","artwave","artmush","film"],e:["blackgold","pulsegold","electric","abyss","obsidian","artstars","artvine","crystalpix","artcircuit","artroyal","artrune","artspace","hologram","aquarium"],l:["crown","rainbowspin","neonspin","prisma","halo","s67","royalspin","moltencore","artcat","artfire","artbolt","artgem","tv","arcade"]},
  line:{c:["sky","dot","thick","glowline"],r:["sunset","ocean","ice","forest","candy","gold","midnight","blossom","dash","emeraldflow","frostflow","sakuraline"],e:["rainbow","aurora","fire","violet","neon","pulsegold","plasma"],l:["auroraflow","fireflow","rainbowflow"]},
  bg:{c:["night"],r:["ocean","maya","forest"],e:["sakura","aurora","ember","matrix","galaxy"],l:["neon"]},
  pet:{c:["dog","bird","chick"],r:["fish","bunny","hamster"],e:["cat","fox","penguin"],l:["ghost","dragon"]},
@@ -2486,6 +2557,15 @@ function _rarFx(r){ return r==="l"?["#ffe08a","#ffc24b","#fff3cf"]:r==="e"?["#ff
 const COIN_TIERS={c:10,r:25,e:50,l:100}, COIN_WEIGHT={c:60,r:26,e:11,l:3}, COIN_CHANCE=0.28;
 function _makeCoinReward(){ let tot=0; const ks=Object.keys(COIN_WEIGHT); ks.forEach(k=>tot+=COIN_WEIGHT[k]); let r=Math.random()*tot,rar="c"; for(const k of ks){ r-=COIN_WEIGHT[k]; if(r<=0){rar=k;break;} } const amt=COIN_TIERS[rar]; return {_type:"coin",coin:amt,_rar:rar,_key:"coin:"+amt,name:"+"+amt+" 代幣"}; }
 function _drawOutcome(pool){ if(!pool.length) return _makeCoinReward(); return Math.random()<COIN_CHANCE?_makeCoinReward():_pickWeighted(pool); }
+/* v1.47 輪盤上「看起來」的稀有度分佈:普通/稀有超多、史詩/傳奇超少 —— 純視覺,和真實中獎機率(RAR_WEIGHT)完全無關。
+   目的:讓史詩/傳奇在滾動時很少出現,抽到時更有驚喜,但實際機率不變。*/
+const REEL_RAR_WEIGHT={c:56,r:31,e:9,l:4};
+const _COSM_BY_RAR=(()=>{ const m={c:[],r:[],e:[],l:[]}; _allCosms().forEach(o=>{ (m[o._rar]||m.c).push(o); }); return m; })();
+function _reelFiller(){ if(Math.random()<0.13) return _makeCoinReward();
+  let tot=0; const ks=Object.keys(REEL_RAR_WEIGHT); ks.forEach(k=>tot+=REEL_RAR_WEIGHT[k]); let r=Math.random()*tot,rar="c";
+  for(const k of ks){ r-=REEL_RAR_WEIGHT[k]; if(r<=0){rar=k;break;} }
+  const pool=_COSM_BY_RAR[rar]&&_COSM_BY_RAR[rar].length?_COSM_BY_RAR[rar]:_allCosms();
+  return pool[Math.floor(Math.random()*pool.length)]; }
 function refreshTicketUI(){ const s=DB.settings||{}; const n=s._tickets||0,c=s._coins||0;
   document.querySelectorAll(".tk-count").forEach(e=>e.textContent=n);
   document.querySelectorAll(".coin-count").forEach(e=>e.textContent=c);
@@ -2499,8 +2579,9 @@ function _renderGachaHead(){ const s=DB.settings; const n=s._tickets||0,c=s._coi
   if(h)h.innerHTML=`<div class="gc-tk"><span class="tk-ic">${TICKET_SVG}</span><b class="tk-count">${n}</b><span class="gc-tklab">抽獎卷</span></div><div class="gc-coin"><span class="coin-ic">${COIN_SVG}</span><b class="coin-count">${c}</b><span class="gc-tklab">代幣</span></div><div class="gc-prog">收藏 ${owned}/${total}</div>`; }
 let _gachaSpinning=false;
 function renderGacha(){ _renderGachaHead(); if(!$("greelStrip")) $("gachaReel").innerHTML=`<div class="greel-strip" id="greelStrip"></div><div class="greel-marker"></div>`;
-  const n=(DB.settings._tickets)||0, btn=$("gachaDrawBtn");
-  if(btn){ btn.disabled=_gachaSpinning||n<=0; btn.innerHTML=n<=0?"沒有抽獎卷了":`<span class="tk-ic">${TICKET_SVG}</span> 抽一張`; } }
+  const n=(DB.settings._tickets)||0, b1=$("gachaDrawBtn"), b10=$("gachaDraw10Btn");
+  if(b1){ b1.disabled=_gachaSpinning||n<1; b1.innerHTML=n<1?"沒有抽獎卷了":`<span class="tk-ic">${TICKET_SVG}</span> 抽一張`; }
+  if(b10){ b10.disabled=_gachaSpinning||n<10; b10.innerHTML=`<span class="tk-ic">${TICKET_SVG}</span> 十連抽 <b class="gc10x">×10</b>`; } }
 function gachaDraw(){ if(_gachaSpinning)return; const n=(DB.settings._tickets)||0, pool=_gachaPool();
   if(n<=0){ toast("沒有抽獎卷,完成成就會拿到"); return; }
   _gachaSpinning=true; DB.settings._tickets=n-1;
@@ -2509,8 +2590,8 @@ function gachaDraw(){ if(_gachaSpinning)return; const n=(DB.settings._tickets)||
   else { if(!DB.settings.owned)DB.settings.owned={}; DB.settings.owned[winner._key]=Date.now(); }
   save(DB); refreshTicketUI();
   $("gachaReveal").className="gc-reveal"; $("gachaReveal").innerHTML=""; const btn=$("gachaDrawBtn"); if(btn)btn.disabled=true;
-  const fillers=_allCosms(), WINPOS=44, strip=$("greelStrip"); const tiles=[];
-  for(let i=0;i<WINPOS+7;i++){ tiles.push(i===WINPOS?winner:(Math.random()<0.16?_makeCoinReward():fillers[Math.floor(Math.random()*fillers.length)])); }
+  const WINPOS=44, strip=$("greelStrip"); const tiles=[];
+  for(let i=0;i<WINPOS+7;i++){ tiles.push(i===WINPOS?winner:_reelFiller()); }
   strip.style.transition="none"; strip.style.transform="translateX(0)"; strip.innerHTML=tiles.map(_reelTile).join("");
   const view=$("gachaReel"), center=view.clientWidth/2; void strip.offsetWidth;
   /* v1.46 修:量測「贏家格」的實際位置(格子實寬 ≠ 固定 84),再算停點 → 指針一定停在贏家身上 */
@@ -2527,6 +2608,43 @@ function _gachaRevealCard(o){ const rm=RAR_META[o._rar]||RAR_META.c;
   if(o._type==="coin"){ box.innerHTML=`<div class="gcr-glow"></div><div class="gcr-rar" style="color:${rm.col}">${rm.name} · 代幣</div><div class="gcr-prev coinbig"><span class="coin-ic">${COIN_SVG}</span></div><div class="gcr-name">+${o.coin} 代幣</div><div class="gcr-hint">到「商店」分頁用代幣換造型</div>`; return; }
   const tname={frame:"外框",line:"折線",bg:"背景",pet:"寵物"}[o._type]||"";
   box.innerHTML=`<div class="gcr-glow"></div><div class="gcr-rar" style="color:${rm.col}">${rm.name} · ${tname}</div><div class="gcr-prev">${_cosmMini(o)}</div><div class="gcr-name">${escapeHtml(o.name)}</div><div class="gcr-hint">已加入收藏 · 長按好友卡片可套上</div>`; }
+/* ===== v1.47 十連抽:動畫和單抽完全不同 —— 高速衝刺 → 十格一次爆開,最高稀有度大放光 ===== */
+function _rarRank(r){ const i=RAR_ORDER.indexOf(r); return i<0?9:i; }  /* 越小越稀有(l=0) */
+function _tenTileHTML(o,idx){ const rm=RAR_META[o._rar]||RAR_META.c;
+  const inner=o._type==="coin"?`<div class="t10-coin"><span class="coin-ic">${COIN_SVG}</span><b>+${o.coin}</b></div>`:`<div class="t10-prev">${_cosmMini(o)}</div>`;
+  return `<div class="t10 rar-${o._rar}" style="animation-delay:${(idx*0.075).toFixed(3)}s">${inner}<span class="t10-rar" style="color:${rm.col}">${rm.name}</span></div>`; }
+function gachaDraw10(){ if(_gachaSpinning)return; const n=(DB.settings._tickets)||0;
+  if(n<10){ toast("十連抽需要 10 張抽獎卷"); return; }
+  _gachaSpinning=true; DB.settings._tickets=n-10;
+  const won=new Set(); const results=[];
+  for(let i=0;i<10;i++){ const pool=_allCosms().filter(o=>!o.shop&&!_isOwned(o._key)&&!won.has(o._key));
+    const out=_drawOutcome(pool);
+    if(out._type==="coin"){ DB.settings._coins=(DB.settings._coins||0)+out.coin; }
+    else { if(!DB.settings.owned)DB.settings.owned={}; won.add(out._key); DB.settings.owned[out._key]=Date.now(); }
+    results.push(out); }
+  save(DB); refreshTicketUI();
+  const reveal=$("gachaReveal"); reveal.className="gc-reveal"; reveal.innerHTML="";
+  const b1=$("gachaDrawBtn"),b10=$("gachaDraw10Btn"); if(b1)b1.disabled=true; if(b10)b10.disabled=true;
+  /* 衝刺階段:輪盤高速掃過(只用 transform,便宜) */
+  const strip=$("greelStrip"),reel=$("gachaReel"); const tiles=[]; for(let i=0;i<46;i++)tiles.push(_reelFiller());
+  strip.style.transition="none"; strip.style.transform="translateX(0)"; strip.innerHTML=tiles.map(_reelTile).join("");
+  reel.classList.add("rush"); void strip.offsetWidth;
+  const tw=(strip.children[10]&&strip.children[10].offsetWidth)||90;
+  strip.style.transition="transform 1.05s cubic-bezier(.16,.7,.12,1)"; strip.style.transform=`translateX(${-(tiles.length-5)*tw}px)`;
+  if(navigator.vibrate&&!_reduce()){ let d=55; const tick=()=>{ if(!_gachaSpinning)return; try{navigator.vibrate(5);}catch(e){} d*=1.16; if(d<420)setTimeout(tick,d); }; setTimeout(tick,110); }
+  setTimeout(()=>{
+    reel.classList.remove("rush");
+    const best=results.reduce((a,b)=>_rarRank(a._rar)<=_rarRank(b._rar)?a:b);
+    const bm=RAR_META[best._rar]||RAR_META.c;
+    const coins=results.filter(r=>r._type==="coin").reduce((a,r)=>a+r.coin,0);
+    const newCosm=results.filter(r=>r._type!=="coin").length;
+    reveal.className="gc-reveal ten show rar-"+best._rar;
+    reveal.innerHTML=`<div class="gcr-glow"></div><div class="t10-cap">十連結果 · 最高 <b style="color:${bm.col}">${bm.name}</b>${coins?` · <span style="color:#c79cf0">+${coins} 代幣</span>`:""}</div><div class="t10-grid">${results.map(_tenTileHTML).join("")}</div><div class="gcr-hint">新造型 ${newCosm} 件已入收藏 · 長按好友卡片套上</div>`;
+    haptic(); setTimeout(haptic,120);
+    if(!_reduce())fxBurst(innerWidth/2,innerHeight*0.4,{n:best._rar==="l"?96:best._rar==="e"?66:46,pal:_rarFx(best._rar),spd:best._rar==="l"?6.2:4.4,up:1.25,life:94,sz:3.5});
+    _gachaSpinning=false; renderGacha();
+  }, 1080);
+}
 /* ===== v1.46 代幣商店:部分造型只能用代幣買,價格依稀有度 ===== */
 const SHOP_PRICE={c:80,r:200,e:450,l:1000};
 function _shopItems(){ return _allCosms().filter(o=>o.shop); }
@@ -2567,7 +2685,17 @@ const PIX_FRAME={
  stars:{base:"#3a4a80",hi:"#8fa8e8",pal:{S:"#ffffff",s:"#c9d6ff"},dec:["..S...s.",".s...S.."],orn:"moon"},
  sakura:{base:"#8a5a4a",hi:"#c98a6a",pal:{p:"#ff9ec4",y:"#ffe08a"},dec:[".p..p...","p.y..p.y"],orn:"blossom"},
  cat:{base:"#8a5a2e",hi:"#e8a24e",pal:{d:"#ffd9b0"},dec:["........",".d....d."],orn:"cat"},
- crystal:{base:"#2f6f9c",hi:"#9ee8ff",pal:{C:"#bfefff",W:"#ffffff"},dec:["C.W.C.W.",".CWC.CWC"]},
+ crystal:{base:"#2f6f9c",hi:"#9ee8ff",pal:{C:"#bfefff",W:"#ffffff"},dec:["C.W.C.W.",".CWC.CWC"],anim:"sheen"},
+ /* v1.47 新像素框(anim: sheen=光掃過 / pulse=呼吸,都用合成層,便宜) */
+ circuit:{base:"#0c4a30",hi:"#39d353",pal:{L:"#8affb0",D:"#0a2a1c"},dec:["L.D.L.D.",".LDL.LDL"],anim:"sheen"},
+ candy2:{base:"#c94f8f",hi:"#ffd1e6",pal:{P:"#ff8fbf",W:"#ffffff"},dec:["P.W.P.W.",".PWP.PWP"]},
+ gem:{base:"#3a3f8a",hi:"#9aa8ff",pal:{R:"#ff6b8f",G:"#7ee08a",C:"#7ec8ff"},dec:["R.G.C.R.","GC.RG.CR"],anim:"pulse"},
+ royal:{base:"#7a5a1a",hi:"#ffe08a",pal:{Y:"#fff3c0",O:"#e0a83c"},dec:["Y.O.Y.O.","OYO.OYO."],anim:"sheen"},
+ skull:{base:"#4a4a55",hi:"#e6e9f0",pal:{W:"#ffffff",K:"#12121a"},dec:["W.K.W.K.",".WKW.WKW"]},
+ wave:{base:"#1a6a9a",hi:"#7ec8ff",pal:{C:"#bfefff",W:"#eaf7ff"},dec:["..C...W.","CWCW.CWC"],anim:"pulse"},
+ mush:{base:"#b83a3a",hi:"#ff8080",pal:{W:"#ffffff",R:"#ff5a5a"},dec:["R.W.R.W.",".RWR.RWR"]},
+ rune:{base:"#3a2f6a",hi:"#b39cff",pal:{R:"#c7b0ff",G:"#8affd0"},dec:["R.G.R.G.",".RGR.RGR"],anim:"pulse"},
+ space:{base:"#20223a",hi:"#7ee08a",pal:{G:"#7ee08a",W:"#ffffff"},dec:["G.W.G.W.","GWG.GWG."],anim:"sheen"},
 };
 function pixFrameHTML(theme){const t=PIX_FRAME[theme];if(!t)return"";const base=t.base,hi=t.hi;
   const edge=t.dec.concat(["B".repeat(t.dec[0].length),"H".repeat(t.dec[0].length)]);
@@ -2591,7 +2719,9 @@ function pixFrameHTML(theme){const t=PIX_FRAME[theme];if(!t)return"";const base=
     const bl=_pxURI([".p.p.","ppppp","pyyyp","ppppp",".p.p."],{p:"#ff9ec4",y:"#ffe08a"});
     orn=`<i class="orn" style="width:${5*S}px;height:${5*S}px;top:-${3*S}px;left:${Math.round(3.5*S)}px;background-image:url('${bl}')"></i>`;
   }
-  return `<div class="fov pix">`
+  const animCls=t.anim?" pixa pixa-"+t.anim:"";
+  const sheen=t.anim==="sheen"?`<i class="pixsheen"></i>`:"";
+  return `<div class="fov pix${animCls}">`+sheen
     +`<i class="pe pe-t" style="left:${EI}px;right:${EI}px;height:${ET}px;background-image:url('${top}');background-size:${bw}px ${ET}px"></i>`
     +`<i class="pe pe-b" style="left:${EI}px;right:${EI}px;height:${ET}px;background-image:url('${bot}');background-size:${bw}px ${ET}px"></i>`
     +`<i class="pe pe-l" style="top:${EI}px;bottom:${EI}px;width:${ET}px;background-image:url('${left}');background-size:${ET}px ${bw}px"></i>`
@@ -2608,37 +2738,42 @@ const FRAME_STYLE={
  sky:{type:"ring",base:"#6ba0ef",hi:"#dbe9ff",lo:"#3a63b0",glow:"#8fbaff",gem:"#cfe0ff"},
  violet:{type:"ring",base:"#b06fef",hi:"#e9d4ff",lo:"#6a35b0",glow:"#c77dff",gem:"#e0c8ff"},
  crown:{type:"ring",base:"#e6b53c",hi:"#fff3c0",lo:"#a9781a",glow:"#ffcf6a",gem:"#ffe08a",crown:1},
- lava:{type:"ring",base:"#ff7f2a",hi:"#ffd28a",lo:"#a83810",glow:"#ff7f2a",gem:"#ffb060",pulse:1},
- sunset:{type:"ring",band:"linear-gradient(135deg,#ff5a4a,#ffd76a)",glow:"#ff8a5a",gem:"#ffb877"},
- ocean:{type:"ring",band:"linear-gradient(135deg,#3a7bd5,#00d2ff,#7ee0d0)",glow:"#00d2ff",gem:"#7ee0d0"},
  aurora:{type:"ring",band:"linear-gradient(135deg,#7ee08a,#5b8def,#c77dff)",glow:"#8fd4b0",gem:"#c7ffe0"},
  candy:{type:"ring",band:"linear-gradient(135deg,#ff6fae,#ffd76a,#7ee0ff)",glow:"#ff9ec4",gem:"#ffe0f0"},
- forest:{type:"ring",band:"linear-gradient(135deg,#2f7a4d,#7ee08a,#d7f06a)",glow:"#7ee08a",gem:"#d7f06a"},
- flamingo:{type:"ring",band:"linear-gradient(135deg,#ff6fae,#ff9d3c)",glow:"#ff8fae",gem:"#ffc0a0"},
  blackgold:{type:"ring",band:"linear-gradient(135deg,#2a2418,#ffd76a,#2a2418)",glow:"#ffd76a",gem:"#ffe8a8"},
- peach:{type:"ring",band:"linear-gradient(135deg,#ffb0a0,#ffd7b0)",glow:"#ffc0a8",gem:"#ffe8d0"},
  rainbowspin:{type:"ring",band:"conic-gradient(from 0deg,#ff5a4a,#ffcf6a,#7ee08a,#5b8def,#c77dff,#ff5a4a)",glow:"#ffd76a",gem:"#ffffff",spin:1},
- emberspin:{type:"ring",band:"conic-gradient(from 0deg,#c81810,#ff5a4a,#ff9d3c,#ffd76a,#ff5a4a,#c81810)",glow:"#ff9d3c",gem:"#ffd76a",spin:1},
  neonspin:{type:"ring",band:"conic-gradient(from 0deg,#7ee0ff,#c77dff,#7ee0ff)",glow:"#9ee8ff",gem:"#d0f4ff",spin:1},
  pulsegold:{type:"ring",base:"#e6b53c",hi:"#fff3c0",lo:"#a9781a",glow:"#ffe08a",gem:"#ffe08a",pulse:1},
- pulserose:{type:"ring",base:"#ef86b6",hi:"#ffd9ea",lo:"#b04a78",glow:"#ffb0d4",gem:"#ffcfe4",pulse:1},
  s67:{type:"ring",band:"conic-gradient(from 0deg,#ffd76a,#ff9d3c,#ff6fae,#c77dff,#ffd76a)",glow:"#ffd76a",gem:"#ffd76a",spin:1,badge:1},
- artsakura:{type:"pix",theme:"sakura"}, artcat:{type:"pix",theme:"cat"}, arthearts:{type:"pix",theme:"hearts"}, artfire:{type:"pix",theme:"fire"},
- artbolt:{type:"pix",theme:"bolt"}, artsnow:{type:"pix",theme:"snow"}, artstars:{type:"pix",theme:"stars"}, artvine:{type:"pix",theme:"vine"},
- emberflow:{type:"ring",band:"linear-gradient(90deg,#c81810,#ff9d3c,#ffe08a,#ff9d3c,#c81810)",glow:"#ff9d3c",gem:"#ffd76a",flow:1},
  prisma:{type:"ring",band:"linear-gradient(90deg,#ff5a4a,#ffcf6a,#7ee08a,#5b8def,#c77dff,#ff5a4a)",glow:"#c9d4ff",gem:"#ffffff",flow:1},
  electric:{type:"ring",base:"#2aa0c8",hi:"#d6f7ff",lo:"#186a90",glow:"#5be0ff",gem:"#d0f4ff",flicker:1},
  halo:{type:"ring",band:"linear-gradient(90deg,#ffd9ea,#ffb0d4,#ffffff,#ffb0d4,#ffd9ea)",glow:"#ffb0d4",gem:"#ffe0ee",flow:1,pulse:1},
- innerglow:{type:"design",variant:"glow",base:"#e6b53c",hi:"#fff3c0",lo:"#a9781a",glow:"#ffcf6a",gem:"#ffe08a"},
- cornerbloom:{type:"design",variant:"bloom",base:"#5fc7a8",hi:"#d6fff0",lo:"#2f8467",glow:"#7ee0c0",gem:"#c9fff0"},
- /* v1.46 新框 */
  sakuraflow:{type:"ring",band:"linear-gradient(90deg,#ff9ec4,#ffd9ea,#ffffff,#ffd9ea,#ff9ec4)",glow:"#ff9ec4",gem:"#ffe0ee",flow:1},
  abyss:{type:"ring",band:"conic-gradient(from 0deg,#04212e,#0a6a8c,#3fd0e8,#0a6a8c,#04212e)",glow:"#3fd0e8",gem:"#bfefff",spin:1},
  royalspin:{type:"ring",band:"conic-gradient(from 0deg,#2f1258,#b06fef,#ffd76a,#b06fef,#2f1258)",glow:"#c79cf0",gem:"#ffe08a",spin:1},
  obsidian:{type:"ring",band:"linear-gradient(90deg,#141416,#8a8f99,#eef1f6,#8a8f99,#141416)",glow:"#c0c6d0",gem:"#eef1f6",flow:1},
  moltencore:{type:"ring",band:"linear-gradient(90deg,#3a0f04,#ff6a1e,#ffd07a,#ff6a1e,#3a0f04)",glow:"#ff7a2a",gem:"#ffd07a",flow:1,pulse:1},
+ innerglow:{type:"design",variant:"glow",base:"#e6b53c",hi:"#fff3c0",lo:"#a9781a",glow:"#ffcf6a",gem:"#ffe08a"},
+ cornerbloom:{type:"design",variant:"bloom",base:"#5fc7a8",hi:"#d6fff0",lo:"#2f8467",glow:"#7ee0c0",gem:"#c9fff0"},
+ /* 像素框 */
+ artsakura:{type:"pix",theme:"sakura"}, artcat:{type:"pix",theme:"cat"}, arthearts:{type:"pix",theme:"hearts"}, artfire:{type:"pix",theme:"fire"},
+ artbolt:{type:"pix",theme:"bolt"}, artsnow:{type:"pix",theme:"snow"}, artstars:{type:"pix",theme:"stars"}, artvine:{type:"pix",theme:"vine"},
  crystalpix:{type:"pix",theme:"crystal"},
+ artcircuit:{type:"pix",theme:"circuit"}, artcandy:{type:"pix",theme:"candy2"}, artgem:{type:"pix",theme:"gem"}, artroyal:{type:"pix",theme:"royal"},
+ artskull:{type:"pix",theme:"skull"}, artwave:{type:"pix",theme:"wave"}, artmush:{type:"pix",theme:"mush"}, artrune:{type:"pix",theme:"rune"}, artspace:{type:"pix",theme:"space"},
+ /* 特殊框 */
+ tv:{type:"special",sp:"tv"}, hologram:{type:"special",sp:"hologram"}, aquarium:{type:"special",sp:"aquarium"}, film:{type:"special",sp:"film"}, arcade:{type:"special",sp:"arcade"},
 };
+/* v1.47 特殊框:電視雜訊 / 全息掃描 / 水族箱氣泡 / 底片孔 / 街機霓虹。框內效果一律低透明、pointer-events:none,不擋分數 */
+const _TVNOISE="data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="42" height="42"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"/></filter><rect width="42" height="42" filter="url(#n)"/></svg>');
+function specialFrameHTML(sp){
+  if(sp==="tv") return `<div class="fov special sp-tv"><i class="sp-screen"></i><i class="sp-scan"></i><i class="sp-noise" style="background-image:url('${_TVNOISE}')"></i><b class="sp-led"></b></div>`;
+  if(sp==="hologram") return `<div class="fov special sp-holo"><i class="sp-hscan"></i><i class="sp-hglow"></i></div>`;
+  if(sp==="aquarium") return `<div class="fov special sp-aq"><i class="bub b1"></i><i class="bub b2"></i><i class="bub b3"></i><i class="bub b4"></i><i class="bub b5"></i></div>`;
+  if(sp==="film") return `<div class="fov special sp-film"><i class="perf pl"></i><i class="perf pr"></i></div>`;
+  if(sp==="arcade") return `<div class="fov special sp-arc"><i class="marq"></i></div>`;
+  return "";
+}
 function ringHTML(s){
   const band=s.band||`linear-gradient(135deg,${s.hi},${s.base} 42%,${s.lo} 74%,${s.base})`;
   const gem=s.gem||s.base,glow=s.glow||s.base;
@@ -2657,7 +2792,7 @@ function designFrameHTML(id,s){
   else if(s.variant==="bloom") inner=`<div class="fov-bleed bleed-corner" style="--glow:${s.glow}"><i class="bc bc-tl">${_BLOOM}</i><i class="bc bc-tr">${_BLOOM}</i><i class="bc bc-bl">${_BLOOM}</i><i class="bc bc-br">${_BLOOM}</i></div>`;
   return inner+ring;
 }
-function frameCosmHTML(id){const s=FRAME_STYLE[id];if(!s)return"";return s.type==="pix"?pixFrameHTML(s.theme):(s.type==="design"?designFrameHTML(id,s):ringHTML(s));}
+function frameCosmHTML(id){const s=FRAME_STYLE[id];if(!s)return"";return s.type==="pix"?pixFrameHTML(s.theme):(s.type==="design"?designFrameHTML(id,s):(s.type==="special"?specialFrameHTML(s.sp):ringHTML(s)));}
 /* ===== v1.38 像素精靈:用 SVG rect 手刻,無 emoji ===== */
 function pixelSVG(rows,pal,cls){ const w=rows[0].length,h=rows.length; let r="";
   for(let y=0;y<h;y++)for(let x=0;x<rows[y].length;x++){ const ch=rows[y][x]; if(ch===" "||ch===".")continue; const col=pal[ch]; if(!col)continue; r+=`<rect x="${x}" y="${y}" width="1.03" height="1.03" fill="${col}"/>`; }
