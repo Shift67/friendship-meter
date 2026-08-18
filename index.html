@@ -479,22 +479,24 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 /* v1.47 像素框動態(便宜:opacity / transform,合成層) */
 .fov.pix.pixa-pulse{animation:fovPulse 2.7s ease-in-out infinite;}
 .fov.pix .pixsheen{position:absolute;inset:0;overflow:hidden;pointer-events:none;border-radius:7px;}
-.fov.pix .pixsheen::before{content:"";position:absolute;top:-25%;bottom:-25%;left:-50%;width:30%;transform:skewX(-18deg);background:linear-gradient(90deg,transparent,rgba(255,255,255,.42),transparent);mix-blend-mode:screen;animation:pixSheen 3.6s ease-in-out infinite;}
-@keyframes pixSheen{0%{left:-50%;}58%,100%{left:135%;}}
+.fov.pix .pixsheen::before{content:"";position:absolute;top:-25%;bottom:-25%;left:-50%;width:30%;transform:translateX(0) skewX(-18deg);background:linear-gradient(90deg,transparent,rgba(255,255,255,.42),transparent);mix-blend-mode:screen;animation:pixSheen 3.6s ease-in-out infinite;}
+@keyframes pixSheen{0%{transform:translateX(0) skewX(-18deg);}58%,100%{transform:translateX(620%) skewX(-18deg);}}
+/* v1.50 效能:畫面外卡片暫停一切動畫(外框/寵物/折線),隔離重繪範圍 */
+.friend.offvp .fov,.friend.offvp .fov *,.friend.offvp .fov::before,.friend.offvp .fov::after,.friend.offvp .pet-track *,.friend.offvp .gmini .chart-line{animation-play-state:paused!important;}
 /* ===== v1.49 特殊框:每個都獨立手刻的結構(不是換色模組)。全部合成層、低透明、不擋分數 ===== */
-.fov.special{inset:-3px;border-radius:16px;overflow:hidden;pointer-events:none;z-index:5;}
+.fov.special{inset:-3px;border-radius:16px;overflow:hidden;pointer-events:none;z-index:5;contain:layout paint style;}
 .fov.special i,.fov.special b{position:absolute;pointer-events:none;}
 @keyframes spin360{to{transform:rotate(360deg)}}
 @keyframes fxtwk{0%,100%{opacity:.25;transform:scale(.7)}50%{opacity:1;transform:scale(1.3)}}
 @keyframes fxRise{0%{transform:translateY(0);opacity:0}14%{opacity:.85}86%{opacity:.6}100%{transform:translateY(-90px);opacity:0}}
 @keyframes fxFall{0%{transform:translateY(-14px);opacity:0}12%{opacity:.8}100%{transform:translateY(150px);opacity:0}}
-@keyframes fxScanY{0%{top:-12%}100%{top:100%}}
+@keyframes fxScanY{0%{transform:translateY(-18px)}100%{transform:translateY(170px)}}
 @keyframes fxSway{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
 @keyframes fxFlick{0%,100%{transform:scaleY(1) translateY(0);opacity:.55}50%{transform:scaleY(1.25) translateY(-3px);opacity:.85}}
 /* 復古電視 */
 .sp-tv{box-shadow:inset 0 0 0 2px #3a4048,inset 0 0 0 5px #0c0e13,inset 0 0 0 6px #4a515c,inset 0 0 16px 5px rgba(0,0,0,.42);}
 .sp-tv .hsc{inset:6px;border-radius:9px;background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(130,200,255,.06) 2px 3px);}
-.sp-tv .scanb{left:6px;right:6px;height:16px;border-radius:9px;background:linear-gradient(180deg,transparent,rgba(180,230,255,.16),transparent);animation:fxScanY 3.4s linear infinite;}
+.sp-tv .scanb{top:0;left:6px;right:6px;height:16px;border-radius:9px;background:linear-gradient(180deg,transparent,rgba(180,230,255,.16),transparent);animation:fxScanY 3.4s linear infinite;}
 .sp-tv .tvn{inset:6px;border-radius:9px;opacity:0;mix-blend-mode:screen;background-size:58px 58px;animation:fxNoise 6.5s steps(1,end) infinite;}
 @keyframes fxNoise{0%,88%,100%{opacity:0}90%{opacity:.16}92%{opacity:.04}95%{opacity:.13}97%{opacity:.03}}
 .sp-tv .led{right:9px;bottom:3px;width:4px;height:4px;border-radius:50%;background:#37e07a;box-shadow:0 0 5px #37e07a;animation:fxtwk 2.6s ease-in-out infinite;}
@@ -502,7 +504,7 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 .sp-hologram{box-shadow:inset 0 0 0 1.6px rgba(90,224,255,.95),inset 0 0 12px 2px rgba(90,224,255,.32);animation:holoFlk 3.6s ease-in-out infinite;}
 @keyframes holoFlk{0%,100%{opacity:1}47%{opacity:.8}50%{opacity:1}72%{opacity:.9}}
 .sp-hologram .hsc{inset:4px;border-radius:11px;background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(120,230,255,.09) 3px 4px);}
-.sp-hologram .scanb{left:4px;right:4px;height:20px;background:linear-gradient(180deg,transparent,rgba(120,230,255,.17),transparent);animation:fxScanY 2.6s linear infinite;}
+.sp-hologram .scanb{top:0;left:4px;right:4px;height:20px;background:linear-gradient(180deg,transparent,rgba(120,230,255,.17),transparent);animation:fxScanY 2.6s linear infinite;}
 /* 水族箱 */
 .sp-aquarium{box-shadow:inset 0 0 0 2px rgba(90,180,230,.55),inset 0 0 0 4px rgba(18,58,88,.6),inset 0 0 14px 3px rgba(70,180,230,.25);background:linear-gradient(180deg,rgba(40,120,170,.06),rgba(20,60,100,.12));}
 .sp-aquarium .glass{top:5px;left:8px;width:18px;height:38%;border-radius:12px;background:linear-gradient(120deg,rgba(255,255,255,.2),transparent);}
@@ -585,7 +587,7 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 /* 雷達 */
 .sp-radar{box-shadow:inset 0 0 0 2px #39d353,inset 0 0 12px 2px rgba(57,211,83,.28);border-radius:12px;background:radial-gradient(circle at 50% 50%,rgba(20,60,30,.18),transparent 70%);}
 .sp-radar .rrings{inset:8px;border-radius:50%;background:radial-gradient(circle,transparent 28%,rgba(57,211,83,.2) 29% 30%,transparent 31% 55%,rgba(57,211,83,.16) 56% 57%,transparent 58%);}
-.sp-radar .rsweep{inset:-22%;border-radius:50%;background:conic-gradient(from 0deg,rgba(120,255,150,.42) 0 8%,transparent 8% 100%);opacity:.5;mix-blend-mode:screen;animation:spin360 3s linear infinite;}
+.sp-radar .rsweep{inset:-22%;border-radius:50%;background:conic-gradient(from 0deg,rgba(120,255,150,.46) 0 8%,transparent 8% 100%);opacity:.5;animation:spin360 3s linear infinite;}
 .sp-radar .blip{width:4px;height:4px;border-radius:50%;background:#8affb0;box-shadow:0 0 6px #39d353;animation:fxtwk 3s ease-in-out infinite;}
 .sp-radar .bp1{top:30%;left:62%}.sp-radar .bp2{top:64%;left:36%;animation-delay:-1.5s}
 /* 駭客帝國 */
@@ -602,12 +604,12 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 @keyframes hazRun{to{background-position:22.63px 0}}
 /* 星系 */
 .sp-galaxy{box-shadow:inset 0 0 0 2px #7d3cff,inset 0 0 14px 3px rgba(125,60,255,.3);border-radius:14px;background:radial-gradient(circle at 50% 46%,rgba(40,20,80,.25),transparent 72%);}
-.sp-galaxy .spiral{inset:-18%;border-radius:50%;background:conic-gradient(from 0deg,transparent,rgba(199,168,255,.4),transparent 24%,rgba(94,224,255,.3),transparent 52%,rgba(255,94,168,.3),transparent 80%);opacity:.5;mix-blend-mode:screen;animation:spin360 6s linear infinite;}
+.sp-galaxy .spiral{inset:-18%;border-radius:50%;background:conic-gradient(from 0deg,transparent,rgba(199,168,255,.4),transparent 24%,rgba(94,224,255,.3),transparent 52%,rgba(255,94,168,.3),transparent 80%);opacity:.46;animation:spin360 6s linear infinite;}
 .sp-galaxy .gcore{top:calc(46% - 8px);left:calc(50% - 8px);width:16px;height:16px;border-radius:50%;background:radial-gradient(circle,#fff,rgba(199,168,255,.4) 60%,transparent);animation:fovPulse 2.4s ease-in-out infinite;}
 .sp-galaxy .gstar{width:2px;height:2px;border-radius:50%;background:#fff;box-shadow:0 0 3px #c7a8ff;animation:fxtwk 2.6s ease-in-out infinite;}
 /* 次元之門 */
 .sp-portal{box-shadow:inset 0 0 0 2px #3fd0e8,inset 0 0 14px 3px rgba(63,208,232,.3);border-radius:16px;}
-.sp-portal .vortex{inset:-20%;border-radius:50%;background:conic-gradient(from 0deg,#3fd0e8,#b06fef,#3fd0e8,#b06fef,#3fd0e8);opacity:.32;mix-blend-mode:screen;animation:spin360 2.4s linear infinite;}
+.sp-portal .vortex{inset:-20%;border-radius:50%;background:conic-gradient(from 0deg,#3fd0e8,#b06fef,#3fd0e8,#b06fef,#3fd0e8);opacity:.36;animation:spin360 2.4s linear infinite;}
 .sp-portal .pring{inset:22%;border-radius:50%;border:2px solid rgba(180,240,255,.6);box-shadow:0 0 10px rgba(63,208,232,.6);animation:portalPulse 2s ease-out infinite;}
 @keyframes portalPulse{0%{transform:scale(.7);opacity:.8}100%{transform:scale(1.3);opacity:0}}
 /* 彩虹雲 */
@@ -1157,10 +1159,15 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 
 <script>
 "use strict";
-const VERSION="1.49";
+const VERSION="1.50";
 const KEY="friendship-meter-v1";
 /* 更新紀錄:每次改版就在最前面加一筆(v 由大到小,設定頁「更新紀錄」會照這個順序顯示) */
 const CHANGELOG=[
+  {v:"1.50",date:"2026-08-16",items:[
+    "效能優化(外觀幾乎不變):畫面外的好友卡片自動暫停動畫,只有看得到的在動 —— 幀數大幅回穩",
+    "背景餘燼粒子拿掉最貴的 canvas 陰影模糊、改用便宜的雙層柔光,並降到 1 倍解析度",
+    "把幾個會逐幀重繪 / 觸發排版的框動畫(掃描線、像素框光掃)改成純合成層(transform),並隔離每個框的重繪範圍",
+  ]},
   {v:"1.49",date:"2026-08-16",items:[
     "特殊框全部重做:每一個都單獨手刻結構(角落飾、邊框形狀、專屬圖案),不再是換色模組合成 —— 電視、全息、霓虹燈管、電路板、蒸汽波、美式漫畫、烈焰、冰霜結晶、閃電、藤蔓、櫻花枝、星座、蒸汽龐克、音波、雷達、駭客帝國、賭場霓虹、警示帶、星系、次元之門、彩虹雲、心電圖、潑漆、寶藏、營火、泡泡、雪境…",
     "線條顏色補回來:每個顏色留一條最好看的,共 12 條(彩虹/極光/烈火/夕陽/流金/翠綠/青霓虹/天藍/紫電/櫻粉/電漿/冰霜),不再只剩兩條彩虹",
@@ -1555,9 +1562,15 @@ function renderHome(animate){
   if(active.length===0&&ended.length===0) html=`<div class="empty-state"><div class="small">${(q||fc||fcool)?"沒有符合的好友":"還沒有任何關係"}</div></div>`;
   if(ended.length){ html+=`<div class="insights"><div class="eyebrow ended">已經不是好友了</div></div><div class="${cls}">`+ended.map((f,i)=>cardFn(f,false,i)).join("")+`</div>`; }
   box.className=""; box.innerHTML=html;
-  bindPress(); bindFriendGestures();
+  bindPress(); bindFriendGestures(); _bindCardVis();
   if(animate) igniteHomeScores();
 }
+/* v1.50 效能:畫面外的卡片把動畫(外框 / 寵物 / 折線)暫停,只有看得到的在動 —— 對使用體感零影響,幀數大幅回穩 */
+let _cardIO=null;
+function _bindCardVis(){ if(!("IntersectionObserver" in window))return;
+  if(_cardIO)_cardIO.disconnect();
+  _cardIO=new IntersectionObserver(es=>{ for(const e of es) e.target.classList.toggle("offvp",!e.isIntersecting); },{root:null,rootMargin:"140px 0px"});
+  document.querySelectorAll("#friendList .friend").forEach(el=>_cardIO.observe(el)); }
 function renderInsights(){
   const box=$("insightsBox"); const pool=DB.friends.filter(f=>f.status!=="ended");
   if(pool.length<2){box.innerHTML="";return;}
@@ -2230,15 +2243,16 @@ function renderTicker(){ const bar=$("tickerBar"); if(!bar)return; clearInterval
   if(lines.length>1&&!_reduce()){ _tkTimer=setInterval(()=>{ const tks=bar.querySelectorAll(".tk"); if(tks.length<2)return; tks[_tkIdx].classList.remove("show"); _tkIdx=(_tkIdx+1)%tks.length; tks[_tkIdx].classList.add("show"); },3600); } }
 
 /* 背景餘燼粒子:只在首頁、前景、非減少動態時跑 */
-let _emCv=null,_emCtx=null,_emParts=[],_emRaf=0,_emW=0,_emH=0,_emDpr=Math.min(2,window.devicePixelRatio||1);
+let _emCv=null,_emCtx=null,_emParts=[],_emRaf=0,_emW=0,_emH=0,_emDpr=1;   /* v1.50 背景餘燼是模糊光點,用 DPR 1 就好(省一半以上填充) */
 function _emSize(){ if(!_emCv)return; _emW=window.innerWidth;_emH=window.innerHeight; _emCv.width=_emW*_emDpr;_emCv.height=_emH*_emDpr;_emCv.style.width=_emW+"px";_emCv.style.height=_emH+"px"; _emCtx.setTransform(_emDpr,0,0,_emDpr,0,0); }
 function _emMk(any){ return {x:Math.random()*_emW,y:any?Math.random()*_emH:_emH+8,r:.5+Math.random()*1.4,s:.1+Math.random()*.32,d:(Math.random()-.5)*.16,a:.08+Math.random()*.34}; }
 function _emTick(){ _emCtx.clearRect(0,0,_emW,_emH);
+  /* v1.50 拿掉 canvas shadowBlur(每顆粒子都很貴),改用兩層淡圓做柔光,便宜很多、外觀幾乎一樣 */
   for(let i=0;i<_emParts.length;i++){ const p=_emParts[i]; p.y-=p.s;p.x+=p.d;p.a-=.0012;
     if(p.y<-10||p.a<=0){_emParts[i]=_emMk(false);continue;}
-    _emCtx.beginPath();_emCtx.arc(p.x,p.y,p.r,0,6.283);
-    _emCtx.fillStyle="rgba(255,150,60,"+p.a.toFixed(3)+")"; _emCtx.shadowBlur=6;_emCtx.shadowColor="rgba(255,140,50,"+(p.a*.7).toFixed(3)+")"; _emCtx.fill(); }
-  _emCtx.shadowBlur=0; _emRaf=requestAnimationFrame(_emTick); }
+    _emCtx.beginPath();_emCtx.arc(p.x,p.y,p.r*2.1,0,6.283);_emCtx.fillStyle="rgba(255,140,50,"+(p.a*.28).toFixed(3)+")";_emCtx.fill();
+    _emCtx.beginPath();_emCtx.arc(p.x,p.y,p.r,0,6.283);_emCtx.fillStyle="rgba(255,160,70,"+p.a.toFixed(3)+")";_emCtx.fill(); }
+  _emRaf=requestAnimationFrame(_emTick); }
 function emberBg(on){ if(!_emCv)return;
   const run=on&&!_reduce()&&!document.hidden&&!currentDetailId;
   if(run){ if(!_emRaf){ _emSize(); if(!_emParts.length){for(let i=0;i<15;i++)_emParts.push(_emMk(true));} _emRaf=requestAnimationFrame(_emTick); } }
