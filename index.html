@@ -646,6 +646,22 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 .sp-snow .frostb{inset:2px;border-radius:12px;background:radial-gradient(circle at 50% 0,rgba(255,255,255,.18),transparent 50%);}
 .sp-snow .snf{top:-10%;width:4px;height:4px;border-radius:50%;background:#fff;opacity:0;animation:fxFall 3.6s linear infinite;}
 .sp-snow .pile{left:0;right:0;bottom:0;height:14%;background:linear-gradient(180deg,transparent,rgba(240,248,255,.55));border-radius:50% 50% 0 0/16px 16px 0 0;}
+/* v1.51 光束環繞:一顆亮頭 + 三段拖尾沿邊框跑一圈(reuse petPath,只用 top/left 的小元素) */
+.fov.special.sp-beam{inset:0;overflow:visible;contain:layout style;box-shadow:inset 0 0 0 1.5px rgba(150,190,255,.4),inset 0 0 12px 2px rgba(90,150,255,.22);border-radius:16px;}
+.sp-beam .bm{top:0;left:0;width:16px;height:16px;margin:-8px;border-radius:50%;background:radial-gradient(circle,#eaf4ff,#5b9bff 44%,transparent 70%);box-shadow:0 0 12px 2px #5b9bff;animation:petPath 3.1s linear infinite;}
+.sp-beam .bm2{width:12px;height:12px;margin:-6px;opacity:.6;animation-delay:-.12s}
+.sp-beam .bm3{width:9px;height:9px;margin:-4.5px;opacity:.34;animation-delay:-.24s}
+.sp-beam .bm4{width:6px;height:6px;margin:-3px;opacity:.18;animation-delay:-.36s}
+/* v1.51 液態金屬:gooey metaball —— 銀球在上下邊帶內漂移融合 */
+.sp-liquidmetal{box-shadow:inset 0 0 0 2px rgba(185,193,208,.5),inset 0 0 10px 2px rgba(150,165,185,.25);border-radius:14px;}
+.sp-liquidmetal .lm{left:3px;right:3px;height:20px;filter:url(#goofilter);}
+.sp-liquidmetal .lmt{top:4px}.sp-liquidmetal .lmb{bottom:4px}
+.sp-liquidmetal .mb{top:3px;width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#ffffff,#c8ced8 42%,#79879c 82%);}
+.sp-liquidmetal .mb.a{left:4%;animation:lmSlide 3.6s ease-in-out infinite}
+.sp-liquidmetal .mb.b{left:40%;animation:lmSlide 3.6s ease-in-out infinite;animation-delay:-1.2s}
+.sp-liquidmetal .mb.c{left:70%;animation:lmSlide 3.6s ease-in-out infinite;animation-delay:-2.4s}
+.sp-liquidmetal .lmb .mb.a{animation-delay:-.6s}.sp-liquidmetal .lmb .mb.b{animation-delay:-1.8s}.sp-liquidmetal .lmb .mb.c{animation-delay:-3s}
+@keyframes lmSlide{0%,100%{transform:translateX(0)}50%{transform:translateX(30px)}}
 @media (prefers-reduced-motion:reduce){.fov.special,.fov.special i,.fov.special b,.fov.pix.pixa-pulse,.fov.pix .pixsheen::before{animation:none!important;}}
 /* 預覽:外框貼齊預覽框內緣(inset:0),寵物/背景/折線維持裁切;預覽一律靜態(省效能) */
 .fprev.hasframe{overflow:visible;}
@@ -1159,10 +1175,15 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 
 <script>
 "use strict";
-const VERSION="1.50";
+const VERSION="1.51";
 const KEY="friendship-meter-v1";
 /* 更新紀錄:每次改版就在最前面加一筆(v 由大到小,設定頁「更新紀錄」會照這個順序顯示) */
 const CHANGELOG=[
+  {v:"1.51",date:"2026-08-16",items:[
+    "新增兩個傳奇特殊框(取自 jakubantalik 的技法,用純 CSS/SVG 復刻):",
+    "「光束環繞」—— 一顆亮頭拖著尾巴沿邊框跑一圈(border beam)",
+    "「液態金屬」—— 銀色小球在上下邊融合流動的 gooey 水銀效果(feGaussianBlur + feColorMatrix metaball)",
+  ]},
   {v:"1.50",date:"2026-08-16",items:[
     "效能優化(外觀幾乎不變):畫面外的好友卡片自動暫停動畫,只有看得到的在動 —— 幀數大幅回穩",
     "背景餘燼粒子拿掉最貴的 canvas 陰影模糊、改用便宜的雙層柔光,並降到 1 倍解析度",
@@ -2662,6 +2683,9 @@ const FRAMES=[
   {id:"campfire",name:"營火",kind:"special"},
   {id:"bubbles",name:"泡泡",kind:"special"},
   {id:"snow",name:"雪境",kind:"special"},
+  /* v1.51 取自 jakubantalik 的技法:邊框光束 / 液態金屬(gooey metaball) */
+  {id:"beam",name:"光束環繞",kind:"special"},
+  {id:"liquidmetal",name:"液態金屬",kind:"special",shop:true},
 ];
 /* 背景:點進某位好友的詳情時整個畫面的氛圍(CSS,低耗效、不影響閱讀)。friend.bg */
 const BGS=[
@@ -2711,7 +2735,7 @@ const RAR_DEF={
  frame:{c:["gold","artsnow","artcandy","artmush","artskull"],
    r:["aurora","cornerbloom","artsakura","arthearts","artwave","artcircuit","artvine","film","neon","circuit","leaves","equalizer","radar","caution","rainbow","heartbeat","bubbles","snow"],
    e:["obsidian","artstars","crystalpix","artroyal","artrune","artspace","aquarium","hologram","comic","ice","lightning","sakura","constellation","matrix","casino","paint","campfire","vaporwave"],
-   l:["crown","rainbowspin","s67","artcat","artfire","artbolt","artgem","tv","arcade","flames","steampunk","galaxy","portal","treasure"]},
+   l:["crown","rainbowspin","s67","artcat","artfire","artbolt","artgem","tv","arcade","flames","steampunk","galaxy","portal","treasure","beam","liquidmetal"]},
  line:{r:["emeraldflow","skyline","violet","blossom","frostflow","sunset"],e:["fireflow","goldflow","neon","plasma"],l:["rainbowflow","auroraflow"]},
  bg:{c:["night"],r:["ocean","maya","forest"],e:["sakura","aurora","ember","matrix","galaxy"],l:["neon"]},
  pet:{c:["dog","bird","chick"],r:["fish","bunny","hamster"],e:["cat","fox","penguin"],l:["ghost","dragon"]},
@@ -2971,9 +2995,19 @@ function specialFrameHTML(id){
    case "campfire": x=`<i class="charr"></i><i class="cfl"></i>${_pFxParts("emb",6,2.6)}`; break;
    case "bubbles": x=_pFxParts("soap",7,4.6); break;
    case "snow": x=`<i class="frostb"></i>${_pFxParts("snf",8,3.6)}<i class="pile"></i>`; break;
+   /* v1.51 邊框光束:一顆亮頭 + 拖尾,沿邊框跑一圈(用 transform 路徑,便宜) */
+   case "beam": x=`<i class="bm bm1"></i><i class="bm bm2"></i><i class="bm bm3"></i><i class="bm bm4"></i>`; break;
+   /* v1.51 液態金屬:gooey metaball —— 銀色小球沿上下邊融合流動(feGaussianBlur+feColorMatrix) */
+   case "liquidmetal": _ensureGoo(); x=`<i class="lm lmt"><i class="mb a"></i><i class="mb b"></i><i class="mb c"></i></i><i class="lm lmb"><i class="mb a"></i><i class="mb b"></i><i class="mb c"></i></i>`; break;
   }
   return `<div class="fov special sp-${id}">${x}</div>`;
 }
+/* gooey(液態融合)濾鏡只注入一次,全站共用 */
+function _ensureGoo(){ if(document.getElementById("goofilter"))return;
+  const s=document.createElementNS("http://www.w3.org/2000/svg","svg"); s.setAttribute("width","0");s.setAttribute("height","0");
+  s.setAttribute("style","position:absolute;width:0;height:0;pointer-events:none");
+  s.innerHTML=`<defs><filter id="goofilter" x="-20%" y="-40%" width="140%" height="180%"><feGaussianBlur in="SourceGraphic" stdDeviation="3.2" result="b"/><feColorMatrix in="b" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -9"/></filter></defs>`;
+  document.body.appendChild(s); }
 function ringHTML(s){
   const band=s.band||`linear-gradient(135deg,${s.hi},${s.base} 42%,${s.lo} 74%,${s.base})`;
   const gem=s.gem||s.base,glow=s.glow||s.base;
