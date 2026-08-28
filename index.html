@@ -333,6 +333,14 @@ body.selecting .list .friend:not(.ended)::after{top:50%;left:16px;right:auto;tra
 textarea.field.field-sm{min-height:48px;}
 .recon-toggle .rt-sub{font-size:11.5px;color:var(--ink-3);margin-top:2px;line-height:1.4;}
 .recon-toggle .cb.on{background:var(--warm);border-color:var(--warm);}
+/* v1.52 重新聯繫選擇 + 加分加成提示 */
+.recon-pick{margin-top:14px;border:1px solid var(--hair);background:var(--surface);border-radius:13px;padding:12px 14px;}
+.recon-pick .rt-k{font-size:13.5px;font-weight:600;margin-bottom:9px;}
+.recon-chips{display:flex;gap:7px;flex-wrap:wrap;}
+.recon-chips .chip.on{background:var(--warm);border-color:var(--warm);color:#231604;}
+.bonus-hint{margin-top:11px;font-size:12px;line-height:1.5;color:var(--ink-2);background:color-mix(in srgb,var(--warm) 10%,transparent);border:1px solid color-mix(in srgb,var(--warm) 26%,var(--hair));border-radius:10px;padding:8px 11px;}
+.bonus-hint .bh-mult{font-family:var(--mono);font-weight:800;color:var(--warm);margin-right:5px;}
+.bonus-hint .bh-eg{color:var(--ink-3);margin-left:4px;}
 .section-t{font-family:var(--mono);font-size:10.5px;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-3);margin:24px 0 6px;}
 .linkbtn{font-family:var(--mono);color:var(--ink-3);font-size:12.5px;padding:10px 0;letter-spacing:0.03em;}
 .del-friend{color:var(--danger);}
@@ -806,7 +814,8 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 .greel-tile{flex:0 0 84px;height:76px;display:flex;align-items:center;justify-content:center;border-radius:12px;box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--rc) 60%,transparent);background:color-mix(in srgb,var(--rc) 9%,transparent);}
 .greel-prev{transform:scale(.6);pointer-events:none;}
 .greel-prev .lprev{width:96px;}
-.greel-marker{position:absolute;left:50%;top:5px;bottom:5px;width:3px;margin-left:-1.5px;border-radius:2px;background:linear-gradient(var(--gold),#ff7020);box-shadow:0 0 12px var(--gold);z-index:4;}
+.greel-marker{position:absolute;left:50%;top:5px;bottom:5px;width:3px;margin-left:-1.5px;border-radius:2px;background:linear-gradient(var(--gold),#ff7020);box-shadow:0 0 12px var(--gold);z-index:4;transition:opacity .35s;}
+.gc-reel:has(.gchest.show:not(.gone)) .greel-marker{opacity:0;}   /* 開箱時藏起輪盤指針,轉盤開轉(箱子淡出 .gone)才回來 */
 .greel-marker::before,.greel-marker::after{content:"";position:absolute;left:50%;transform:translateX(-50%);border:6px solid transparent;}
 .greel-marker::before{top:-7px;border-top-color:var(--gold);}
 .greel-marker::after{bottom:-7px;border-bottom-color:var(--gold);}
@@ -889,6 +898,24 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 .shbtn.buy{background:linear-gradient(180deg,#b06fef,#8a4bd6);color:#fff;box-shadow:0 4px 14px -4px #8a4bd6;cursor:pointer;}
 .shbtn.buy:active{transform:scale(.94);}
 .shbtn.done{background:var(--surface-hi);color:var(--ink-3);}
+/* v1.52 開箱動畫:抽獎前箱子蓋著;抽了 → 抽獎卷飛進去 → 越晃越用力 → 開蓋爆光 → 輪盤才轉 */
+.gchest{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;z-index:6;perspective:220px;transition:opacity .4s;}
+.gchest:not(.show){display:none;}
+.gchest.gone{opacity:0;}
+.chest{position:relative;width:78px;height:56px;transform-origin:bottom center;}
+.chest-body{position:absolute;left:0;bottom:0;width:78px;height:32px;border-radius:5px 5px 6px 6px;background:linear-gradient(180deg,#b0821e,#7a5410);box-shadow:inset 0 2px 3px rgba(255,225,150,.45),inset 0 -3px 5px rgba(0,0,0,.4);}
+.chest-lid{position:absolute;left:0;top:0;width:78px;height:27px;border-radius:10px 10px 3px 3px;background:linear-gradient(180deg,#f0c246,#c1901e);box-shadow:inset 0 2px 3px rgba(255,244,196,.7),inset 0 -2px 4px rgba(120,80,10,.4);transform-origin:center bottom;transition:transform .38s cubic-bezier(.34,.9,.4,1.4);}
+.chest-band{position:absolute;top:-27px;bottom:0;left:calc(50% - 5px);width:10px;background:linear-gradient(#5a3a0a,#3a2405);border-radius:1px;}
+.chest-lock{position:absolute;top:-4px;left:calc(50% - 6px);width:12px;height:12px;border-radius:3px;background:radial-gradient(circle at 40% 34%,#fff3c0,#caa02c);box-shadow:0 0 5px rgba(255,220,120,.7);}
+.chest-glow{position:absolute;left:50%;top:40%;width:82px;height:82px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(255,215,110,.5),transparent 62%);opacity:0;}
+.chest-cap{font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:.04em;}
+.gchest.rattle .chest{animation:chestRattle 1.2s ease-in-out;}
+@keyframes chestRattle{0%{transform:rotate(0) translateY(0)}12%{transform:rotate(-3deg)}24%{transform:rotate(3deg)}40%{transform:rotate(-5deg) translateY(-1px)}56%{transform:rotate(5deg) translateY(-1px)}70%{transform:rotate(-8deg) translateY(-2px)}84%{transform:rotate(8deg) translateY(-2px)}94%{transform:rotate(-4deg) scale(1.06)}100%{transform:rotate(0) scale(1.1)}}
+.gchest.open .chest-lid{transform:rotateX(-118deg);}
+.gchest.open .chest-glow{opacity:1;transition:opacity .3s;}
+.gchest.open .chest-cap{opacity:0;transition:opacity .2s;}
+.tkfly{position:fixed;width:24px;height:17px;color:var(--gold);z-index:95;pointer-events:none;transition:transform .5s cubic-bezier(.5,.05,.7,1),opacity .5s;}
+.tkfly svg{width:100%;height:100%;}
 @media (prefers-reduced-motion: reduce){*{animation-duration:.001s !important;transition-duration:.05s !important;animation-delay:0s !important;}.logo{animation:none;}.c-ring{animation:none !important;}#fxCanvas,.record-ribbon{display:none !important;}}
 </style>
 </head>
@@ -935,6 +962,9 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
       <div class="hint">純數字鍵盤;要負數就按左邊的 －</div></div>
     <div><div class="field-label">關係類別</div><div class="chips" id="catChips"></div></div>
     <div><div class="field-label">冷卻提醒(幾天沒互動就標記)</div><input class="field" id="fCool" inputmode="numeric" pattern="[0-9]*" value="14"></div>
+    <div><div class="field-label">自然降溫速度(過冷卻後每天降多少)</div>
+      <div class="pillseg" id="fDecaySeg"><button data-rate="0.5" onclick="setFDecayRate(0.5)">慢</button><button data-rate="1" onclick="setFDecayRate(1)">中</button><button data-rate="2" onclick="setFDecayRate(2)">快</button></div>
+      <div class="hint">慢 = 每 2 天 −1 · 中 = 每天 −1 · 快 = 每天 −2。要在設定打開「自然降溫」總開關才會生效。</div></div>
     <div class="sheet-actions"><button class="btn" data-press onclick="closeSheet()">取消</button><button class="btn primary" data-press id="addSave" onclick="saveFriend()">建立</button></div>
   </div>
 </div>
@@ -975,7 +1005,16 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
       <textarea class="field field-sm" id="cNote" placeholder="今天發生了什麼?(可留白)"></textarea>
     </div>
   </div>
-  <div class="recon-toggle compact" id="reconRow" data-press onclick="toggleReconcile()"><span class="cb" id="reconCb"></span><div class="rt-k">標記為「和好 / 破冰」</div></div>
+  <div class="recon-pick" id="reconRow">
+    <div class="rt-k">這是一次「重新聯繫」嗎?</div>
+    <div class="chips recon-chips">
+      <button class="chip on" data-rk="" data-press onclick="setReconcile('')">沒有</button>
+      <button class="chip" data-rk="和好" data-press onclick="setReconcile('和好')">和好</button>
+      <button class="chip" data-rk="破冰" data-press onclick="setReconcile('破冰')">破冰</button>
+      <button class="chip" data-rk="重逢" data-press onclick="setReconcile('重逢')">重逢</button>
+    </div>
+    <div class="bonus-hint" id="bonusHint" style="display:none"></div>
+  </div>
   <div class="sheet-actions" id="scoreActions" style="margin-top:14px"><button class="btn" data-press onclick="closeSheet()">取消</button><button class="btn primary" data-press id="customSave" onclick="customScore()">記錄</button></div>
 </div>
 
@@ -1129,7 +1168,7 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
   <div id="gachaHead" class="gc-head"></div>
   <div class="gv-seg gc-seg" id="gcSeg"><button data-m="draw" class="on" data-press onclick="setGachaMode('draw')">轉蛋</button><button data-m="shop" data-press onclick="setGachaMode('shop')">商店</button></div>
   <div id="gcPanelDraw">
-    <div class="gc-reel" id="gachaReel"><div class="greel-strip" id="greelStrip"></div><div class="greel-marker"></div></div>
+    <div class="gc-reel" id="gachaReel"><div class="greel-strip" id="greelStrip"></div><div class="greel-marker"></div><div class="gchest show" id="gachaChest"><div class="chest"><div class="chest-glow"></div><div class="chest-lid"></div><div class="chest-body"><span class="chest-band"></span><span class="chest-lock"></span></div></div><div class="chest-cap">把抽獎卷丟進寶箱開箱</div></div></div>
     <div class="gc-reveal" id="gachaReveal"></div>
     <div class="gc-drawrow">
       <button class="btn primary gc-draw" id="gachaDrawBtn" data-press onclick="gachaDraw()">抽一張</button>
@@ -1175,10 +1214,17 @@ body::before{animation:emberBreathe 9s ease-in-out infinite;}
 
 <script>
 "use strict";
-const VERSION="1.51";
+const VERSION="1.52";
 const KEY="friendship-meter-v1";
 /* 更新紀錄:每次改版就在最前面加一筆(v 由大到小,設定頁「更新紀錄」會照這個順序顯示) */
 const CHANGELOG=[
+  {v:"1.52",date:"2026-08-28",items:[
+    "抽獎頁改成「開箱」:抽之前畫面中央就有一個寶箱,按下抽獎會把抽獎卷丟進箱子 → 箱子晃動 → 開蓋噴光 → 轉盤才開始轉,而且轉得更久更有戲",
+    "標記「和好 / 破冰 / 重逢」時,這次的加分會自動 ×2,加分前會有小提示告訴你倍率",
+    "太久沒聯絡自動加倍:對方已經自然降溫超過 5 天,下次加分自動 ×2;超過 20 天自動 ×5(和上面的重新聯繫取較高者,不疊乘)",
+    "新增「重逢」:有些朋友不是吵架也不是陌生人,只是生活暫時沒交集,重新聯繫時用這個詞",
+    "自然降溫速度改成每個人可以自己調(慢/中/快),加朋友時跟冷卻提醒一起設定,編輯時也能再改",
+  ]},
   {v:"1.51",date:"2026-08-16",items:[
     "新增兩個傳奇特殊框(取自 jakubantalik 的技法,用純 CSS/SVG 復刻):",
     "「光束環繞」—— 一顆亮頭拖著尾巴沿邊框跑一圈(border beam)",
@@ -1479,10 +1525,12 @@ const daysSince=ts=>Math.floor((Date.now()-ts)/86400000);
 /* 最後一次「真的互動」的時間(不含自動降溫的 log),用來判定冷卻/降溫/排序 */
 const lastActivityTs=f=>{ const u=f.logs.filter(l=>l.kind!=="decay"); return u.length?Math.max(...u.map(l=>l.ts)):f.createdAt; };
 function isCooling(f){ if(f.status!=="normal") return false; return daysSince(lastActivityTs(f))>f.cooldownDays; }
+/* v1.52 每個人自己的降溫速度(新增/編輯好友時設);沒設就沿用全域預設 */
+const _decayRate=f=>(f&&f.decayRate!=null)?f.decayRate:(DB.settings.emberDecayRate||1);
 const _sod=ts=>{ const d=new Date(ts); d.setHours(0,0,0,0); return d.getTime(); };
 /* v1.34 每日自動降溫:超過冷卻天數還沒互動,就每天(固定 09:00)自動補記一筆 −rate 的降溫,最多降到 0。App 打開/切回時把錯過的天補上,補在對的日期 */
-function catchUpDecay(){ if(!DB.settings.emberDecay) return false; const rate=DB.settings.emberDecayRate||1, nowT=Date.now(); let changed=false;
-  DB.friends.forEach(f=>{ if(f.status!=="normal") return;
+function catchUpDecay(){ if(!DB.settings.emberDecay) return false; const nowT=Date.now(); let changed=false;
+  DB.friends.forEach(f=>{ if(f.status!=="normal") return; const rate=_decayRate(f);
     const baseNoDecay=f.initial+f.logs.filter(l=>l.kind!=="decay").reduce((a,l)=>a+l.delta,0); const maxDecay=Math.max(0,baseNoDecay); if(maxDecay<=0) return;
     const lastU=lastActivityTs(f); let applied=-f.logs.filter(l=>l.kind==="decay"&&l.ts>lastU).reduce((a,l)=>a+l.delta,0);
     const start=_sod(lastU);
@@ -1762,7 +1810,7 @@ function applyBatchCool(){ const d=parseInt($("batchCoolInp").value,10); if(!Num
 function batchStatus(st,label){ const ids=[...selectedIds]; ids.forEach(id=>{const f=DB.friends.find(x=>x.id===id); if(!f)return; if(st==="ended"){f.status="ended";f.pinned=false;} else f.status=st;}); save(DB); haptic(); closeSheet(); exitSelectMode(); toast(`已將 ${ids.length} 人${label}`); }
 function askBatchEnd(){ const ids=[...selectedIds]; closeSheet(); askConfirm(`把選取的 ${ids.length} 人都結束好友關係?`,null,()=>{ ids.forEach(id=>{const f=DB.friends.find(x=>x.id===id); if(f){f.status="ended";f.pinned=false;}}); save(DB); haptic(); exitSelectMode(); toast(`已結束 ${ids.length} 人`); }); }
 function askBatchDelete(){ const ids=[...selectedIds]; closeSheet(); askConfirm(`刪除選取的 ${ids.length} 人與全部紀錄?無法復原。`,null,()=>{ DB.friends=DB.friends.filter(x=>!ids.includes(x.id)); save(DB); haptic(); exitSelectMode(); toast(`已刪除 ${ids.length} 人`); }); }
-function openBatchScore(){ if(!selectedIds.size)return; batchIds=[...selectedIds]; $("scoreTitle").textContent=`批次打分 · ${batchIds.length} 人`; $("cNote").value="";$("qNote").value=""; renderPresets("q");renderPresets("c"); thermoValue=0; reconcileFlag=false; syncReconcileUI(); openSheet("scoreSheet"); resetScoreTime(); collapseReason(); switchMode("custom"); }
+function openBatchScore(){ if(!selectedIds.size)return; batchIds=[...selectedIds]; $("scoreTitle").textContent=`批次打分 · ${batchIds.length} 人`; $("cNote").value="";$("qNote").value=""; renderPresets("q");renderPresets("c"); thermoValue=0; reconcileFlag=null; syncReconcileUI(); updateBonusHint(); openSheet("scoreSheet"); resetScoreTime(); collapseReason(); switchMode("custom"); }
 
 /* 長按選單 */
 function openContext(id){
@@ -1816,20 +1864,34 @@ function renderCatManage(){ const box=$("catManage"); if(!box)return;
   box.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>removeCategory(b.dataset.del)); bindPress(); }
 function pickCat(c){ chosenCat=(chosenCat===c?"":c); renderCatChips(); haptic(); }
 function setSign(which,s){ if(which==="init"){ initSign=s; $("fSignPos").classList.toggle("on",s>0); $("fSignNeg").classList.toggle("on",s<0);} else if(which==="log"){ leSign=s; $("leSignPos").classList.toggle("on",s>0); $("leSignNeg").classList.toggle("on",s<0);} haptic(); }
-function openAddFriend(){ editingId=null;chosenCat="";initSign=1; $("addTitle").textContent="新增好友"; $("addSave").textContent="建立"; $("fName").value="";$("fScore").value="50";$("fCool").value="14"; setSign("init",1); renderCatChips(); openSheet("addSheet"); setTimeout(()=>$("fName").focus(),320); }
-function openEditFriend(id){ const f=DB.friends.find(x=>x.id===id); if(!f)return; editingId=id;chosenCat=f.category||""; $("addTitle").textContent="編輯好友"; $("addSave").textContent="儲存"; $("fName").value=f.name;$("fScore").value=String(Math.abs(f.initial));$("fCool").value=String(f.cooldownDays); setSign("init",f.initial<0?-1:1); renderCatChips(); openSheet("addSheet"); }
+let fDecayRate=1;
+function _syncFDecaySeg(){ document.querySelectorAll("#fDecaySeg button").forEach(b=>b.classList.toggle("on",+b.dataset.rate===fDecayRate)); segMove($("fDecaySeg")); }
+function setFDecayRate(r){ fDecayRate=r; _syncFDecaySeg(); haptic(); }
+function openAddFriend(){ editingId=null;chosenCat="";initSign=1; fDecayRate=DB.settings.emberDecayRate||1; $("addTitle").textContent="新增好友"; $("addSave").textContent="建立"; $("fName").value="";$("fScore").value="50";$("fCool").value="14"; setSign("init",1); renderCatChips(); openSheet("addSheet"); _syncFDecaySeg(); setTimeout(()=>$("fName").focus(),320); }
+function openEditFriend(id){ const f=DB.friends.find(x=>x.id===id); if(!f)return; editingId=id;chosenCat=f.category||""; fDecayRate=(f.decayRate!=null?f.decayRate:(DB.settings.emberDecayRate||1)); $("addTitle").textContent="編輯好友"; $("addSave").textContent="儲存"; $("fName").value=f.name;$("fScore").value=String(Math.abs(f.initial));$("fCool").value=String(f.cooldownDays); setSign("init",f.initial<0?-1:1); renderCatChips(); openSheet("addSheet"); _syncFDecaySeg(); }
 function saveFriend(){ const name=$("fName").value.trim(); if(!name){toast("先填個名字");return;}
   const absS=parseInt($("fScore").value,10), initial=(Number.isFinite(absS)?absS:0)*initSign, cool=parseInt($("fCool").value,10);
-  if(editingId){ const f=DB.friends.find(x=>x.id===editingId); f.name=name;f.category=chosenCat;f.cooldownDays=Number.isFinite(cool)?cool:14;f.initial=initial; save(DB);haptic();closeSheet(); if(currentDetailId===editingId)renderDetail(editingId,false); else renderHome(false); toast("已更新"); }
-  else{ DB.friends.push({id:uid(),name,category:chosenCat,cooldownDays:Number.isFinite(cool)?cool:14,initial,createdAt:Date.now(),logs:[],status:"normal",pinned:false}); save(DB);haptic();closeSheet();renderHome(false);toast("已新增"); }
+  if(editingId){ const f=DB.friends.find(x=>x.id===editingId); f.name=name;f.category=chosenCat;f.cooldownDays=Number.isFinite(cool)?cool:14;f.initial=initial;f.decayRate=fDecayRate; save(DB);haptic();closeSheet(); if(currentDetailId===editingId)renderDetail(editingId,false); else renderHome(false); toast("已更新"); }
+  else{ DB.friends.push({id:uid(),name,category:chosenCat,cooldownDays:Number.isFinite(cool)?cool:14,initial,decayRate:fDecayRate,createdAt:Date.now(),logs:[],status:"normal",pinned:false}); save(DB);haptic();closeSheet();renderHome(false);toast("已新增"); }
 }
 
 /* ============ 打分 ============ */
-let scoringId=null,reconcileFlag=false;
-/* 和好 / 破冰:這一筆打分標記成「後來和好了」,時間軸會高亮(log.kind="reconcile",舊 log 沒這欄位、不受影響) */
-function toggleReconcile(){ reconcileFlag=!reconcileFlag; syncReconcileUI(); haptic(); }
-function syncReconcileUI(){ const cb=$("reconCb"); if(cb) cb.classList.toggle("on",reconcileFlag); }
-function openScore(id){ const f=DB.friends.find(x=>x.id===id); if(!f||f.status==="ended")return; batchIds=null; scoringId=id; $("scoreTitle").textContent=`${f.name} · 今日結算`; $("cNote").value="";$("qNote").value=""; renderPresets("q");renderPresets("c"); thermoValue=0; reconcileFlag=false; syncReconcileUI(); openSheet("scoreSheet"); resetScoreTime(); collapseReason(); switchMode("custom"); }
+let scoringId=null,reconcileFlag=null;   /* v1.52 改存類型字串:和好 / 破冰 / 重逢(重新聯繫,無關吵架也無關陌生);null = 沒標記 */
+/* 重新聯繫:這一筆會在時間軸高亮(log.kind="reconcile" + log.rk=類型),而且「加分自動 ×2」 */
+function setReconcile(word){ reconcileFlag=word||null; syncReconcileUI(); updateBonusHint(); haptic(); }
+function syncReconcileUI(){ document.querySelectorAll("#reconRow .recon-chips button").forEach(b=>b.classList.toggle("on",(b.dataset.rk||"")===(reconcileFlag||""))); }
+/* v1.52 加分加成:太久沒聯絡(過各自冷卻天數)自動放大 —— 過 5 天 ×2、過 20 天 ×5;標記「重新聯繫」也至少 ×2。只放大加分,不動扣分 */
+const _gapDays=f=>f?daysSince(lastActivityTs(f))-(f.cooldownDays||14):0;
+function _scoreBonus(f,rec){ let m=1; const why=[];
+  const g=_gapDays(f); if(g>20){m=5;why.push(`太久沒聯絡 ${g} 天`);} else if(g>5){m=2;why.push(`有點久沒聯絡 ${g} 天`);}
+  if(rec){ if(m<2)m=2; why.push("重新聯繫"); }
+  return {m,why}; }
+function updateBonusHint(){ const el=$("bonusHint"); if(!el)return;
+  const f=batchIds?null:DB.friends.find(x=>x.id===scoringId);
+  const {m,why}=_scoreBonus(f,!!reconcileFlag);
+  if(m>1){ el.style.display="block"; el.innerHTML=`<b class="bh-mult">加分 ×${m}</b> ${escapeHtml(why.join(" · "))}<span class="bh-eg">(例如 +5 會記成 +${5*m})</span>`; }
+  else { el.style.display="none"; el.innerHTML=""; } }
+function openScore(id){ const f=DB.friends.find(x=>x.id===id); if(!f||f.status==="ended")return; batchIds=null; scoringId=id; $("scoreTitle").textContent=`${f.name} · 今日結算`; $("cNote").value="";$("qNote").value=""; renderPresets("q");renderPresets("c"); thermoValue=0; reconcileFlag=null; syncReconcileUI(); updateBonusHint(); openSheet("scoreSheet"); resetScoreTime(); collapseReason(); switchMode("custom"); }
 /* 常用原因範本:點一下把標籤加進備註,再點一下拿掉 */
 function noteEl(which){ return which==="q"?$("qNote"):$("cNote"); }
 function renderPresets(which){ const box=$(which==="q"?"qPresets":"cPresets"); if(!box)return; const tags=noteEl(which).value.split("、").map(s=>s.trim());
@@ -1862,8 +1924,8 @@ function switchMode(m){ document.querySelectorAll("#modeSeg button").forEach(b=>
   const pane=m==="quick"?q:c; pane.classList.remove("pane-in"); void pane.offsetWidth; pane.classList.add("pane-in");
   const acts=$("scoreActions"); if(acts) acts.style.display=m==="custom"?"flex":"none";
   if(m==="custom"){ bindThermo(); setThermo(thermoValue); } }
-function addLog(id,delta,note,kind,ts){ const f=DB.friends.find(x=>x.id===id);
-  const l={id:uid(),ts:ts||Date.now(),delta,note:(note||"").trim()}; if(kind)l.kind=kind; f.logs.push(l); save(DB); }
+function addLog(id,delta,note,kind,ts,rk){ const f=DB.friends.find(x=>x.id===id);
+  const l={id:uid(),ts:ts||Date.now(),delta,note:(note||"").trim()}; if(kind)l.kind=kind; if(rk)l.rk=rk; f.logs.push(l); save(DB); }
 /* 這筆要記在哪個時間(null = 現在);結算畫面標題右邊的時間鈕控制,可補記到過去 */
 let scoreTs=null;
 function _shortDT(ts){ const d=new Date(ts),p=n=>String(n).padStart(2,"0"); return `${d.getMonth()+1}/${d.getDate()} ${p(d.getHours())}:${p(d.getMinutes())}`; }
@@ -1871,15 +1933,16 @@ function updateScoreTimeLabel(){ const lab=$("scoreTimeLabel"),chip=$("scoreTime
   if(scoreTs){ lab.textContent=_shortDT(scoreTs); chip.classList.add("set"); } else { lab.textContent="現在"; chip.classList.remove("set"); } }
 function resetScoreTime(e){ if(e&&e.stopPropagation)e.stopPropagation(); scoreTs=null; const di=$("scoreDate"); if(di){ di.value=""; di.max=_toLocalInput(Date.now()); } updateScoreTimeLabel(); if(e)haptic(); }
 
-function commitScore(delta,note){ haptic(); catchUpDecay(); const kind=reconcileFlag?"reconcile":null; const ds=(delta>0?"+"+delta:""+delta);
+function commitScore(delta,note){ haptic(); catchUpDecay(); const kind=reconcileFlag?"reconcile":null, rk=reconcileFlag||null, rec=!!reconcileFlag;
   if(batchIds&&batchIds.length){ const ids=batchIds.slice(); batchIds=null; const snap=ids.map(id=>({id,logs:_cloneLogs(id)}));
-    ids.forEach(id=>addLog(id,delta,note,kind,scoreTs)); closeSheet(); exitSelectMode();
-    offerUndo(`已為 ${ids.length} 人記錄 ${ds}`, ()=>{ snap.forEach(s=>_restoreLogs(s.id,s.logs)); save(DB); renderHome(false); }); evalAchievements(); return; }
+    ids.forEach(id=>{ const f=DB.friends.find(x=>x.id===id); const bm=(delta>0?_scoreBonus(f,rec).m:1); addLog(id,delta>0?delta*bm:delta,note,kind,scoreTs,rk); }); closeSheet(); exitSelectMode();
+    offerUndo(`已為 ${ids.length} 人記錄`, ()=>{ snap.forEach(s=>_restoreLogs(s.id,s.logs)); save(DB); renderHome(false); }); evalAchievements(); return; }
   const id=scoringId; const before=_cloneLogs(id);
-  const _f=DB.friends.find(x=>x.id===id); const _prevPeak=_f?peakScore(_f):0; const _priorReal=_f?_f.logs.filter(l=>l.kind!=="decay").length:0;
-  addLog(id,delta,note,kind,scoreTs);
-  const _newHigh=!!(_f&&delta>0&&_priorReal>=3&&rawScore(_f)>_prevPeak&&rawScore(_f)>0);
-  closeSheet(); afterScore(id,delta,_newHigh);
+  const _f=DB.friends.find(x=>x.id===id); const bm=(delta>0?_scoreBonus(_f,rec).m:1); const fd=delta>0?delta*bm:delta; const ds=(fd>0?"+"+fd:""+fd);
+  const _prevPeak=_f?peakScore(_f):0; const _priorReal=_f?_f.logs.filter(l=>l.kind!=="decay").length:0;
+  addLog(id,fd,note,kind,scoreTs,rk);
+  const _newHigh=!!(_f&&fd>0&&_priorReal>=3&&rawScore(_f)>_prevPeak&&rawScore(_f)>0);
+  closeSheet(); afterScore(id,fd,_newHigh);
   offerUndo(`已記錄 ${ds}`, ()=>{ _restoreLogs(id,before); save(DB); if(currentDetailId===id)renderDetail(id,false); else renderHome(false); });
   if(_newHigh){ markDid("newHigh"); markDid("newHighPB"); } evalAchievements(); }
 function quickScore(delta){ commitScore(delta,$("qNote").value); }
@@ -1954,12 +2017,12 @@ function renderDetail(id,animateScore){
     const cls=l.delta>0?"up":(l.delta<0?"down":"flat"),sign=l.delta>0?"+":"";
     const upto=f.logs.filter(x=>x.ts<=l.ts).reduce((s,x)=>s+x.delta,f.initial);
     const recon=l.kind==="reconcile", decayL=l.kind==="decay";
-    const badge=recon?`<span class="recon-badge">和好</span>`:(decayL?`<span class="decay-badge">降溫</span>`:"");
-    const noteTxt=l.note?escapeHtml(l.note):(recon?"和好 / 破冰":(decayL?"自然降溫":"（無備註）"));
+    const badge=recon?`<span class="recon-badge">${escapeHtml(l.rk||"和好")}</span>`:(decayL?`<span class="decay-badge">降溫</span>`:"");
+    const noteTxt=l.note?escapeHtml(l.note):(recon?escapeHtml(l.rk||"重新聯繫"):(decayL?"自然降溫":"（無備註）"));
     return `<div class="log-item${recon?' reconcile':''}${decayL?' decay':''}" data-lid="${l.id}"><div class="log-delta ${cls}">${sign}${l.delta}</div><div class="log-body"><div class="log-date">${fmtDate(l.ts)}</div><div class="log-note ${(l.note||recon||decayL)?'':'none'}">${badge}${noteTxt}</div><div class="log-after">→ ${upto}</div></div></div>`;
   }).join("")||`<div class="empty-state" style="padding:30px 0"><div class="small">還沒有紀錄,點「今日結算」開始</div></div>`;
   const statusNote=f.status==="dormant"?`<div class="d-sub" style="color:var(--warm)">已設為「不熟了」,不再提醒紀錄</div>`:(ended?`<div class="d-sub" style="color:var(--ink-3)">已結束的好友,分數以 0 呈現;可長按卡片恢復</div>`:"");
-  const _ci=(!ended)?coolInfo(f):{cooling:false,amt:0,days:0}; const decayNote=_ci.cooling?`<div class="d-sub" style="color:var(--cool)">餘燼降溫中,已自動降 −${_ci.amt}(過冷卻 ${_ci.days} 天,每天 −${DB.settings.emberDecayRate||1})</div>`:"";
+  const _ci=(!ended)?coolInfo(f):{cooling:false,amt:0,days:0}; const decayNote=_ci.cooling?`<div class="d-sub" style="color:var(--cool)">餘燼降溫中,已自動降 −${_ci.amt}(過冷卻 ${_ci.days} 天,每天 −${_decayRate(f)})</div>`:"";
   $("detailBody").innerHTML=`
     <div class="detail-head" style="--c:${dColor}"><div><div class="d-name">${escapeHtml(f.name)}</div><div class="d-tier" style="color:${dColor}">${dTitle}${f.category?" · "+escapeHtml(f.category):""}</div><div class="d-sub">冷卻設定 ${f.cooldownDays} 天${cool}</div>${statusNote}${decayNote}</div><div class="d-score" id="dScore" style="color:${dColor}">${dScore}</div></div>
     <div class="seg" style="margin-top:14px">${spanBtns}</div>
@@ -2788,30 +2851,49 @@ function _renderGachaHead(){ const s=DB.settings; const n=s._tickets||0,c=s._coi
 let _gachaSpinning=false;
 function renderGacha(){ _renderGachaHead(); if(!$("greelStrip")) $("gachaReel").innerHTML=`<div class="greel-strip" id="greelStrip"></div><div class="greel-marker"></div>`;
   const n=(DB.settings._tickets)||0, b1=$("gachaDrawBtn"), b10=$("gachaDraw10Btn");
+  const chest=$("gachaChest"); if(chest&&!_gachaSpinning){ chest.classList.remove("rattle","open","gone"); chest.classList.add("show"); const _st=$("greelStrip"); if(_st){ _st.style.transition="none"; _st.style.transform="translateX(0)"; _st.innerHTML=""; } }   /* 回到關著的箱子時清掉上一輪的輪盤格子,別讓格子從箱子後面露出來 */
   if(b1){ b1.disabled=_gachaSpinning||n<1; b1.innerHTML=n<1?"沒有抽獎卷了":`<span class="tk-ic">${TICKET_SVG}</span> 抽一張`; }
   if(b10){ b10.disabled=_gachaSpinning||n<10; b10.innerHTML=`<span class="tk-ic">${TICKET_SVG}</span> 十連抽 <b class="gc10x">×10</b>`; } }
+/* v1.52 抽獎卷飛進寶箱 */
+function _flyTicketToChest(){ if(_reduce())return; const btn=$("gachaDrawBtn"),chest=$("gachaChest"); if(!btn||!chest)return;
+  const br=btn.getBoundingClientRect(), cr=chest.getBoundingClientRect(); if(!cr.width)return;
+  const el=document.createElement("div"); el.className="tkfly"; el.innerHTML=TICKET_SVG;
+  const x0=br.left+br.width/2-12, y0=br.top+br.height/2-8; el.style.left=x0+"px"; el.style.top=y0+"px"; document.body.appendChild(el);
+  const dx=(cr.left+cr.width/2)-(x0+12), dy=(cr.top+cr.height*0.42)-(y0+8);
+  requestAnimationFrame(()=>{ el.style.transform=`translate(${dx}px,${dy}px) scale(.28) rotate(150deg)`; el.style.opacity="0"; });
+  setTimeout(()=>el.remove(),560); }
 function gachaDraw(){ if(_gachaSpinning)return; const n=(DB.settings._tickets)||0, pool=_gachaPool();
   if(n<=0){ toast("沒有抽獎卷,完成成就會拿到"); return; }
-  _gachaSpinning=true; DB.settings._tickets=n-1; save(DB); refreshTicketUI();   /* 只先扣卷;獎勵(代幣/造型)等揭曉時才入帳 */
+  _gachaSpinning=true; DB.settings._tickets=n-1; save(DB); refreshTicketUI();   /* 只先扣卷;獎勵(代幣/造型)等揭曉才入帳 */
   const winner=_drawOutcome(pool);
-  $("gachaReveal").className="gc-reveal"; $("gachaReveal").innerHTML=""; const btn=$("gachaDrawBtn"); if(btn)btn.disabled=true;
-  const WINPOS=44, strip=$("greelStrip"); const tiles=[];
-  for(let i=0;i<WINPOS+7;i++){ tiles.push(i===WINPOS?winner:_reelFiller()); }
-  strip.style.transition="none"; strip.style.transform="translateX(0)"; strip.innerHTML=tiles.map(_reelTile).join("");
-  const view=$("gachaReel"), center=view.clientWidth/2; void strip.offsetWidth;
-  /* v1.46 修:量測「贏家格」的實際位置(格子實寬 ≠ 固定 84),再算停點 → 指針一定停在贏家身上 */
-  const winEl=strip.children[WINPOS], tileW=(winEl&&winEl.offsetWidth)||84;
-  const winCenter=winEl?winEl.offsetLeft+winEl.offsetWidth/2:(WINPOS*tileW+tileW/2);
-  const jitter=(Math.random()*2-1)*tileW*0.16;   /* 只在中三分之一內偏一點,永遠不碰到兩格之間的縫隙 */
-  const dest=-(winCenter - center + jitter);
-  strip.style.transition="transform 4.7s cubic-bezier(.11,.75,.05,1)"; strip.style.transform=`translateX(${dest}px)`;
-  if(navigator.vibrate&&!_reduce()){ let d=90; const tick=()=>{ if(!_gachaSpinning)return; try{navigator.vibrate(6);}catch(e){} d*=1.12; if(d<520)setTimeout(tick,d); }; setTimeout(tick,260); }
-  setTimeout(()=>{ _gachaSpinning=false; haptic();
-    /* v1.48:獎勵在揭曉這一刻才入帳(代幣要等動畫跳出來才加,才有驚喜感) */
-    if(winner._type==="coin"){ DB.settings._coins=(DB.settings._coins||0)+winner.coin; }
-    else { if(!DB.settings.owned)DB.settings.owned={}; DB.settings.owned[winner._key]=Date.now(); }
-    save(DB); refreshTicketUI(); _gachaRevealCard(winner);
-    if(!_reduce())fxBurst(innerWidth/2,innerHeight*0.4,{n:winner._rar==="l"?64:winner._rar==="e"?44:30,pal:_rarFx(winner._rar),spd:winner._rar==="l"?5.2:3.8,up:1.2,life:82,sz:3.1}); renderGacha(); }, 4760);
+  $("gachaReveal").className="gc-reveal"; $("gachaReveal").innerHTML=""; const b1=$("gachaDrawBtn"),b10=$("gachaDraw10Btn"); if(b1)b1.disabled=true; if(b10)b10.disabled=true;
+  const chest=$("gachaChest"), strip=$("greelStrip");
+  strip.style.transition="none"; strip.style.transform="translateX(0)"; strip.innerHTML="";
+  if(chest){ chest.classList.remove("open","gone"); chest.classList.add("show"); }
+  /* 轉輪盤(開箱後才跑,轉久一點) */
+  const spin=()=>{ const WINPOS=52, tiles=[]; for(let i=0;i<WINPOS+8;i++)tiles.push(i===WINPOS?winner:_reelFiller());
+    strip.innerHTML=tiles.map(_reelTile).join("");
+    const view=$("gachaReel"),center=view.clientWidth/2; void strip.offsetWidth;
+    const winEl=strip.children[WINPOS],tileW=(winEl&&winEl.offsetWidth)||84;
+    const winCenter=winEl?winEl.offsetLeft+winEl.offsetWidth/2:(WINPOS*tileW+tileW/2);
+    const jitter=(Math.random()*2-1)*tileW*0.16;   /* 只停在格子中三分之一,不碰縫隙 */
+    const dest=-(winCenter-center+jitter), dur=_reduce()?0.2:5.8;
+    strip.style.transition=`transform ${dur}s cubic-bezier(.09,.72,.04,1)`; strip.style.transform=`translateX(${dest}px)`;
+    if(navigator.vibrate&&!_reduce()){ let d=110; const tick=()=>{ if(!_gachaSpinning)return; try{navigator.vibrate(6);}catch(e){} d*=1.12; if(d<560)setTimeout(tick,d); }; setTimeout(tick,300); }
+    setTimeout(()=>{ _gachaSpinning=false; haptic();
+      if(winner._type==="coin"){ DB.settings._coins=(DB.settings._coins||0)+winner.coin; }
+      else { if(!DB.settings.owned)DB.settings.owned={}; DB.settings.owned[winner._key]=Date.now(); }
+      save(DB); refreshTicketUI(); _gachaRevealCard(winner);
+      if(!_reduce())fxBurst(innerWidth/2,innerHeight*0.4,{n:winner._rar==="l"?64:winner._rar==="e"?44:30,pal:_rarFx(winner._rar),spd:winner._rar==="l"?5.2:3.8,up:1.2,life:82,sz:3.1});
+      if(chest)chest.classList.remove("show","open","gone");   /* 收回關著,下次再開 */
+      renderGacha();
+    }, _reduce()?260:5850); };
+  if(_reduce()){ if(chest)chest.classList.add("gone"); spin(); return; }
+  _flyTicketToChest();
+  setTimeout(()=>{ if(chest)chest.classList.add("rattle"); haptic(); }, 380);   /* 卡落進去 → 越晃越用力 */
+  setTimeout(()=>{ if(chest){ chest.classList.remove("rattle"); chest.classList.add("open"); } haptic();
+    if(!_reduce())fxBurst(innerWidth/2,innerHeight*0.34,{n:30,pal:_FX_GOLD,spd:4.2,up:1.1,life:74,sz:3}); }, 1580);   /* 開蓋爆光 */
+  setTimeout(()=>{ if(chest)chest.classList.add("gone"); spin(); }, 2000);   /* 箱子淡出 → 輪盤開轉 */
 }
 function _gachaRevealCard(o){ const rm=RAR_META[o._rar]||RAR_META.c;
   const box=$("gachaReveal"); if(!box)return; box.className="gc-reveal rar-"+o._rar+" show";
