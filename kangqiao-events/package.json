@@ -1,0 +1,24 @@
+{
+  "name": "kangqiao-events",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "康橋大事件 — 時間軸上的證物網",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "3d-force-graph": "^1.73.0",
+    "d3-force-3d": "^3.0.5",
+    "gsap": "^3.12.5",
+    "three": "0.185.1"
+  },
+  "devDependencies": {
+    "@fontsource/jetbrains-mono": "^5.0.19",
+    "@fontsource/noto-sans-tc": "^5.0.20",
+    "@fontsource/space-grotesk": "^5.0.18",
+    "vite": "^5.4.0"
+  }
+}
