@@ -16,7 +16,6 @@ let handlers = {};
 let model = { events: [], people: [], links: [], terms: [] };
 let eventById = new Map();
 const nodeById = new Map();   // 持久節點物件，跨 derive 保留位置與材質參照
-const linkObjCache = new Map(); // key -> THREE.Line（focus 動畫需要穩定參照）
 const collapsed = new Set();  // 收合中的學期
 let presentTerms = [];
 const termYMap = new Map();
@@ -44,16 +43,18 @@ export function createGraph(el, h = {}) {
     .backgroundColor(PALETTE.bg)
     .showNavInfo(false)
     .nodeThreeObject(nodeThreeObject)
-    .nodeVal((n) => (n.kind === 'capsule' ? 12 : n.kind === 'event' ? 6 : 2))
+    .nodeVal((n) => (n.kind === 'capsule' ? 16 : n.kind === 'event' ? 8 : 3))
     .nodeLabel(() => '') // 用自繪 sprite，不要預設 tooltip
-    .linkThreeObject(linkThreeObject)
-    .linkPositionUpdate(linkPositionUpdate)
-    .linkThreeObjectExtend(false)
-    .linkDirectionalParticleWidth(1.8)
-    .linkDirectionalParticleSpeed(0.016)
+    // 內建連線畫成實心圓柱，永遠牢牢接在兩點中心
+    .linkColor(linkColorFor)
+    .linkWidth(linkWidthFor)
+    .linkOpacity(0.6)
+    .linkDirectionalParticleWidth(2.2)
+    .linkDirectionalParticleSpeed(0.014)
     .linkDirectionalParticleColor(() => PALETTE.accentSoft)
     .enableNodeDrag(true)
     .onNodeClick(onNodeClick)
+    .onNodeHover(onNodeHover)
     .onBackgroundClick(() => handlers.onBackground && handlers.onBackground())
     .onNodeDragEnd((node) => {
       // 拖完放開 → 解除釘選，讓力學重新穩定（含 Y 軸時間力把它拉回該學期層）
@@ -293,7 +294,7 @@ function makeTextSprite(text, { color = '#dfe6ee', mono = false, weight = 400 } 
   const fontFamily = mono
     ? '"JetBrains Mono", ui-monospace, monospace'
     : '"Noto Sans TC", system-ui, sans-serif';
-  const fontPx = 34;
+  const fontPx = 42;
   const font = `${weight} ${fontPx}px ${fontFamily}`;
   const measure = document.createElement('canvas').getContext('2d');
   measure.font = font;
@@ -319,34 +320,37 @@ function makeTextSprite(text, { color = '#dfe6ee', mono = false, weight = 400 } 
   tex.colorSpace = THREE.SRGBColorSpace;
   const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false });
   const sprite = new THREE.Sprite(mat);
-  const scale = 0.16; // world units per css px
+  const scale = TUNE.labelScale / 2; // world units per css px（labelScale 越大字越大）
   sprite.scale.set(w * scale, h * scale, 1);
   sprite.center.set(0, 0.5);
   return sprite;
 }
 
-// ── 自訂連線（人物穿過事件的線）──────────────────────────
-function linkThreeObject(link) {
-  const cached = linkObjCache.get(link.key);
-  if (cached) { cached.__link = link; return cached; }
-  const geo = new THREE.BufferGeometry();
-  geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(6), 3));
-  const mat = new THREE.LineBasicMaterial({
-    color: C.link.clone(), transparent: true, opacity: 0.34,
-  });
-  const line = new THREE.Line(geo, mat);
-  line.__mat = mat;
-  line.__link = link;
-  linkObjCache.set(link.key, line);
-  return line;
+// ── 內建連線的樣式（用 accessor 控制；聚焦時整批重算）─────────
+let linkFocusKeys = null; // null=無聚焦；否則是被高亮的連線 key 集合
+function lkey(l) {
+  const s = (l.source && l.source.id) || l.source;
+  const t = (l.target && l.target.id) || l.target;
+  return s + '>' + t;
 }
-
-function linkPositionUpdate(line, { start, end }) {
-  const pos = line.geometry.getAttribute('position');
-  pos.setXYZ(0, start.x, start.y, start.z);
-  pos.setXYZ(1, end.x, end.y, end.z);
-  pos.needsUpdate = true;
-  return true;
+function linkColorFor(l) {
+  if (!linkFocusKeys) return PALETTE.link;
+  return linkFocusKeys.has(lkey(l)) ? PALETTE.accent : PALETTE.bgDeep;
+}
+function linkWidthFor(l) {
+  if (!linkFocusKeys) return TUNE.linkWidth;
+  return linkFocusKeys.has(lkey(l)) ? TUNE.linkWidth * 2.2 : TUNE.linkWidth * 0.35;
+}
+export function applyLinkFocus(personId) {
+  linkFocusKeys = personId ? personConnections(personId).linkKeys : null;
+  // 重設 accessor 逼 3d-force-graph 重算連線材質
+  Graph.linkColor(linkColorFor).linkWidth(linkWidthFor);
+  if (personId) {
+    const keys = linkFocusKeys;
+    for (const l of Graph.graphData().links) {
+      if (keys.has(lkey(l))) { try { Graph.emitParticle(l); } catch (_) {} }
+    }
+  }
 }
 
 // ── 每幀套用視覺狀態（focus 的退霧 / 高亮 / 進場都經過這裡）──
@@ -366,21 +370,17 @@ function startVisualLoop() {
       n.__mat.emissive.copy(tmp).multiplyScalar(0.10 + hi * 0.35);
       const op = (1 - dim * 0.92);
       n.__mat.opacity = op * enter;
-      if (n.__labelMat) n.__labelMat.opacity = Math.max(0, (1 - dim * 1.15)) * enter * (hi > 0 ? 1 : 0.92);
       if (n.__obj) {
         const s = enter * (1 + hi * 0.12);
         n.__obj.scale.setScalar(s);
-        if (n.__label) n.__label.visible = op * enter > 0.12;
       }
-    }
-    for (const line of linkObjCache.values()) {
-      const l = line.__link; if (!l || !line.__mat) continue;
-      const dim = l._dim ?? 0, hi = l._hi ?? 0;
-      tmp.copy(C.link);
-      if (hi > 0) tmp.copy(C.accent);
-      else if (dim > 0) tmp.lerp(C.dim, dim * 0.7);
-      line.__mat.color.copy(tmp);
-      line.__mat.opacity = hi > 0 ? (0.55 + hi * 0.4) : (0.34 * (1 - dim * 0.9));
+      // 標籤可見性：事件永遠顯示；人物只在 hover / 聚焦時顯示（避免 47 個名字擠成一團）
+      if (n.__label && n.__labelMat) {
+        const hover = n._hover ?? 0;
+        const show = n.kind === 'person' ? (hi > 0.02 || hover > 0.5) : (op * enter > 0.12);
+        n.__label.visible = show;
+        n.__labelMat.opacity = show ? Math.max(0, (1 - dim * 1.15)) * enter : 0;
+      }
     }
     requestAnimationFrame(loop);
   };
@@ -415,19 +415,14 @@ export function refreshAxis() {
   if (!axisGroup) return;
   while (axisGroup.children.length) axisGroup.remove(axisGroup.children[0]);
   const list = presentTerms.filter((t) => model.events.some((e) => e.term === t));
-  const halfW = 210;
+  const leftX = -230;
   for (const term of list) {
     const y = termY(term);
-    // 刻度線
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array([-halfW, y, 0, halfW, y, 0]), 3));
-    const mat = new THREE.LineBasicMaterial({ color: new THREE.Color(PALETTE.inkDim), transparent: true, opacity: 0.08 });
-    axisGroup.add(new THREE.Line(geo, mat));
-    // 學期名（mono，像卷宗分頁）
-    const label = makeTextSprite(term, { color: PALETTE.inkDim, mono: true, weight: 500 });
-    label.position.set(-halfW - 6, y, 0);
+    // 只留學期名當卷宗分頁錨點（拿掉沒意義的橫線）；分層感由 Y 間距本身表達
+    const label = makeTextSprite(term, { color: PALETTE.inkDim, mono: true, weight: 600 });
+    label.position.set(leftX, y, 0);
     label.center.set(1, 0.5);
-    label.material.opacity = 0.5;
+    label.material.opacity = 0.6;
     axisGroup.add(label);
   }
 }
@@ -492,6 +487,15 @@ function onNodeClick(node) {
   else if (node.kind === 'capsule') handlers.onCapsuleClick && handlers.onCapsuleClick(node);
 }
 
+let hoverNode = null;
+function onNodeHover(node) {
+  if (hoverNode === node) return;
+  if (hoverNode) hoverNode._hover = 0;
+  hoverNode = node || null;
+  if (hoverNode) hoverNode._hover = 1;
+  if (container) container.style.cursor = node ? 'pointer' : '';
+}
+
 function onUserInteract() {
   const controls = Graph.controls();
   controls.autoRotate = false;
@@ -507,8 +511,17 @@ function onResize() {
 }
 
 // ── 鏡頭 ────────────────────────────────────────────────
+// 用「水平展開」定鏡頭距離，讓節點維持可讀大小；很高的時間軸就讓它延伸出畫面，靠拖曳/滾輪探索。
 export function frameAll(ms = 1000) {
-  try { Graph.zoomToFit(ms, 60, (n) => (n._enter ?? 1) > 0.2); } catch (_) {}
+  const ns = [...nodeById.values()].filter((n) => n.__obj && (n._enter ?? 1) > 0.2 && n.x != null);
+  if (!ns.length) { try { Graph.zoomToFit(ms, 80); } catch (_) {} return; }
+  let cx = 0, cy = 0, cz = 0;
+  for (const n of ns) { cx += n.x; cy += n.y; cz += n.z; }
+  cx /= ns.length; cy /= ns.length; cz /= ns.length;
+  let maxR = 0;
+  for (const n of ns) { const d = Math.hypot(n.x - cx, n.z - cz); if (d > maxR) maxR = d; }
+  const dist = Math.min(760, Math.max(280, maxR * 2.4 + 170));
+  Graph.cameraPosition({ x: cx, y: cy + dist * 0.12, z: cz + dist }, { x: cx, y: cy, z: cz }, ms);
 }
 export function getCamera() { return Graph.camera(); }
 export function getControls() { return Graph.controls(); }
@@ -518,7 +531,6 @@ export function emitPulse(link) { try { Graph.emitParticle(link); } catch (_) {}
 // ── 給 focus.js 的存取原語 ───────────────────────────────
 export function getNode(id) { return nodeById.get(id); }
 export function allNodes() { return [...nodeById.values()]; }
-export function allLinks() { return [...linkObjCache.values()].map((l) => l.__link).filter(Boolean); }
 export function getModel() { return model; }
 export function getEvent(id) { return eventById.get(id); }
 export function personEvents(personId) {

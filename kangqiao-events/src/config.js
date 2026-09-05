@@ -95,16 +95,18 @@ export const PALETTE = {
 
 // ── 圖的調律（在 graph.js 使用；集中在此方便微調）──────────
 export const TUNE = {
-  termGap: 62,          // 相鄰學期在 Y 軸上的間距（world units）
-  eventRadius: 5.2,     // 事件節點球半徑
-  personRadius: 2.6,    // 人物節點半徑
-  capsuleRadius: 8.5,   // 收合後學期膠囊半徑
-  chargeStrength: -90,  // 斥力
-  linkDistance: 34,
-  linkStrength: 0.28,
-  timelineStrength: 0.9,// 事件被 Y 軸（時間）拉住的力道，越大分層越清楚
-  centerXZStrength: 0.03,
-  collideRadius: 7,
+  termGap: 135,         // 相鄰學期在 Y 軸上的間距（world units）：拉開讓分層清楚
+  eventRadius: 7,       // 事件節點球半徑
+  personRadius: 4,      // 人物節點半徑
+  capsuleRadius: 12,    // 收合後學期膠囊半徑
+  chargeStrength: -260, // 斥力：夠大才不會擠成一坨
+  linkDistance: 46,
+  linkStrength: 0.16,
+  timelineStrength: 0.55,// 事件被 Y 軸（時間）拉住的力道；適中讓每層有厚度又讀得出先後
+  centerXZStrength: 0.028,
+  collideRadius: 13,    // 碰撞半徑：撐開重疊的球
+  linkWidth: 0.9,       // 連線粗細（>0 會畫成實心圓柱，牢牢接在點上）
+  labelScale: 0.32,     // 文字世界大小（越大越好讀）
   idleDriftSpeed: 0.12, // 待機鏡頭自轉速度（唯一允許的環境動畫，慢到幾乎察覺不到）
   idleDelayMs: 6000,    // 停止互動後多久恢復漂移
 };

@@ -4,8 +4,8 @@
 // ─────────────────────────────────────────────────────────────
 import gsap from 'gsap';
 import {
-  allNodes, allLinks, getNode, personConnections, personEvents,
-  getCamera, getControls, cameraTo, emitPulse,
+  allNodes, getNode, personConnections, personEvents, applyLinkFocus,
+  getCamera, getControls, cameraTo,
 } from './graph.js';
 
 let current = null;
@@ -19,7 +19,7 @@ export function focusPerson(personId) {
   current = personId;
   getControls().autoRotate = false;
 
-  const { nodeIds, linkKeys } = personConnections(personId);
+  const { nodeIds } = personConnections(personId);
 
   // 節點：相關的浮出、其餘沉入霧
   for (const n of allNodes()) {
@@ -28,21 +28,8 @@ export function focusPerson(personId) {
     gsap.to(n, { _dim: related ? 0 : 1, _hi: hi, duration: 0.55, ease: 'power2.out' });
   }
 
-  // 連線：先全部壓暗，相關的再依序「被拉出」
-  const related = [];
-  for (const l of allLinks()) {
-    if (linkKeys.has(l.key)) related.push(l);
-    else gsap.to(l, { _dim: 1, _hi: 0, duration: 0.4, ease: 'power2.out' });
-  }
-  // 依事件時間排序做 stagger，像一條條線被拉出來
-  related.sort((a, b) => targetOrder(a) - targetOrder(b));
-  related.forEach((l, i) => {
-    l._dim = 0; l._hi = 0;
-    gsap.to(l, {
-      _hi: 1, duration: 0.5, ease: 'power2.out', delay: 0.12 + i * 0.06,
-      onStart: () => emitPulse(l),
-    });
-  });
+  // 連線：相關的高亮成橘色 + 放出粒子（像被拉出的線），其餘沉入底色
+  applyLinkFocus(personId);
 
   moveCameraTo(nodeIds);
 }
@@ -51,15 +38,10 @@ export function clearFocus(reframe = true) {
   if (!current) return;
   current = null;
   for (const n of allNodes()) gsap.to(n, { _dim: 0, _hi: 0, duration: 0.5, ease: 'power2.out' });
-  for (const l of allLinks()) gsap.to(l, { _dim: 0, _hi: 0, duration: 0.5, ease: 'power2.out' });
+  applyLinkFocus(null);
   if (reframe) {
     import('./graph.js').then((g) => g.frameAll(900));
   }
-}
-
-function targetOrder(link) {
-  const n = getNode(link.target);
-  return n ? (n.order ?? 0) : 0;
 }
 
 function moveCameraTo(nodeIds) {
