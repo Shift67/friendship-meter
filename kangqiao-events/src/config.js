@@ -55,10 +55,13 @@ function resolveApiUrl() {
 export const APPS_SCRIPT_URL = resolveApiUrl();
 
 // gviz fallback 端點（JSONP 讀取，避開 CORS）
-// headers=1：強制只把第 1 列當表頭，避免合併儲存格害 gviz 把表頭跟第一筆事件糊在一起
+// 關鍵：明確 select A..F 只取 6 個真實欄位，強制固定 6 欄輸出，
+// 這樣合併儲存格的「延續列」不會再害整排位移（gviz 對合併格的爛行為）。
+// headers=1 只認第 1 列當表頭。
+const GVIZ_TQ = encodeURIComponent('select A,B,C,D,E,F');
 export const GVIZ_URL =
   `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq` +
-  `?tqx=out:json&gid=${SHEET_GID}&headers=1`;
+  `?tqx=out:json&gid=${SHEET_GID}&headers=1&tq=${GVIZ_TQ}`;
 
 // ?demo：載入內建示例資料，離線也能看圖跑起來（明確標示為示例，非康橋真實紀錄）
 export const DEMO_MODE = new URLSearchParams(location.search).has('demo');
