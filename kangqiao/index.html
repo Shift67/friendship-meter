@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#0f141b" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='6'%20fill='%230f141b'/%3E%3Crect%20x='7'%20y='7'%20width='18'%20height='18'%20rx='3'%20fill='none'%20stroke='%23e8823c'%20stroke-width='2'/%3E%3C/svg%3E" />
+    <title>康橋大事件 · 證物網</title>
+    <meta name="description" content="把康橋從七年級到高中的事件，沿著時間軸攤成一張立體的證物網。" />
+    <script type="module" crossorigin src="./assets/index-BLMZiQtg.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-a-msJshs.css">
+  </head>
+  <body>
+    <!-- 3D 圖掛載點 -->
+    <div id="scene"></div>
+
+    <!-- 案卷抬頭：組織隱喻的文字錨點，不是裝飾 -->
+    <header id="masthead">
+      <div class="mast-mark">卷</div>
+      <div class="mast-text">
+        <h1>康橋大事件</h1>
+        <p class="mast-sub">時間軸上的證物網</p>
+      </div>
+    </header>
+
+    <!-- 首次載入的安靜祈使句，一互動就淡出 -->
+    <div id="hint" class="hint">
+      拖它、轉它。點一個事件看發生什麼。選一個人，看他牽連了整條故事。
+    </div>
+
+    <!-- 讀取 / 連線狀態 -->
+    <div id="status" class="status" hidden></div>
+
+    <!-- 事件面板（桌機右側 / 手機底部抽屜） -->
+    <aside id="panel" class="panel" hidden aria-hidden="true"></aside>
+
+    <!-- 收合控制列：學期膠囊快速展開/收合 -->
+    <div id="clusterbar" class="clusterbar" hidden></div>
+
+  </body>
+</html>
