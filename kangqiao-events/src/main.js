@@ -46,6 +46,10 @@ async function boot() {
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') { clearFocus(); closePanel(); }
+    if (e.key === 'Enter' && document.activeElement && document.activeElement.id === 'sheet-in') applySheet();
+  });
+  document.addEventListener('click', (e) => {
+    if (e.target && e.target.closest && e.target.closest('#sheet-go')) applySheet();
   });
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden) syncOnce();
@@ -160,9 +164,29 @@ function showEmptyGuide() {
     <div class="guide-card">
       <div class="guide-title mono">沒有讀到事件</div>
       <p>${route}</p>
-      <p class="muted">試算表 ID：<code>${SHEET_ID}</code></p>
+      ${sheetInputHTML()}
       <p class="muted">要離線看圖跑起來，可用 <code>?demo</code> 開啟示例資料。</p>
     </div>`;
+}
+
+// 讓使用者直接在頁面上貼自己的試算表網址（避免任何 ID 打錯的死路）
+function sheetInputHTML() {
+  return `
+    <div class="sheet-fix">
+      <input id="sheet-in" class="sheet-in" placeholder="貼上你的 Google 試算表網址" autocomplete="off" spellcheck="false" />
+      <button id="sheet-go" class="sheet-go">載入這份表</button>
+    </div>
+    <p class="muted">目前抓的是：<code>${SHEET_ID}</code></p>`;
+}
+
+function applySheet() {
+  const el = $('sheet-in');
+  const v = el ? el.value : '';
+  const m = String(v).match(/\/d\/([a-zA-Z0-9_-]{20,})/) ||
+    (/^[a-zA-Z0-9_-]{20,}$/.test(String(v).trim()) ? [null, String(v).trim()] : null);
+  if (!m) { flash('看起來不是有效的試算表網址'); return; }
+  try { localStorage.setItem('kq_sheet_id', m[1]); } catch (_) {}
+  location.reload();
 }
 
 function showError(err) {
@@ -172,10 +196,9 @@ function showError(err) {
   s.innerHTML = `
     <div class="guide-card">
       <div class="guide-title mono">連線失敗</div>
-      <p>${escapeHtml(err && err.message || String(err))}</p>
-      <p class="muted">路線 A：部署 Apps Script 後用 <code>?api=…/exec</code>。<br>
-      路線 B：把試算表設為「知道連結的人可檢視」。<br>
-      離線預覽：<code>?demo</code>。</p>
+      <p>讀不到這份試算表。最常見原因：抓到的 ID 不是你的表，或表沒設成「知道連結的人可檢視」。</p>
+      ${sheetInputHTML()}
+      <p class="muted">代碼訊息：${escapeHtml(err && err.message || String(err))}。離線預覽：<code>?demo</code>。</p>
     </div>`;
 }
 

@@ -95,6 +95,18 @@ const HEADER_KEYS = {
   story: ['事件內容', '內容', '經過', '故事', '說明'],
 };
 
+const CANON = { stage: 0, term: 1, title: 2, date: 3, people: 4, story: 5 };
+
+// 對不到的欄位，回退到標準 A..F 位置（但不搶已被別欄用掉的位置）。
+// 這樣就算有人把 A1 標題改成惡搞字（例如「屁眼」），階段欄仍讀得到。
+function fillMissingCols(idx) {
+  const used = new Set(Object.values(idx).filter((i) => i >= 0));
+  for (const [key, pos] of Object.entries(CANON)) {
+    if (idx[key] < 0 && !used.has(pos)) { idx[key] = pos; used.add(pos); }
+  }
+  return idx;
+}
+
 function detectColumns(values) {
   for (let r = 0; r < Math.min(values.length, 6); r++) {
     const row = (values[r] || []).map((c) => String(c ?? '').trim());
@@ -104,13 +116,13 @@ function detectColumns(values) {
     }
     // 至少對到「事件名稱」與其一，才當作標題列
     if (idx.title >= 0 && (idx.term >= 0 || idx.people >= 0)) {
-      return { headerRow: r, cols: idx };
+      return { headerRow: r, cols: fillMissingCols(idx) };
     }
   }
-  // 對不到 → 位置 fallback A..F
+  // 完全對不到 → 純位置 fallback A..F
   return {
     headerRow: values.length && looksLikeHeader(values[0]) ? 0 : -1,
-    cols: { stage: 0, term: 1, title: 2, date: 3, people: 4, story: 5 },
+    cols: { ...CANON },
   };
 }
 

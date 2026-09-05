@@ -4,8 +4,31 @@
 // ─────────────────────────────────────────────────────────────
 
 // 來源試算表 ID（唯讀，絕不寫入）
-export const SHEET_ID = '1kkqjX0Lnbh_ajRe0Pe1bWAQTPBG3AUbJjV1hVKjzNTM';
+// 可用 ?sheet=貼上你的試算表網址或ID 覆蓋（會記到 localStorage，之後免帶）
+const DEFAULT_SHEET_ID = '1f-KyqIZ5PEXj5i3E4XwCjUJsOA0bD4FwC45wcx8G39Q';
 export const SHEET_GID = '0';
+
+function extractSheetId(s) {
+  if (!s) return null;
+  const m = String(s).match(/\/d\/([a-zA-Z0-9_-]{20,})/); // 完整網址
+  if (m) return m[1];
+  if (/^[a-zA-Z0-9_-]{20,}$/.test(String(s).trim())) return String(s).trim(); // 純 ID
+  return null;
+}
+function resolveSheetId() {
+  const params = new URLSearchParams(location.search);
+  const fromQuery = extractSheetId(params.get('sheet'));
+  if (fromQuery) {
+    try { localStorage.setItem('kq_sheet_id', fromQuery); } catch (_) {}
+    return fromQuery;
+  }
+  try {
+    const stored = localStorage.getItem('kq_sheet_id');
+    if (stored) return stored;
+  } catch (_) {}
+  return DEFAULT_SHEET_ID;
+}
+export const SHEET_ID = resolveSheetId();
 
 // ── 端點解析 ─────────────────────────────────────────────
 // 路線 A（主推）：Google Apps Script 部署的 /exec 網址，回傳整張表的二維陣列。
