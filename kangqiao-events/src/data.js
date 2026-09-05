@@ -152,7 +152,17 @@ export function parseRows(values) {
   if (!Array.isArray(values) || !values.length) {
     return emptyModel();
   }
-  const { headerRow, cols } = detectColumns(values);
+  // 主要：關鍵字偵測到的欄位對應
+  const detected = detectColumns(values);
+  const a = parseWith(values, detected.headerRow, detected.cols);
+  // 保險：純位置 A..F（合併儲存格害 gviz 把表頭切歪時，這個通常更準）
+  const posHeader = looksLikeHeader(values[0]) ? 0 : -1;
+  const b = parseWith(values, posHeader, { ...CANON });
+  // 取「解析出比較多事件」的那個，對付各種讀取管道的怪異
+  return b.events.length > a.events.length ? b : a;
+}
+
+function parseWith(values, headerRow, cols) {
   const start = headerRow + 1;
 
   const events = [];

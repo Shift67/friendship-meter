@@ -55,9 +55,10 @@ function resolveApiUrl() {
 export const APPS_SCRIPT_URL = resolveApiUrl();
 
 // gviz fallback 端點（JSONP 讀取，避開 CORS）
+// headers=1：強制只把第 1 列當表頭，避免合併儲存格害 gviz 把表頭跟第一筆事件糊在一起
 export const GVIZ_URL =
   `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq` +
-  `?tqx=out:json&gid=${SHEET_GID}`;
+  `?tqx=out:json&gid=${SHEET_GID}&headers=1`;
 
 // ?demo：載入內建示例資料，離線也能看圖跑起來（明確標示為示例，非康橋真實紀錄）
 export const DEMO_MODE = new URLSearchParams(location.search).has('demo');
