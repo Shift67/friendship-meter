@@ -18,6 +18,7 @@ import { focusPerson, clearFocus, isFocused } from './focus.js';
 import { initPanel, openEvent, openPerson, close as closePanel } from './panel.js';
 
 const $ = (id) => document.getElementById(id);
+const RAW_DEBUG = new URLSearchParams(location.search).has('raw');
 let lastModel = null;
 let polling = false;
 let hintDismissed = false;
@@ -55,6 +56,7 @@ async function boot() {
     if (!document.hidden) syncOnce();
   });
 
+  if (RAW_DEBUG) { await showRaw(); return; }
   await firstLoad();
   if (!DEMO_MODE) setInterval(syncOnce, POLL_MS);
 
@@ -151,6 +153,31 @@ function clearStatus() { $('status').hidden = true; }
 function flash(text) {
   setStatus(text, 'flash');
   setTimeout(clearStatus, 2600);
+}
+
+// ?raw：把端點實際回傳的前幾列原封不動印出來，用來一次看清結構
+async function showRaw() {
+  setStatus('讀取原始資料…', 'load');
+  try {
+    const raw = await fetchRaw();
+    const rows = Array.isArray(raw) ? raw : [];
+    const maxCols = rows.reduce((m, r) => Math.max(m, (r || []).length), 0);
+    const dump = rows.slice(0, 26).map((r, i) => {
+      const cells = (r || []).map((c) => String(c ?? '').replace(/\s+/g, ' ').slice(0, 16)).join(' | ');
+      return String(i).padStart(2, '0') + '│ ' + cells;
+    }).join('\n');
+    const s = $('status');
+    s.hidden = false;
+    s.className = 'status guide';
+    s.innerHTML = `
+      <div class="guide-card raw-card">
+        <div class="guide-title mono">RAW 診斷</div>
+        <p class="muted">總列數 ${rows.length}｜最大欄數 ${maxCols}｜來源 ${APPS_SCRIPT_URL ? 'AppsScript' : 'gviz'}｜表 ${SHEET_ID}</p>
+        <pre class="raw-dump">${escapeHtml(dump || '（空）')}</pre>
+      </div>`;
+  } catch (err) {
+    showError(err);
+  }
 }
 
 function showEmptyGuide() {
